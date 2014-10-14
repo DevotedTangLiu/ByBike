@@ -1,0 +1,11 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="list_divider">#D3D3D3</color>
+    <color name="text_color">#565656</color>
+    <color name="exercise_list_background">#EFEFEF</color>
+    <color name="mycolor">#38565656</color>
+    <color name="tone_color">#FF8910</color>
+    <color name="cover_color">#9F000000</color>
+</resources>

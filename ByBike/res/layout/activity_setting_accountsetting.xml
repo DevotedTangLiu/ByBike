@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/exercise_list_background"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="账号："
+                android:textColor="@color/text_color"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/userAccount"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="250840302@qq.com"
+                android:textColor="@color/text_color"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="53dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_input_background" >
+
+            <EditText
+                android:id="@+id/newUserAccount"
+                android:layout_width="fill_parent"
+                android:layout_height="53dp"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:hint="习大大"
+                android:textColor="@color/black_overlay"
+                android:textColorHint="@color/black_overlay" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="修改密码："
+                android:textColor="@color/text_color"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="53dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_input_background" >
+
+            <EditText
+                android:id="@+id/oldPassword"
+                android:layout_width="fill_parent"
+                android:layout_height="53dp"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:hint="现有密码"
+                android:inputType="textPassword"
+                android:textColor="@color/black_overlay"
+                android:textColorHint="@color/black_overlay" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="53dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_input_background" >
+
+            <EditText
+                android:id="@+id/newPassword"
+                android:layout_width="fill_parent"
+                android:layout_height="53dp"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:hint="设置新密码"
+                android:inputType="textPassword"
+                android:textColor="@color/black_overlay"
+                android:textColorHint="@color/black_overlay" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="53dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_input_background" >
+
+            <EditText
+                android:id="@+id/repeatNewPassword"
+                android:layout_width="fill_parent"
+                android:layout_height="53dp"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:hint="重复新密码"
+                android:inputType="textPassword"
+                android:textColor="@color/black_overlay"
+                android:textColorHint="@color/black_overlay" >
+            </EditText>
+        </LinearLayout>
+        
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="fill_parent"
+            android:layout_height="53dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/submit_button" />
+    </LinearLayout>
+
+</LinearLayout>

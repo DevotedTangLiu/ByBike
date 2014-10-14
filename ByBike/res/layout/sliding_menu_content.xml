@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        android:layout_marginBottom="70dp">
+
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="-5dp"
+            android:background="@color/exercise_list_background" />
+
+        <LinearLayout
+            android:id="@+id/cover"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/cover_color"
+            android:orientation="vertical"
+            android:visibility="gone" />
+
+<!--         <Button -->
+<!--             android:id="@+id/showMenu" -->
+<!--             android:layout_width="50dp" -->
+<!--             android:layout_height="60dp" -->
+<!--             android:layout_alignParentLeft="true" -->
+<!--             android:layout_marginTop="20dp" -->
+<!--             android:background="@drawable/menu_button" /> -->
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="70dp"
+        android:background="@color/text_color" 
+        android:layout_marginTop="-70dp"
+        android:orientation="horizontal">
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/mapButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="地图"
+                android:onClick="onclick"/>
+        </LinearLayout>
+         <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/exerciseButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="活动"
+                android:onClick="onclick"/>
+        </LinearLayout>
+         <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/rideButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="骑行"
+                android:onClick="onclick"/>
+        </LinearLayout>
+         <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/routeButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="路书"
+                android:onClick="onclick"/>
+        </LinearLayout>
+         <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/myButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="我的"
+                android:onClick="onclick"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
