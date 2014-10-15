@@ -7,5 +7,7 @@
     <!-- slidingmenu配置 -->
     <dimen name="slidingmenu_offset">160dp</dimen>
     <dimen name="shadow_width">10dp</dimen>
+    
+    <dimen name="circle_width">10dp</dimen>
 
 </resources>

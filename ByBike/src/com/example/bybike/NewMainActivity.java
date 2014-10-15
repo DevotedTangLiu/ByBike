@@ -18,6 +18,7 @@ import com.ab.view.slidingmenu.SlidingMenu;
 import com.example.bybike.exercise.ExerciseListFragment;
 import com.example.bybike.riding.RidingFragment;
 import com.example.bybike.setting.SettingMainActivity;
+import com.example.bybike.user.UserMainPageFragment;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.SharedPreferencesUtil;
 
@@ -112,36 +113,35 @@ public class NewMainActivity extends AbActivity {
 		switch (i) {
 		case 0:
 			// 显示我的页面
-//			if (!(currentFragment instanceof SettingMainFragment)) {
-//				
-//				SettingMainFragment toSettingMainFragment = null;
-//				List<Fragment> fragments = getSupportFragmentManager()
-//						.getFragments();
-//				for (Fragment f : fragments) {
-//					if (f instanceof SettingMainFragment) {
-//						toSettingMainFragment = (SettingMainFragment) f;
-//						transaction.show(toSettingMainFragment);
-//					}else if(f instanceof RidingFragment){
-//						transaction.remove(f);
-//					}else if(f == null){
-//						continue;
-//					}else{
-//						transaction.hide(f);
-//					}
-//				}			
-//				if (null == toSettingMainFragment) {
-//					toSettingMainFragment = new SettingMainFragment();
-//					transaction.add(R.id.content_frame, toSettingMainFragment);
-//					transaction.show(toSettingMainFragment);
-//				}
-//				
-//				transaction.commit();
-//				toSettingMainFragment.showTitleBar();
-//				currentFragment = toSettingMainFragment;
-//			}
-			Intent intent = new Intent();
-			intent.setClass(this, SettingMainActivity.class);
-			startActivity(intent);
+			if (!(currentFragment instanceof UserMainPageFragment)) {
+				
+			    UserMainPageFragment toFragment = null;
+				List<Fragment> fragments = getSupportFragmentManager()
+						.getFragments();
+				for (Fragment f : fragments) {
+					if (f instanceof UserMainPageFragment) {
+						toFragment = (UserMainPageFragment) f;
+						transaction.show(toFragment);
+					}else if(f instanceof RidingFragment){
+						transaction.remove(f);
+					}else if(f == null){
+						continue;
+					}else{
+						transaction.hide(f);
+					}
+				}			
+				if (null == toFragment) {
+					toFragment = new UserMainPageFragment();
+					transaction.add(R.id.content_frame, toFragment);
+					transaction.show(toFragment);
+				}
+				
+				transaction.commit();
+				currentFragment = toFragment;
+			}
+//			Intent intent = new Intent();
+//			intent.setClass(this, SettingMainActivity.class);
+//			startActivity(intent);
 			break;
 		case 1:
 			// 显示地图页面
