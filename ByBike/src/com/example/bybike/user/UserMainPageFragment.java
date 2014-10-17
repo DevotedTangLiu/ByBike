@@ -6,13 +6,13 @@
 package com.example.bybike.user;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
 import com.ab.bitmap.AbImageDownloader;
 import com.ab.global.AbConstant;
@@ -20,6 +20,7 @@ import com.ab.http.AbHttpUtil;
 import com.ab.view.titlebar.AbTitleBar;
 import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
+import com.example.bybike.friends.FriendsActivity;
 
 /**
   * @author tangliu(mail) 2014-10-15
@@ -56,8 +57,19 @@ public class UserMainPageFragment extends Fragment {
         mAbImageDownloader.setType(AbConstant.ORIGINALIMG);
         mAbImageDownloader.display(backgroundImage, "http://img0.imgtn.bdimg.com/it/u=3944469639,1200934441&fm=21&gp=0.jpg");
         
-        System.out.println("loghere: " + backgroundImage.getHeight() + ",    " + backgroundImage.getWidth());
 
+        backgroundImage.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			
+				Intent i = new Intent();
+				i.setClass(mActivity, FriendsActivity.class);
+				startActivity(i);
+			}
+		});
+        
         return view;
     }
 

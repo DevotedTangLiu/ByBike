@@ -140,9 +140,6 @@ public class ImageListAdapter extends BaseAdapter {
 		final Map<String, Object> obj = (Map<String, Object>) mData
 				.get(position);
 		String imageUrl = (String) obj.get("exercisePic");
-		// 设置加载中的View
-		mAbImageDownloader.setLoadingView(convertView
-				.findViewById(R.id.exercisePic));
 		// 图片的下载
 		mAbImageDownloader.display(holder.exercisePic, imageUrl);
 
