@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ab.bitmap.AbImageDownloader;
@@ -21,6 +23,7 @@ import com.ab.view.titlebar.AbTitleBar;
 import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
 import com.example.bybike.friends.FriendsActivity;
+import com.example.bybike.setting.SettingMainActivity;
 
 /**
   * @author tangliu(mail) 2014-10-15
@@ -70,9 +73,31 @@ public class UserMainPageFragment extends Fragment {
 			}
 		});
         
+        Button gotoSetting = (Button)view.findViewById(R.id.goToSetting);
+        gotoSetting.setOnClickListener(click);
+ 
         return view;
     }
 
+    private OnClickListener click = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			switch (v.getId()) {
+			case R.id.goToSetting:
+				Intent i = new Intent();
+				i.setClass(mActivity, SettingMainActivity.class);
+				startActivity(i);
+				break;
+
+			default:
+				break;
+			}
+			
+		}
+	};
+	
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

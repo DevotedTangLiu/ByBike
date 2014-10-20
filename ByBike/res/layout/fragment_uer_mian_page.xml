@@ -5,16 +5,16 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="200dp">
-        
+        android:layout_height="200dp" >
+
         <ImageView
             android:id="@+id/background_image"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
 
         <com.example.bybike.util.CircleImageView
-            xmlns:myxmlns="http://schemas.android.com/apk/res/com.example.bybike"  
+            xmlns:myxmlns="http://schemas.android.com/apk/res/com.example.bybike"
             android:id="@+id/fragment_my_image_user"
             android:layout_width="110dp"
             android:layout_height="110dp"
@@ -25,7 +25,91 @@
             android:src="@drawable/user"
             myxmlns:border_color="@color/f2f2f2"
             myxmlns:border_width="@dimen/circle_width" />
-        
+
+        <Button
+            android:id="@+id/goToMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="消息" />
+
+        <Button
+            android:id="@+id/goToSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/goToMessage"
+            android:text="设置" />
     </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2px"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="test" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:background="?android:attr/listDivider" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="test" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:background="?android:attr/listDivider" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="test" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2px"
+        android:background="?android:attr/listDivider" />
+
+    <FrameLayout
+        android:id="@+id/content_frame_my_mainpage"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="-5dp"
+        android:background="@color/exercise_list_background" />
 
 </LinearLayout>

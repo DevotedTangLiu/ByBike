@@ -217,6 +217,17 @@ public class MainPageFragment extends Fragment {
 				}
 			});
 			
+			Button searchButton = (Button)mainView.findViewById(R.id.searchButton);
+			searchButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mActivity.showToast("test");
+					
+				}
+			});
+			
 
 		}
 		
