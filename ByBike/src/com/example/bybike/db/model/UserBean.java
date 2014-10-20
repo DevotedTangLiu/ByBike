@@ -39,6 +39,17 @@ public class UserBean {
 	// 用户头像
 	@Column(name = "pic_url")
 	private String picUrl;
+	
+	@Column(name ="session")
+	private String session;
+
+	public String getSession() {
+		return session;
+	}
+
+	public void setSession(String session) {
+		this.session = session;
+	}
 
 	public int get_id() {
 		return _id;

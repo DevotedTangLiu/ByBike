@@ -4,9 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,6 +18,8 @@ import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
 import com.example.bybike.R;
+import com.example.bybike.db.dao.UserBeanDao;
+import com.example.bybike.db.model.UserBean;
 import com.example.bybike.util.BitmapUtil;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -36,6 +35,7 @@ public class LoginActivity extends AbActivity {
 	private String password;
 
 	ImageView login_background;
+	UserBeanDao userDao = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +134,33 @@ public class LoginActivity extends AbActivity {
 				String username = responseObj.getString("username");
 				String sessionId = responseObj.getString("sessionId");
 				String avatarUrl = responseObj.getString("avatarUrl");
+				
+				userDao = new UserBeanDao(LoginActivity.this);
+				//(1)获取数据库
+				userDao.startWritableDatabase(false);
+				//(2)执行查询
+				UserBean user = (UserBean)userDao.queryOne(Integer.valueOf(userId));
+				if(null == user){
+					user = new UserBean();user.setUserId(userId);
+					user.setUserEmail(this.account);
+					user.setPassword(this.password);
+					user.setUserNickName(username);
+					user.setSession(sessionId);
+					user.setPicUrl(avatarUrl);
+					
+					userDao.insert(user);
+				}else{
+					user.setUserId(userId);
+					user.setUserEmail(this.account);
+					user.setPassword(this.password);
+					user.setUserNickName(username);
+					user.setSession(sessionId);
+					user.setPicUrl(avatarUrl);
+
+	                userDao.update(user);
+				}
+				//(3)关闭数据库
+				userDao.closeDatabase(false);
 				
 				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERID, userId);
 				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERACCOUNT, this.account);
