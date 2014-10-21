@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ZoomControls;
@@ -27,6 +26,7 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -67,7 +67,7 @@ public class MainPageFragment extends Fragment {
 	Button zoom_down = null;
 	private float zoom_level = 17;
 	// 是否开启实时位置
-	private boolean now_position = true;
+//	private boolean now_position = true;
 	// 定义一个链表List存放每次的定位结果，然后在地图上绘制路线
 	List<LatLng> points = new ArrayList<LatLng>();
 	List<LatLng> back_points = new ArrayList<LatLng>();
@@ -78,7 +78,6 @@ public class MainPageFragment extends Fragment {
 
 		if (mainView == null) {
 			mainView = inflater.inflate(R.layout.activity_main, null);
-
 			// 获取地图控件引用
 			mMapView = (MapView) mainView.findViewById(R.id.bmapView);
 			mBaidumap = mMapView.getMap();
@@ -96,11 +95,10 @@ public class MainPageFragment extends Fragment {
 				}
 			}
 			zoom.setVisibility(View.GONE);
+			//隐藏指南针
 			mBaidumap.getUiSettings().setCompassEnabled(false);
-
 			// 开启定位图层
 			mBaidumap.setMyLocationEnabled(true);
-
 			mLocClient = new LocationClient(mActivity.getApplicationContext());
 			mMyLocationListener = new MyLocationListener();
 			mLocClient.registerLocationListener(mMyLocationListener);
@@ -111,7 +109,6 @@ public class MainPageFragment extends Fragment {
 			option.setScanSpan(2000);// 设置发起定位请求的间隔时间为5000ms
 			option.setIsNeedAddress(true);
 			mLocClient.setLocOption(option);
-
 			mActivity.showProgressDialog("正在定位...");
 			mLocClient.start();
 
@@ -159,42 +156,7 @@ public class MainPageFragment extends Fragment {
 					mBaidumap.animateMapStatus(u);
 				}
 			});
-
-			final RelativeLayout readyArea = (RelativeLayout) mainView
-					.findViewById(R.id.readyArea);
-			final RelativeLayout goArea = (RelativeLayout) mainView
-					.findViewById(R.id.goArea);
-			RelativeLayout goButton = (RelativeLayout) mainView
-					.findViewById(R.id.goItem);
-			goButton.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					readyArea.setVisibility(View.GONE);
-					goArea.setVisibility(View.VISIBLE);
-				}
-			});
-
-			final Button switchButton = (Button) mainView
-					.findViewById(R.id.switchButton);
-			switchButton.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					if (now_position) {
-						now_position = false;
-						switchButton
-								.setBackgroundResource(R.drawable.switch_button_1);
-					} else {
-						now_position = true;
-						switchButton
-								.setBackgroundResource(R.drawable.switch_button_2);
-					}
-				}
-			});
-			
+			//筛选框区域
 		    final RelativeLayout searchArea = (RelativeLayout)mainView.findViewById(R.id.searchArea);
 		    final RelativeLayout searchArea2 = (RelativeLayout)mainView.findViewById(R.id.searchArea2);
 			searchArea.setOnClickListener(new OnClickListener() {
@@ -227,6 +189,19 @@ public class MainPageFragment extends Fragment {
 					
 				}
 			});
+			
+			//Marker点击事件
+			mBaidumap.setOnMarkerClickListener(new OnMarkerClickListener() {
+				
+				@Override
+				public boolean onMarkerClick(Marker marker) {
+					// TODO Auto-generated method stub
+ 
+					mActivity.showToast("别挠我啊喂" + marker.getExtraInfo().getString("id"));
+					return false;
+				}
+			});
+			
 			
 
 		}
@@ -281,7 +256,12 @@ public class MainPageFragment extends Fragment {
 			if (null != currentLocationMarker) {
 				currentLocationMarker.remove();
 			}
+			
 			currentLocationMarker = (Marker) (mBaidumap.addOverlay(option));
+			currentLocationMarker.setPerspective(true);
+			Bundle b = new Bundle();
+			b.putString("id", "1024");
+			currentLocationMarker.setExtraInfo(b);
 			// 添加折线
 			points.add(ll);
 			back_points.add(ll);
