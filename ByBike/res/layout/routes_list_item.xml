@@ -13,86 +13,86 @@
             android:id="@+id/upperArea"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15px"
-            android:layout_marginRight="15px"
-            android:layout_marginTop="20px"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="10dp"
             android:background="#F5F5F5"
             android:orientation="vertical" >
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="35px"
-                android:layout_marginTop="60px"
+                android:layout_height="1dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="30dp"
                 android:background="@color/devider" />
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="35px"
+                android:layout_height="1dp"
+                android:layout_marginLeft="18dp"
                 android:background="@color/white" />
             <!-- 文字和图片区域 -->
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="150px"
-                android:layout_marginLeft="35px"
-                android:layout_marginRight="30px"
-                android:layout_marginTop="20px" >
+                android:layout_height="75dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp" >
 
                 <ImageView
                     android:id="@+id/routePic"
-                    android:layout_width="240px"
-                    android:layout_height="150px"
+                    android:layout_width="120dp"
+                    android:layout_height="75dp"
                     android:layout_alignParentRight="true" 
                     android:scaleType="fitXY"/>
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_marginRight="25px"
+                    android:layout_marginRight="13dp"
                     android:layout_toLeftOf="@id/routePic"
                     android:orientation="vertical" >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="9px"
+                        android:layout_marginTop="5dp"
                         android:text="骑行游小洲村"
                         android:textColor="#4A4A4A"
-                        android:textSize="30px"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="11px"
+                        android:layout_marginTop="6dp"
                         android:text="13km 小洲村"
                         android:textColor="#9B9B9B"
-                        android:textSize="17px" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16px"
+                        android:layout_marginTop="8dp"
                         android:text="很久以前就打算早点起床，踩车上班。不过一直没有机会啊。今天..."
                         android:textColor="#646464"
-                        android:textSize="20px" />
+                        android:textSize="10sp" />
                 </LinearLayout>
             </RelativeLayout>
             <!-- 分割线 -->
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="35px"
-                android:layout_marginTop="17px"
+                android:layout_height="1dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="9dp"
                 android:background="@color/devider" />
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="35px"
+                android:layout_height="1dp"
+                android:layout_marginLeft="18dp"
                 android:background="@color/white" />
 
             <!-- 时间和按钮 -->
@@ -104,62 +104,62 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="35px"
-                    android:layout_marginTop="27px"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginTop="14dp"
                     android:text="2014.10.28 14:23"
                     android:textColor="#BBBBBB"
-                    android:textSize="18px" />
+                    android:textSize="9sp" />
 
                 <Button
                     android:id="@+id/collect"
-                    android:layout_width="70px"
-                    android:layout_height="45px"
+                    android:layout_width="35dp"
+                    android:layout_height="23dp"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="24px"
-                    android:layout_marginTop="17px" />
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="9dp" />
 
                 <Button
                     android:id="@+id/talk"
-                    android:layout_width="70px"
-                    android:layout_height="45px"
-                    android:layout_marginRight="17px"
-                    android:layout_marginTop="17px"
+                    android:layout_width="35dp"
+                    android:layout_height="23dp"
+                    android:layout_marginRight="9dp"
+                    android:layout_marginTop="9dp"
                     android:layout_toLeftOf="@id/collect" />
 
                 <Button
                     android:id="@+id/like"
-                    android:layout_width="70px"
-                    android:layout_height="45px"
-                    android:layout_marginRight="17px"
-                    android:layout_marginTop="17px"
+                    android:layout_width="35dp"
+                    android:layout_height="23dp"
+                    android:layout_marginRight="9dp"
+                    android:layout_marginTop="9dp"
                     android:layout_toLeftOf="@id/talk" />
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="17px" >
+                android:layout_marginTop="9dp" >
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="17px"
+            android:layout_height="9dp"
             android:layout_below="@id/upperArea" />
 
         <!-- 头像和用户名 -->
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="72px"
+            android:layout_height="36dp"
             android:orientation="horizontal" >
 
             <com.example.bybike.util.CircleImageView
                 xmlns:myxmlns="http://schemas.android.com/apk/res/com.example.bybike"
                 android:id="@+id/avatorPic"
-                android:layout_width="72px"
-                android:layout_height="72px"
-                android:layout_marginLeft="50px"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="25dp"
                 android:contentDescription="@null"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user"
@@ -171,10 +171,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginLeft="8px"
+                android:layout_marginLeft="4dp"
                 android:text="Icy_x"
                 android:textColor="#646464"
-                android:textSize="18px" />
+                android:textSize="9sp" />
         </LinearLayout>
     </RelativeLayout>
 
