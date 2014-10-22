@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,6 +30,8 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
+import com.baidu.mapapi.map.InfoWindow.OnInfoWindowClickListener;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
@@ -61,6 +64,8 @@ public class MainPageFragment extends Fragment {
 	// 构建Marker图标
 	private Marker currentLocationMarker;
 	BitmapDescriptor currentLocationBitmap;
+	InfoWindow mInfoWindow;
+	List<BitmapDescriptor>bitMapDescriptorList = new ArrayList<BitmapDescriptor>();
 	// 定位和缩放图标
 	Button locate = null;
 	Button zoom_up = null;
@@ -194,11 +199,26 @@ public class MainPageFragment extends Fragment {
 			mBaidumap.setOnMarkerClickListener(new OnMarkerClickListener() {
 				
 				@Override
-				public boolean onMarkerClick(Marker marker) {
+				public boolean onMarkerClick(final Marker marker) {
 					// TODO Auto-generated method stub
- 
-					mActivity.showToast("别挠我啊喂" + marker.getExtraInfo().getString("id"));
-					return false;
+					if (marker == currentLocationMarker) {
+						
+						View popView = LayoutInflater.from(mActivity).inflate(R.layout.infowindow_interest_points, null);
+						OnInfoWindowClickListener listener = null;
+						listener = new OnInfoWindowClickListener() {
+							public void onInfoWindowClick() {
+							
+                                mActivity.showToast("不要挠我啊..." + marker.getExtraInfo().getString("id"));
+								mBaidumap.hideInfoWindow();
+							}
+						};
+						
+						LatLng ll = marker.getPosition();
+						mInfoWindow = new InfoWindow(BitmapDescriptorFactory.fromView(popView), ll, -150, listener);
+						mBaidumap.showInfoWindow(mInfoWindow);
+					}
+					
+					return true;
 				}
 			});
 			
@@ -256,7 +276,6 @@ public class MainPageFragment extends Fragment {
 			if (null != currentLocationMarker) {
 				currentLocationMarker.remove();
 			}
-			
 			currentLocationMarker = (Marker) (mBaidumap.addOverlay(option));
 			currentLocationMarker.setPerspective(true);
 			Bundle b = new Bundle();
@@ -303,6 +322,11 @@ public class MainPageFragment extends Fragment {
 		mBaidumap.setMyLocationEnabled(false);
 		// 在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
 		mMapView.onDestroy();
+		
+		for(BitmapDescriptor d: bitMapDescriptorList){
+			d.recycle();
+		}
+		
 	}
 
 	@Override

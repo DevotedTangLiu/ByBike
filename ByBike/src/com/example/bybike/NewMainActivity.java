@@ -17,6 +17,7 @@ import com.ab.task.AbTaskQueue;
 import com.ab.view.slidingmenu.SlidingMenu;
 import com.example.bybike.exercise.ExerciseListFragment;
 import com.example.bybike.riding.RidingFragment;
+import com.example.bybike.routes.RoutesBookMainFragment;
 import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.user.UserMainPageFragment;
 import com.example.bybike.util.Constant;
@@ -244,6 +245,35 @@ public class NewMainActivity extends AbActivity {
 			}
 
 			break;
+		case 4:
+			//显示路数页面
+			if (!(currentFragment instanceof RoutesBookMainFragment)) {
+
+				RoutesBookMainFragment toFragment = null;
+				List<Fragment> fragments = getSupportFragmentManager()
+						.getFragments();
+				for (Fragment f : fragments) {
+					if (f instanceof RoutesBookMainFragment) {
+						toFragment = (RoutesBookMainFragment) f;
+					}else if(f == null){
+						continue;
+					}else{
+						transaction.hide(f);
+					}
+				}
+				if(toFragment != null){
+					transaction.show(toFragment);
+				}else{
+					toFragment = new RoutesBookMainFragment();
+					transaction.add(R.id.content_frame, toFragment);
+					transaction.show(toFragment);
+				}
+				transaction.commit();
+				toFragment.showTitleBar();
+				currentFragment = toFragment;
+			}
+
+			break;
 		default:
 			break;
 		}
@@ -297,6 +327,9 @@ public class NewMainActivity extends AbActivity {
 			changeMainFragment(3);
 			break;
 			
+		case R.id.routeButton:
+			changeMainFragment(4);
+			break;
 		case R.id.myButton:
 			changeMainFragment(0);
 			break;

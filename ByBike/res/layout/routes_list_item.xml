@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/routes_item_block"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#E9E9E9" >
+
+        <LinearLayout
+            android:id="@+id/upperArea"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15px"
+            android:layout_marginRight="15px"
+            android:layout_marginTop="20px"
+            android:background="#F5F5F5"
+            android:orientation="vertical" >
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="35px"
+                android:layout_marginTop="60px"
+                android:background="@color/devider" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="35px"
+                android:background="@color/white" />
+            <!-- 文字和图片区域 -->
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="150px"
+                android:layout_marginLeft="35px"
+                android:layout_marginRight="30px"
+                android:layout_marginTop="20px" >
+
+                <ImageView
+                    android:id="@+id/routePic"
+                    android:layout_width="240px"
+                    android:layout_height="150px"
+                    android:layout_alignParentRight="true" 
+                    android:scaleType="fitXY"/>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginRight="25px"
+                    android:layout_toLeftOf="@id/routePic"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="9px"
+                        android:text="骑行游小洲村"
+                        android:textColor="#4A4A4A"
+                        android:textSize="30px"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="11px"
+                        android:text="13km 小洲村"
+                        android:textColor="#9B9B9B"
+                        android:textSize="17px" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16px"
+                        android:text="很久以前就打算早点起床，踩车上班。不过一直没有机会啊。今天..."
+                        android:textColor="#646464"
+                        android:textSize="20px" />
+                </LinearLayout>
+            </RelativeLayout>
+            <!-- 分割线 -->
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="35px"
+                android:layout_marginTop="17px"
+                android:background="@color/devider" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="35px"
+                android:background="@color/white" />
+
+            <!-- 时间和按钮 -->
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35px"
+                    android:layout_marginTop="27px"
+                    android:text="2014.10.28 14:23"
+                    android:textColor="#BBBBBB"
+                    android:textSize="18px" />
+
+                <Button
+                    android:id="@+id/collect"
+                    android:layout_width="70px"
+                    android:layout_height="45px"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="24px"
+                    android:layout_marginTop="17px" />
+
+                <Button
+                    android:id="@+id/talk"
+                    android:layout_width="70px"
+                    android:layout_height="45px"
+                    android:layout_marginRight="17px"
+                    android:layout_marginTop="17px"
+                    android:layout_toLeftOf="@id/collect" />
+
+                <Button
+                    android:id="@+id/like"
+                    android:layout_width="70px"
+                    android:layout_height="45px"
+                    android:layout_marginRight="17px"
+                    android:layout_marginTop="17px"
+                    android:layout_toLeftOf="@id/talk" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="17px" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="17px"
+            android:layout_below="@id/upperArea" />
+
+        <!-- 头像和用户名 -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="72px"
+            android:orientation="horizontal" >
+
+            <com.example.bybike.util.CircleImageView
+                xmlns:myxmlns="http://schemas.android.com/apk/res/com.example.bybike"
+                android:id="@+id/avatorPic"
+                android:layout_width="72px"
+                android:layout_height="72px"
+                android:layout_marginLeft="50px"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user"
+                myxmlns:border_color="@color/f2f2f2"
+                myxmlns:border_width="0dp" />
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="8px"
+                android:text="Icy_x"
+                android:textColor="#646464"
+                android:textSize="18px" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
