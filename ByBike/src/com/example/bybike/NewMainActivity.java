@@ -37,7 +37,7 @@ public class NewMainActivity extends AbActivity {
 		super.onCreate(savedInstanceState);
 		setAbContentView(R.layout.sliding_menu_content);
 		getTitleBar().setVisibility(View.GONE);
-		currentFragment = new MainPageFragment();
+		currentFragment = new MainPageFragment2();
 		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, currentFragment).commit();
 		// 主视图的Fragment添加
 		/**
@@ -146,15 +146,15 @@ public class NewMainActivity extends AbActivity {
 			break;
 		case 1:
 			// 显示地图页面
-			if (!(currentFragment instanceof MainPageFragment)) {
+			if (!(currentFragment instanceof MainPageFragment2)) {
 
-				MainPageFragment toMainPageFragment = null;
+				MainPageFragment2 toMainPageFragment = null;
 				List<Fragment> fragments = getSupportFragmentManager()
 						.getFragments();
 				for (Fragment f : fragments) {
 
-					if (f instanceof MainPageFragment) {
-						toMainPageFragment = (MainPageFragment) f;
+					if (f instanceof MainPageFragment2) {
+						toMainPageFragment = (MainPageFragment2) f;
 						transaction.show(toMainPageFragment);
 					}else if(f instanceof RidingFragment){
 						transaction.remove(f);
@@ -165,7 +165,7 @@ public class NewMainActivity extends AbActivity {
 					}
 				}
 				if (null == toMainPageFragment) {
-					toMainPageFragment = new MainPageFragment();
+					toMainPageFragment = new MainPageFragment2();
 					transaction.add(R.id.content_frame, toMainPageFragment);
 					transaction.show(toMainPageFragment);
 				}
