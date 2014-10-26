@@ -6,6 +6,9 @@
 package com.example.bybike.user;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 
 import com.ab.bitmap.AbImageDownloader;
 import com.ab.global.AbConstant;
@@ -76,7 +80,9 @@ public class UserMainPageFragment extends Fragment {
         
         Button gotoSetting = (Button)view.findViewById(R.id.goToSetting);
         gotoSetting.setOnClickListener(click);
- 
+        Button gotoMessage = (Button)view.findViewById(R.id.goToMessage);
+        gotoMessage.setOnClickListener(click);
+        
         return view;
     }
 
@@ -93,6 +99,9 @@ public class UserMainPageFragment extends Fragment {
 				mActivity.overridePendingTransition(R.anim.fragment_in, 0);
 				break;
 
+			case R.id.goToMessage:
+			    createSystemNoticeMessage();
+			    break;
 			default:
 				break;
 			}
@@ -106,4 +115,32 @@ public class UserMainPageFragment extends Fragment {
         mActivity = (NewMainActivity) activity;
     }
 
+    /**
+     * 生成系统通知栏消息的例子
+     */
+    private void createSystemNoticeMessage(){
+        //获取系统通知服务引用
+        String ns = mActivity.NOTIFICATION_SERVICE;
+        NotificationManager mNotificationManager = (NotificationManager)mActivity.getSystemService(ns);
+        
+        //自定义下拉视图
+        Notification notification = new Notification();  
+        notification.icon = R.drawable.me3;  
+        notification.tickerText = "系统通知demo...";  
+          
+        RemoteViews contentView = new RemoteViews(mActivity.getPackageName(), R.layout.system_notice_layout);  
+        contentView.setTextViewText(R.id.title, "Hello, this message is in a custom expanded view");
+        contentView.setTextViewText(R.id.content, "从前有座山，山上有座庙，庙里有个老和尚，老和尚经常和小和尚说...");
+        notification.contentView = contentView;  
+        
+        //通知被点击后，自动消失  
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        //使用自定义下拉视图时，不需要再调用setLatestEventInfo()方法  
+        //但是必须定义 contentIntent  
+        Intent intent = new Intent(mActivity, SettingMainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(mActivity, 0, intent, 0);
+        notification.contentIntent = contentIntent;  
+          
+        mNotificationManager.notify(3, notification);
+    }
 }
