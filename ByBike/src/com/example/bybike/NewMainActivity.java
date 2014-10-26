@@ -246,7 +246,7 @@ public class NewMainActivity extends AbActivity {
 
 			break;
 		case 4:
-			//显示路数页面
+			//显示路书页面
 			if (!(currentFragment instanceof RoutesBookMainFragment)) {
 
 				RoutesBookMainFragment toFragment = null;

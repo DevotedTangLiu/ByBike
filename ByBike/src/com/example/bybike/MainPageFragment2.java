@@ -296,6 +296,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 		super.onDestroy();
 		// 退出时销毁定位
 		mMapView.onDestroy();
+		deactivate();
 	}
 
 	@Override
@@ -310,7 +311,6 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 		super.onPause();
 		// 在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
 		mMapView.onPause();
-		deactivate();
 	}
 
 	public void showTitleBar() {

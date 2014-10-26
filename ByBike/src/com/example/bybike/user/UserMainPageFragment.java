@@ -70,6 +70,7 @@ public class UserMainPageFragment extends Fragment {
 				Intent i = new Intent();
 				i.setClass(mActivity, FriendsActivity.class);
 				startActivity(i);
+				mActivity.overridePendingTransition(R.anim.fragment_in, 0);
 			}
 		});
         
@@ -89,6 +90,7 @@ public class UserMainPageFragment extends Fragment {
 				Intent i = new Intent();
 				i.setClass(mActivity, SettingMainActivity.class);
 				startActivity(i);
+				mActivity.overridePendingTransition(R.anim.fragment_in, 0);
 				break;
 
 			default:
