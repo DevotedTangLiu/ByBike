@@ -10,6 +10,10 @@
     <color name="cover_color">#9F000000</color>
     <color name="f2f2f2">#F2F2F2</color>
     <color name="red">#FF0000</color>
+    <color name="green">#ADFF2F</color>
+    <color name="blue">#8EE5EE</color>
+    <color name="black">#000000</color>
     <color name="devider">#D2D2D2</color>
-    
+    <color name="window_bg">#88838B8B</color>
+
 </resources>

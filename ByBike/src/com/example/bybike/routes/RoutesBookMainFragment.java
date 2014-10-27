@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -54,20 +55,25 @@ public class RoutesBookMainFragment extends Fragment {
 
 		for (int i = 0; i < 10; i++) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("avatorPic","http://t12.baidu.com/it/u=3697398959,3070188371&fm=56");
-			map.put("routePic", "http://img2.imgtn.bdimg.com/it/u=3104192451,2031802851&fm=21&gp=0.jpg");
+			map.put("avatorPic",
+					"http://t12.baidu.com/it/u=3697398959,3070188371&fm=56");
+			map.put("routePic",
+					"http://img2.imgtn.bdimg.com/it/u=3104192451,2031802851&fm=21&gp=0.jpg");
 			list.add(map);
 		}
 		// 使用自定义的Adapter
 		myListViewAdapter = new RoutesBookListAdapter(mActivity, list);
 		mAbPullListView.setAdapter(myListViewAdapter);
 		// item被点击事件
-		// item被点击事件
 		mAbPullListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
+				Intent i = new Intent();
+				i.setClass(mActivity, RouteDetailActivity.class);
+				startActivity(i);
+				mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 			}
 		});
 
@@ -94,8 +100,8 @@ public class RoutesBookMainFragment extends Fragment {
 
 	public void showTitleBar() {
 		// TODO Auto-generated method stub
-		if(mActivity != null){
-//			mActivity.getTitleBar().setVisibility(View.GONE);
+		if (mActivity != null) {
+			// mActivity.getTitleBar().setVisibility(View.GONE);
 		}
 	}
 

@@ -8,7 +8,7 @@
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
     <!-- 访问通讯录 -->
-    <uses-permission android:name="android.permission.READ_CONTACTS" />  
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!-- 这个权限用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
     </uses-permission>
@@ -38,7 +38,8 @@
     <!-- 允许应用读取低级别的系统日志文件 -->
     <uses-permission android:name="android.permission.READ_LOGS" >
     </uses-permission>
-<uses-permission android:name="android.permission.WRITE_SETTINGS" /> 
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -60,38 +61,43 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.example.bybike.NewMainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
+
         <!-- 注册、登陆页面 -->
-         <activity
+        <activity
             android:name="com.example.bybike.user.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.example.bybike.user.RegisterActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.example.bybike.friends.FriendsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
+
         <!-- 活动类 -->
 
+
+        <!-- 路书 -->
+        <activity
+            android:name="com.example.bybike.routes.RouteDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 设置 -->
         <activity
             android:name="com.example.bybike.setting.SettingMainActivity"
@@ -114,7 +120,7 @@
         <!-- 定位服务service -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7b2e1cdb57233a6430aeb6dfc4545cd8"/>
+            android:value="7b2e1cdb57233a6430aeb6dfc4545cd8" />
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ab.bitmap.AbImageDownloader;
 import com.example.bybike.R;
@@ -85,6 +86,7 @@ public class RoutesBookListAdapter extends BaseAdapter {
 					.findViewById(R.id.avatorPic));
 			holder.routePic = ((ImageView) convertView
 					.findViewById(R.id.routePic));
+			holder.userNickName = (TextView)convertView.findViewById(R.id.userNickName);
 
 			convertView.setTag(holder);
 		} else {
@@ -107,6 +109,7 @@ public class RoutesBookListAdapter extends BaseAdapter {
 	static class ViewHolder {
 		ImageView routePic;
 		ImageView avatorPic;
+		TextView userNickName;
 	}
 
 }
