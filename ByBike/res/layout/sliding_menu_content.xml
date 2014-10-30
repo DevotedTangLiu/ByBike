@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginBottom="70dp" >
+        android:layout_marginBottom="58dp" >
 
         <FrameLayout
             android:id="@+id/content_frame"
@@ -28,11 +28,11 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="58dp"
-        android:layout_marginTop="-70dp"
-        android:background="@color/text_color"
+        android:layout_marginTop="-58dp"
+        android:baselineAligned="false"
         android:orientation="horizontal" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -40,13 +40,14 @@
 
             <Button
                 android:id="@+id/mapButton"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:layout_centerInParent="true"
                 android:onClick="onclick"
-                android:text="地图" />
-        </LinearLayout>
+                android:background="@drawable/bottom_map_select"/>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -54,13 +55,14 @@
 
             <Button
                 android:id="@+id/exerciseButton"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="32dp"
+                android:layout_height="46dp"
+                android:layout_centerInParent="true"
                 android:onClick="onclick"
-                android:text="活动" />
-        </LinearLayout>
+                android:background="@drawable/bottom_exercise_select"/>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -68,13 +70,14 @@
 
             <Button
                 android:id="@+id/rideButton"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
                 android:onClick="onclick"
-                android:text="骑行" />
-        </LinearLayout>
+                android:background="@drawable/bottom_ride_select"/>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -82,11 +85,12 @@
 
             <Button
                 android:id="@+id/routeButton"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="30dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
                 android:onClick="onclick"
-                android:text="路书" />
-        </LinearLayout>
+                android:background="@drawable/bottom_routebook_select"/>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"

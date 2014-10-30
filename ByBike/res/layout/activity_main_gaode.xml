@@ -46,14 +46,15 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:id="@+id/searchArea"
                 android:layout_width="fill_parent"
                 android:layout_height="90dp"
                 android:layout_marginTop="-10dp"
-                android:background="@drawable/exercise_list_background1" >
+                android:background="@drawable/exercise_list_background1" 
+                android:visibility="gone">
             </RelativeLayout>
 
             <RelativeLayout
@@ -91,12 +92,20 @@
                 android:layout_width="fill_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/title_bar" >
+                
+                <Button
+                    android:id="@+id/search"
+                    android:layout_width="37dp"
+                    android:layout_height="37dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginBottom="7dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="ByBike"
+                    android:text="bybike"
+                    android:textSize="25sp"
                     android:textColor="@color/text_color"
                     android:textStyle="bold" >
                 </TextView>
