@@ -2,12 +2,9 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">  
   
     <!-- 没有焦点时的背景图片 -->  
-    <item android:drawable="@drawable/bottom_block_nor" android:state_enabled="true" android:state_window_focused="false"/>  
+<!--     <item android:drawable="@drawable/bottom_block_nor" android:state_pressed="false"/>   -->
+    <item android:drawable="@drawable/bottom_block_nor" android:state_selected="false"/> 
     <!-- 触摸模式按下时的背景图片 -->  
-    <item android:drawable="@drawable/bottom_block_sec" android:state_pressed="true"/>  
-    <item android:drawable="@drawable/bottom_block_sec" android:state_enabled="true" android:state_focused="true"/>  
-    <item android:drawable="@drawable/bottom_block_sec" android:state_enabled="true"/>  
-    <!-- 获得焦点时的图片背景 -->  
-    <item android:drawable="@drawable/bottom_block_sec" android:state_focused="true"/>  
-  
+<!--     <item android:drawable="@drawable/bottom_block_sec" android:state_pressed="true"/>   -->
+    <item android:drawable="@drawable/bottom_block_sec" android:state_selected="true"/> 
 </selector>  

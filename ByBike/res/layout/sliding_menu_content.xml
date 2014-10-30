@@ -30,9 +30,11 @@
         android:layout_height="58dp"
         android:layout_marginTop="-58dp"
         android:baselineAligned="false"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" 
+        android:background="@drawable/bottom_background">
 
         <RelativeLayout
+            android:id="@+id/r1"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -48,6 +50,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/r2"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -63,6 +66,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/r3"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -78,6 +82,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/r4"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -92,7 +97,8 @@
                 android:background="@drawable/bottom_routebook_select"/>
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/r5"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -104,7 +110,7 @@
                 android:layout_height="fill_parent"
                 android:onClick="onclick"
                 android:text="我的" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

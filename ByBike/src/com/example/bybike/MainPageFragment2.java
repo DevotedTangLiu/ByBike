@@ -15,7 +15,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -31,9 +34,9 @@ import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
-import com.amap.api.maps2d.model.BitmapDescriptor;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
@@ -60,6 +63,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 	private UiSettings mUiSettings;
 	private OnLocationChangedListener mListener;
 	private LocationManagerProxy mAMapLocationManager;
+	private LatLng nowLocationLatLng; //定位的坐标
 
 	/**
 	 * 定位和缩放图标
@@ -214,32 +218,27 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 	/**
 	 * 在地图上添加marker
 	 */
-	BitmapDescriptor markerBitMap = BitmapDescriptorFactory.fromResource(R.drawable.me3);
+//	BitmapDescriptor markerBitMap = BitmapDescriptorFactory.fromResource(R.drawable.me3);
 	private void addMarkersToMap() {
 
-		aMap.addMarker(new MarkerOptions()
-				.position(new LatLng(30.679879, 104.064855)).title("成都市")
-				.snippet("成都市:30.679879, 104.064855").draggable(false)
-				.icon(markerBitMap));
+	    MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(new LatLng(30.679879, 104.064855));
+        markerOption.title("成都市").snippet("test marker");
+        markerOption.draggable(false);
+        markerOption.icon(BitmapDescriptorFactory
+                .fromResource(R.drawable.me3));
+        Marker marker2 = aMap.addMarker(markerOption);
 
 		// drawMarkers();// 添加10个带有系统默认icon的marker
 	}
 
-	/**
-	 * 绘制系统默认的1种marker背景图片
-	 */
-	private LatLng latlng = new LatLng(36.061, 103.834);
-
-	public void drawMarkers() {
-		Marker marker = aMap.addMarker(new MarkerOptions()
-				.position(latlng)
-				.title("好好学习")
-				.icon(BitmapDescriptorFactory
-						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-				.draggable(true));
-		marker.showInfoWindow();// 设置默认显示一个infowinfow
+	private void showAllMarkers(){
+	 // 设置所有maker显示在当前可视区域地图中
+        LatLngBounds bounds = new LatLngBounds.Builder()
+                .include(new LatLng(30.679879, 104.064855)).include(nowLocationLatLng).build();
+        aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
 	}
-
+	
 	/**
 	 * 自定义Listener，相应marker、infoWindow点击事件，设置infoWindow样式
 	 */
@@ -264,7 +263,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 		@Override
 		public View getInfoWindow(Marker marker) {
 			// TODO Auto-generated method stub
-			View infoWindow = mActivity.getLayoutInflater().inflate(
+		    View infoWindow = (LinearLayout) mActivity.getLayoutInflater().inflate(
 					R.layout.infowindow_interest_points, null);
 			render(marker, infoWindow);
 			return infoWindow;
@@ -283,6 +282,12 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 	 */
 	public void render(Marker marker, View view) {
 
+	  
+	    ImageView v = (ImageView) view.findViewById(R.id.badge);
+	    v.setBackgroundResource(R.drawable.me3);
+	    TextView t = (TextView)view.findViewById(R.id.name);
+	    t.setText("大不了");
+	    
 	}
 
 	@Override
@@ -397,6 +402,8 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 						CameraUpdateFactory.changeLatLng(new LatLng(
 								amapLocation.getLatitude(), amapLocation
 										.getLongitude())), null);
+				nowLocationLatLng = new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude());
+				showAllMarkers();
 			}
 		}
 

@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.ab.activity.AbActivity;
 import com.ab.task.AbTaskItem;
@@ -53,6 +55,9 @@ public class NewMainActivity extends AbActivity {
 
 	private void initSteps() {
 
+	    //初始化导航栏图标
+	    changeBackground(1);
+	    
 		mAbTaskQueue = AbTaskQueue.getInstance();
 		/**
 		 * 任务1： 1. 当用户在MainActivity按下返回键时触发 2.
@@ -316,21 +321,26 @@ public class NewMainActivity extends AbActivity {
 
 		switch (view.getId()) {
 		case R.id.mapButton:
+		    changeBackground(1);
 			changeMainFragment(1);
 			break;
 
 		case R.id.exerciseButton:
+		    changeBackground(2);
 			changeMainFragment(2);
 			break;
 			
 		case R.id.rideButton:
+		    changeBackground(3);
 			changeMainFragment(3);
 			break;
 			
 		case R.id.routeButton:
+		    changeBackground(4);
 			changeMainFragment(4);
 			break;
 		case R.id.myButton:
+		    changeBackground(5);
 			changeMainFragment(0);
 			break;
 			
@@ -340,4 +350,27 @@ public class NewMainActivity extends AbActivity {
 		
 	}
 
+	int[]ids = new int[]{R.id.r1, R.id.r2, R.id.r3, R.id.r4, R.id.r5};
+	int[]buttonIds = new int[]{R.id.mapButton, R.id.exerciseButton, R.id.rideButton, R.id.routeButton, R.id.myButton};
+
+	/**
+	 * 修改导航栏图标和背景
+	  * changeBackground(这里用一句话描述这个方法的作用)
+	  * @param i
+	 */
+	private void changeBackground(int i){
+	    
+	    for(int j = 1; j <= 5; j ++){
+	        
+	        RelativeLayout rl = (RelativeLayout)findViewById(ids[j-1]);
+	        Button b = (Button)findViewById(buttonIds[j-1]);
+	        if(j == i){
+	            rl.setSelected(true);
+	            b.setSelected(true);
+	        }else{
+	            rl.setSelected(false);
+	            b.setSelected(false);
+	        }
+	    }
+	}
 }
