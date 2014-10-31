@@ -1,153 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_width="fill_parent"
+    android:layout_height="210dp" >
 
     <LinearLayout
-        android:id="@+id/exerciseListItem"
         android:layout_width="fill_parent"
-        android:layout_height="300dp"
-        android:descendantFocusability="blocksDescendants"
-        android:orientation="vertical"
-        android:padding="20dip" >
+        android:layout_height="194dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/exercise_list_background"
+        android:orientation="vertical" >
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="-5dp"
-            android:background="@drawable/exercise_list_item_rectangle" >
+            android:layout_height="83dp"
+            android:background="@drawable/exercise_pic_background">
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
-            <ImageView
+            <com.example.bybike.util.RoundAngleImageView
+                xmlns:myxmls="http://schemas.android.com/apk/res/com.example.bybike"
                 android:id="@+id/exercisePic"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginBottom="50dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginTop="4dp"
-                android:scaleType="fitXY" />
+                android:layout_height="83dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:scaleType="centerCrop"
+                myxmls:roundHeight="5dp"
+                myxmls:roundWidth="10dp" />
+            
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:id="@+id/exerciseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="返老还童 - 老城区环游"
+            android:textColor="#4A4A4A"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="6dp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/route_button" />
+
+            <TextView
+                android:id="@+id/exerciseRouteAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="约 32km 长寿路-陈家祠"
+                android:textColor="#979797"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="6dp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/time_button" />
+
+            <TextView
+                android:id="@+id/exerciseTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
+                android:text="2014.10.28 14:00-18:00"
+                android:textColor="#9B9B9B"
+                android:textSize="9sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="12dp" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="22dp" >
+
+            <TextView
+                android:id="@+id/userCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="17dp"
+                android:text="已报名人数  32"
+                android:textColor="#979797"
+                android:textSize="10sp" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="140dp"
                 android:layout_height="fill_parent"
-                android:layout_margin="20dp"
-                android:orientation="vertical">
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal" >
 
-                <TextView
-                    android:id="@+id/exerciseTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="绿色骑行"
-                    android:textColor="@color/white"
-                    android:textSize="35sp" />
-                
-                 <TextView
-                    android:id="@+id/exerciseAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="地址：农林下路-署前路-东湖"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-                 
-                  <TextView
-                    android:id="@+id/exerciseTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="时间：2014-01-01 16:00-18:00"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-                
+                <RelativeLayout
+                    android:id="@+id/likeButton"
+                    android:layout_width="41dp"
+                    android:layout_height="22dp"
+                    android:background="@drawable/like_button_selector" >
+
+                    <TextView
+                        android:id="@+id/likeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="25dp"
+                        android:text="9"
+                        android:textColor="#979797"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/talkButton"
+                    android:layout_width="41dp"
+                    android:layout_height="22dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/talk_button_nor" >
+
+                    <TextView
+                        android:id="@+id/talkCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="25dp"
+                        android:text="2"
+                        android:textColor="#979797"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/collectButton"
+                    android:layout_width="41dp"
+                    android:layout_height="22dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/collect_button_selector" >
+
+                    <TextView
+                        android:id="@+id/collectCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="25dp"
+                        android:text="9"
+                        android:textColor="#979797"
+                        android:textSize="10sp" />
+                </RelativeLayout>
             </LinearLayout>
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true" >
-
-                <LinearLayout
-                    android:layout_width="150dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true" >
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="horizontal" >
-
-                        <Button
-                            android:id="@+id/likeButton"
-                            android:layout_width="30dp"
-                            android:layout_height="20dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/exercise_like_button" />
-
-                        <TextView
-                            android:id="@+id/likeCount"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="24"
-                            android:textColor="@color/text_color"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="horizontal" >
-
-                        <Button
-                            android:id="@+id/collectButton"
-                            android:layout_width="30dp"
-                            android:layout_height="20dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/exercise_collect_button" />
-
-                        <TextView
-                            android:id="@+id/collectCount"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="24"
-                            android:textColor="@color/text_color"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="horizontal" >
-
-                        <Button
-                            android:id="@+id/talkButton"
-                            android:layout_width="30dp"
-                            android:layout_height="20dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/exercise_talk_button" />
-
-                        <TextView
-                            android:id="@+id/talkCount"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="24"
-                            android:textColor="@color/text_color"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-            </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
 

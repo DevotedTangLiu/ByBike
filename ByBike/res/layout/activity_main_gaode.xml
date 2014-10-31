@@ -14,7 +14,6 @@
 
         <!-- 定位 & 缩放地图模块 -->
 
-    
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -38,23 +37,26 @@
                 android:layout_marginTop="-9dp"
                 android:background="@drawable/zoom_down" />
         </RelativeLayout>
+
         <Button
             android:id="@+id/chooseIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="73dp"
             android:layout_marginRight="11dp"
-            android:background="@drawable/choose_icon"></Button>
-         <Button
-                android:id="@+id/locate"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="11dp"
-                android:layout_marginBottom="13dp"
-                android:background="@drawable/locate_button" />
-        
+            android:layout_marginTop="73dp"
+            android:background="@drawable/choose_icon" >
+        </Button>
+
+        <Button
+            android:id="@+id/locate"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="13dp"
+            android:layout_marginLeft="11dp"
+            android:background="@drawable/locate_button" />
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
@@ -127,14 +129,15 @@
                     android:layout_marginRight="15dp"
                     android:background="@drawable/message" >
                 </RelativeLayout>
+
                 <Button
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginTop="13dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_alignParentRight="true"
-                        android:background="@drawable/message_redpin" >
-                    </Button>
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/message_redpin" >
+                </Button>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

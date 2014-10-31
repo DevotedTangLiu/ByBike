@@ -2,36 +2,132 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/exercise_list_background"
+    android:background="#E9E9E9"
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/titleBar"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="60dp"
+        android:background="@drawable/title_bar" >
+
+        <Button
+            android:id="@+id/search"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:background="@drawable/search_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="活动"
+            android:textColor="#4A4A4A"
+            android:textSize="20sp" >
+        </TextView>
 
         <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="90dp"
-            android:layout_marginTop="-10dp"
-            android:background="@drawable/exercise_list_background1" >
+            android:layout_width="54dp"
+            android:layout_height="26dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/message" >
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/titleBar"
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/title_bar" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="ByBike 活动"
-                android:textColor="@color/text_color"
-                android:textStyle="bold" >
-            </TextView>
-        </RelativeLayout>
+        <Button
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/message_redpin" >
+        </Button>
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/orderByTime"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:text="按时间" 
+                android:textSize="15sp"
+                android:textColor="#BBBBBB"
+                android:background="@drawable/sellect_button_selector"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/orderByLikeCounts"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:text="喜欢数" 
+                android:textSize="15sp"
+                android:textColor="#BBBBBB"
+                android:background="@drawable/sellect_button_selector"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/orderByCollectCounts"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:text="收藏数" 
+                android:textSize="15sp"
+                android:textColor="#BBBBBB"
+                android:background="@drawable/sellect_button_selector"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/orderByDistance"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:text="公里数" 
+                android:textSize="15sp"
+                android:textColor="#BBBBBB"
+                android:background="@drawable/sellect_button_selector"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/devider" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/white" />
 
     <com.ab.view.pullview.AbPullListView
         android:id="@+id/mListView"
@@ -39,6 +135,7 @@
         android:layout_height="fill_parent"
         android:cacheColorHint="#00000000"
         android:divider="@null"
+        android:scrollbars="none"
         android:fastScrollEnabled="false" >
     </com.ab.view.pullview.AbPullListView>
 

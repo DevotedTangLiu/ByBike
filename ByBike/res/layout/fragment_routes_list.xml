@@ -9,7 +9,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
-
         <RelativeLayout
             android:id="@+id/titleBar"
             android:layout_width="fill_parent"
@@ -26,71 +25,92 @@
             </TextView>
         </RelativeLayout>
     </RelativeLayout>
-    
+
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="100px"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginTop="31px"
-        android:orientation="horizontal">
+        android:layout_height="60dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:orientation="horizontal" >
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1">
+            android:layout_weight="1" >
+
             <Button
-                android:layout_height="fill_parent"
-                android:layout_width="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
                 android:layout_centerInParent="true"
-                android:text="按时间"/>
+                android:background="@drawable/sellect_button_selector"
+                android:text="按时间"
+                android:textColor="#BBBBBB"
+                android:textSize="15sp" />
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1">
+            android:layout_weight="1" >
+
             <Button
-                android:layout_height="fill_parent"
-                android:layout_width="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
                 android:layout_centerInParent="true"
-                android:text="喜欢数"/>
+                android:background="@drawable/sellect_button_selector"
+                android:text="喜欢数"
+                android:textColor="#BBBBBB"
+                android:textSize="15sp" />
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1">
+            android:layout_weight="1" >
+
             <Button
-                android:layout_height="fill_parent"
-                android:layout_width="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
                 android:layout_centerInParent="true"
-                android:text="收藏数"/>
+                android:background="@drawable/sellect_button_selector"
+                android:text="收藏数"
+                android:textColor="#BBBBBB"
+                android:textSize="15sp" />
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1">
+            android:layout_weight="1" >
+
             <Button
-                android:layout_height="fill_parent"
-                android:layout_width="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
                 android:layout_centerInParent="true"
-                android:text="公里数"/>
+                android:background="@drawable/sellect_button_selector"
+                android:text="公里数"
+                android:textColor="#BBBBBB"
+                android:textSize="15sp" />
         </RelativeLayout>
     </LinearLayout>
-    <View
-        android:layout_marginTop="24px"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/devider"/>
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@color/white"/>
+        android:background="@color/devider" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/white" />
 
     <com.ab.view.pullview.AbPullListView
-        android:layout_marginTop="24px"
         android:id="@+id/mListView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_marginTop="24px"
         android:cacheColorHint="#00000000"
+        android:scrollbars="none"
         android:divider="@null"
         android:fastScrollEnabled="false" >
     </com.ab.view.pullview.AbPullListView>

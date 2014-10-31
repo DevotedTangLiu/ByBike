@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ab.bitmap.AbImageDownloader;
 import com.ab.global.AbConstant;
@@ -101,6 +104,7 @@ public class ImageListAdapter extends BaseAdapter {
 		OnLikeButtonClick likeListener = null;
 		OnCollectButtonClick collectListener = null;
 		OnTalkButtonClick talkListener = null;
+		System.out.println("position:"+position + "     view is null? " + String.valueOf(convertView == null));
 		if (convertView == null) {
 			// 使用自定义的list_items作为Layout
 			convertView = mInflater.inflate(mResource, parent, false);
@@ -108,12 +112,26 @@ public class ImageListAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			// 初始化布局中的元素
 			holder.exercisePic = ((ImageView) convertView.findViewById(mTo[0]));
-			holder.likeButton = (Button) convertView
+			holder.likeButton = (RelativeLayout) convertView
 					.findViewById(R.id.likeButton);
-			holder.collectButton = (Button) convertView
+			holder.collectButton = (RelativeLayout) convertView
 					.findViewById(R.id.collectButton);
-			holder.talkButton = (Button) convertView
+			holder.talkButton = (RelativeLayout) convertView
 					.findViewById(R.id.talkButton);
+			holder.exerciseTitle = (TextView) convertView
+					.findViewById(R.id.exerciseTitle);
+			holder.exerciseAddress = (TextView) convertView
+					.findViewById(R.id.exerciseRouteAddress);
+			holder.exerciseTime = (TextView) convertView
+					.findViewById(R.id.exerciseTime);
+			holder.userCount = (TextView) convertView
+					.findViewById(R.id.userCount);
+			holder.likeCount = (TextView) convertView
+					.findViewById(R.id.likeCount);
+			holder.talkCount = (TextView) convertView
+					.findViewById(R.id.talkCount);
+			holder.collectCount = (TextView) convertView
+					.findViewById(R.id.collectCount);
 
 			likeListener = new OnLikeButtonClick();
 			holder.likeButton.setOnClickListener(likeListener);
@@ -157,6 +175,7 @@ public class ImageListAdapter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 			Log.d(TAG, String.valueOf(position));
+			v.setSelected(true);
 		}
 	}
 
@@ -171,6 +190,7 @@ public class ImageListAdapter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 			Log.d(TAG, String.valueOf(position));
+			v.setSelected(true);
 		}
 	}
 
@@ -193,9 +213,16 @@ public class ImageListAdapter extends BaseAdapter {
 	 */
 	static class ViewHolder {
 		ImageView exercisePic;
-		Button likeButton;
-		Button collectButton;
-		Button talkButton;
+		RelativeLayout likeButton;
+		RelativeLayout collectButton;
+		RelativeLayout talkButton;
+		TextView exerciseTitle;
+		TextView exerciseAddress;
+		TextView exerciseTime;
+		TextView userCount;
+		TextView likeCount;
+		TextView talkCount;
+		TextView collectCount;
 	}
 
 }

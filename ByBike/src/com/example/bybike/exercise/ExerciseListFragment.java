@@ -6,20 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Button;
 
 import com.ab.view.listener.AbOnListViewListener;
 import com.ab.view.pullview.AbPullListView;
-import com.ab.view.titlebar.AbTitleBar;
 import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ImageListAdapter;
@@ -32,12 +31,15 @@ public class ExerciseListFragment extends Fragment {
 	private AbPullListView mAbPullListView = null;
 	private ImageListAdapter myListViewAdapter = null;
 
+	Button orderByTime;
+	Button orderByLikeCounts;
+	Button orderByCollectCounts;
+	Button orderByDistance;
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_exercise_list, null);
-
-		AbTitleBar mAbTitleBar = mActivity.getTitleBar();
-		mAbTitleBar.setVisibility(View.GONE);
+		mActivity.getTitleBar().setVisibility(View.GONE);
 
 		// 获取ListView对象
 		mAbPullListView = (AbPullListView) view.findViewById(R.id.mListView);
@@ -63,8 +65,13 @@ public class ExerciseListFragment extends Fragment {
 		}
 		// 使用自定义的Adapter
 		myListViewAdapter = new ImageListAdapter(mActivity, mActivity, list,
-				R.layout.exercise_list_item, new String[] { "exercisePic", },
-				new int[] { R.id.exercisePic });
+				R.layout.exercise_list_item, new String[] { "exercisePic",
+						"exerciseTitle", "exerciseAddress", "exerciseTime",
+						"exerciseUserCount", "lickCount", "talkCount",
+						"collectCount" }, new int[] { R.id.exercisePic,
+						R.id.exerciseTitle, R.id.exerciseRouteAddress,
+						R.id.exerciseTime, R.id.userCount, R.id.likeCount,
+						R.id.talkCount, R.id.collectCount });
 		mAbPullListView.setAdapter(myListViewAdapter);
 		// item被点击事件
 		// item被点击事件
@@ -73,6 +80,10 @@ public class ExerciseListFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
+				Intent i = new Intent();
+				i.setClass(mActivity, ExerciseDetailActivity.class);
+				startActivity(i);
+				mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 			}
 		});
 
@@ -96,6 +107,12 @@ public class ExerciseListFragment extends Fragment {
 
 		});
 
+		orderByTime = (Button) view.findViewById(R.id.orderByTime);
+		orderByLikeCounts = (Button) view.findViewById(R.id.orderByLikeCounts);
+		orderByCollectCounts = (Button) view
+				.findViewById(R.id.orderByCollectCounts);
+		orderByDistance = (Button) view.findViewById(R.id.orderByDistance);
+		orderByTime.setSelected(true);
 		return view;
 	}
 
@@ -107,9 +124,20 @@ public class ExerciseListFragment extends Fragment {
 
 	public void showTitleBar() {
 		// TODO Auto-generated method stub
-		if(mActivity != null){
-//			mActivity.getTitleBar().setVisibility(View.GONE);
+		if (mActivity != null) {
 		}
+	}
+
+	private OnTypeButtonClickListener click = new OnTypeButtonClickListener();
+
+	private class OnTypeButtonClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 }
