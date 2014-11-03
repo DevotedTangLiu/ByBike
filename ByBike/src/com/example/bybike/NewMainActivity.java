@@ -343,7 +343,6 @@ public class NewMainActivity extends AbActivity {
 		    changeBackground(5);
 			changeMainFragment(0);
 			break;
-			
 		default:
 			break;
 		}

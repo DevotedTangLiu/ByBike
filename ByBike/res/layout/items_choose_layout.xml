@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="160dp"
+    android:background="@drawable/items_choose_background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" >
+
+        <ImageView
+            android:id="@+id/publicItemsPic"
+            android:layout_width="38dp"
+            android:layout_height="44dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="23dp"
+            android:background="@drawable/public_items_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/publicItemsPic"
+            android:text="公共标记"
+            android:textColor="#646464"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/publicItemBackground"
+            android:layout_width="48dp"
+            android:layout_height="23dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="27dp"
+            android:background="@drawable/slide_button_bak_sel" />
+
+        <ImageButton
+            android:id="@+id/publicItemsButton1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="53dp"
+            android:background="@drawable/slide_button"
+            android:visibility="gone"/>
+        <ImageButton
+            android:id="@+id/publicItemsButton2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="22dp"
+            android:background="@drawable/slide_button"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" >
+
+        <ImageView
+            android:id="@+id/collectItemsPic"
+            android:layout_width="39dp"
+            android:layout_height="43dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="23dp"
+            android:background="@drawable/collect_items_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/collectItemsPic"
+            android:text="公共标记"
+            android:textColor="#646464"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/collectItemBackground"
+            android:layout_width="48dp"
+            android:layout_height="23dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="27dp"
+            android:background="@drawable/slide_button_bak_sel" />
+
+        <ImageButton
+            android:id="@+id/collectItemsButton1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="53dp"
+            android:background="@drawable/slide_button"
+            android:visibility="gone" />
+        <ImageButton
+            android:id="@+id/collectItemsButton2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="22dp"
+            android:background="@drawable/slide_button" />
+    </RelativeLayout>
+
+</LinearLayout>

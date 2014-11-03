@@ -3,9 +3,12 @@ package com.example.bybike.exercise;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
 import com.ab.bitmap.AbImageDownloader;
@@ -47,6 +51,11 @@ public class ExerciseDetailActivity extends AbActivity {
 	ExerciseDiscussListAdapter discussAdapter = null;
 	// 图片下载类
 	private AbImageDownloader mAbImageDownloader = null;
+	// 点赞、评论、分享区域
+	RelativeLayout likeButton;
+	TextView likeCount;
+	RelativeLayout collectButton;
+	TextView collectCount;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,28 +88,43 @@ public class ExerciseDetailActivity extends AbActivity {
 							"http://img0.imgtn.bdimg.com/it/u=1196327338,3394668792&fm=21&gp=0.jpg");
 		}
 
-		RelativeLayout likeButton = (RelativeLayout) findViewById(R.id.likeButton);
+		//按钮点击事件
+		likeButton = (RelativeLayout) findViewById(R.id.likeButton);
+		likeCount = (TextView)findViewById(R.id.likeCount);
 		likeButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if (v.isSelected()) {
 					v.setSelected(false);
+					int count = Integer.valueOf(likeCount.getText().toString());
+                    count --;
+                    likeCount.setText(String.valueOf(count));
 				} else {
 					v.setSelected(true);
+					int count = Integer.valueOf(likeCount.getText().toString());
+                    count ++;
+                    likeCount.setText(String.valueOf(count));
 				}
-
-				ContentValues v1 = new ContentValues();
-				v1.put("userName", "test");
-				v1.put("discussContent", "Test");
-				v1.put("avater",
-						"http://t11.baidu.com/it/u=1610160448,1299213022&fm=56");
-				v1.put("discussTime", "10.28 14:30");
-
-				discussValueList.add(v1);
-				discussAdapter.notifyDataSetChanged();
-				PublicMethods.setListViewHeightBasedOnChildren(discussList);
+			}
+		});
+		collectButton = (RelativeLayout) findViewById(R.id.collectButton);
+		collectCount = (TextView)findViewById(R.id.collectCount);
+		collectButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (v.isSelected()) {
+					v.setSelected(false);
+					int count = Integer.valueOf(collectCount.getText().toString());
+                    count --;
+                    collectCount.setText(String.valueOf(count));
+				} else {
+					v.setSelected(true);
+					int count = Integer.valueOf(collectCount.getText().toString());
+                    count ++;
+                    collectCount.setText(String.valueOf(count));
+				}
 			}
 		});
 
@@ -140,8 +164,19 @@ public class ExerciseDetailActivity extends AbActivity {
 		mUiSettings.setScaleControlsEnabled(false);
 		mUiSettings.setMyLocationButtonEnabled(false);
 		aMap.animateCamera(CameraUpdateFactory.zoomTo(15), 100, null);
-		//===============================================
-		
+		// ===============================================
+
+		// 点击报名事件
+		TextView applyArea = (TextView) findViewById(R.id.applyArea);
+		applyArea.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				applyClick();
+			}
+		});
+
 	}
 
 	/**
@@ -157,13 +192,28 @@ public class ExerciseDetailActivity extends AbActivity {
 			break;
 
 		case R.id.mapOrPic:
-			if(mMapView.getVisibility() == View.VISIBLE){
+			if (mMapView.getVisibility() == View.VISIBLE) {
 				mAbSlidingPlayView.setVisibility(View.VISIBLE);
 				mMapView.setVisibility(View.GONE);
-			}else{
+			} else {
 				mMapView.setVisibility(View.VISIBLE);
 				mAbSlidingPlayView.setVisibility(View.GONE);
 			}
+			break;
+		case R.id.hasBike:
+			if (hasBike.isSelected()) {
+				hasBike.setSelected(false);
+			} else {
+				hasBike.setSelected(true);
+			}
+			break;
+		case R.id.hasHelmet:
+			if (hasHelmet.isSelected()) {
+				hasHelmet.setSelected(false);
+			} else {
+				hasHelmet.setSelected(true);
+			}
+			break;
 		default:
 			break;
 		}
@@ -192,5 +242,22 @@ public class ExerciseDetailActivity extends AbActivity {
 	private void goBack() {
 		ExerciseDetailActivity.this.finish();
 		overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+	}
+
+	/**
+	 * 显示报名页面
+	 */
+	Dialog dialog;
+	Button hasBike;
+	Button hasHelmet;
+
+	private void applyClick() {
+		dialog = new Dialog(this, R.style.Theme_dialog);
+		LayoutInflater l = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View view = l.inflate(R.layout.apply_for_exercise_layout, null);
+		hasBike = (Button) view.findViewById(R.id.hasBike);
+		hasHelmet = (Button) view.findViewById(R.id.hasHelmet);
+		dialog.setContentView(view);
+		dialog.show();
 	}
 }

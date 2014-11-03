@@ -6,6 +6,9 @@
 package com.example.bybike;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,10 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -72,6 +76,16 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 	Button zoom_up = null;
 	Button zoom_down = null;
 	private float zoom_level = 16;
+	
+	/**
+	 * 筛选按钮
+	 */
+	ImageButton publicItemsButton1 ;
+	ImageButton publicItemsButton2 ;
+	ImageButton collectItemsButton1 ;
+	ImageButton collectItemsButton2 ;
+	ImageView publicItemBackground;
+	ImageView collectItemBackground;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -125,6 +139,31 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 					changeCamera(CameraUpdateFactory.zoomTo(zoom_level), null);
 				}
 			});
+			
+			Button chooseIcon = (Button)mainView.findViewById(R.id.chooseIcon);
+			chooseIcon.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					chooseDialog = new Dialog(mActivity, R.style.Theme_dialog);
+					LayoutInflater l = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					View view = l.inflate(R.layout.items_choose_layout, null);
+					publicItemsButton1 = (ImageButton) view.findViewById(R.id.publicItemsButton1);
+					publicItemsButton2 = (ImageButton) view.findViewById(R.id.publicItemsButton2);
+					collectItemsButton1 = (ImageButton) view.findViewById(R.id.collectItemsButton1);
+					collectItemsButton2 = (ImageButton) view.findViewById(R.id.collectItemsButton2);
+                    publicItemsButton1.setOnClickListener(onItemsChooseClickListener);
+                    publicItemsButton2.setOnClickListener(onItemsChooseClickListener);
+                    collectItemsButton1.setOnClickListener(onItemsChooseClickListener);
+                    collectItemsButton2.setOnClickListener(onItemsChooseClickListener);
+
+                    publicItemBackground = (ImageView) view.findViewById(R.id.publicItemBackground);
+                    collectItemBackground = (ImageView) view.findViewById(R.id.collectItemBackground);
+                    chooseDialog.setContentView(view);
+                    chooseDialog.show();
+				}
+			});
 		}
 
 		ViewGroup parent = (ViewGroup) mainView.getParent();
@@ -135,6 +174,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 
 	}
 
+	
 	/**
 	 * 初始化地图控件
 	 */
@@ -370,6 +410,43 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 			}
 		}
 
+	}
+	
+	private OnItemsChooseClickListener onItemsChooseClickListener = new OnItemsChooseClickListener();
+	private Dialog chooseDialog;
+	private class OnItemsChooseClickListener implements OnClickListener{
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			switch (v.getId()) {
+			case R.id.publicItemsButton1:
+				publicItemsButton1.setVisibility(View.GONE);
+				publicItemsButton2.setVisibility(View.VISIBLE);
+				publicItemBackground.setBackgroundResource(R.drawable.slide_button_bak_sel);
+				break;
+
+			case R.id.publicItemsButton2:
+				publicItemsButton2.setVisibility(View.GONE);
+				publicItemsButton1.setVisibility(View.VISIBLE);
+				publicItemBackground.setBackgroundResource(R.drawable.slide_button_bak_nor);
+				break;
+			case R.id.collectItemsButton1:
+				collectItemsButton1.setVisibility(View.GONE);
+				collectItemsButton2.setVisibility(View.VISIBLE);
+				collectItemBackground.setBackgroundResource(R.drawable.slide_button_bak_sel);
+				break;
+			case R.id.collectItemsButton2:
+				collectItemsButton2.setVisibility(View.GONE);
+				collectItemsButton1.setVisibility(View.VISIBLE);
+				collectItemBackground.setBackgroundResource(R.drawable.slide_button_bak_nor);
+				break;
+			default:
+				break;
+			}
+			
+		}
+		
 	}
 
 }

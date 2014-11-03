@@ -37,6 +37,7 @@
         </TextView>
 
         <TextView
+            android:id="@+id/applyArea"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -45,7 +46,8 @@
             android:text="报名"
             android:textColor="#FA6406"
             android:textSize="20sp"
-            android:textStyle="bold" >
+            android:textStyle="bold" 
+            android:onClick="clickHandler">
         </TextView>
     </RelativeLayout>
 
