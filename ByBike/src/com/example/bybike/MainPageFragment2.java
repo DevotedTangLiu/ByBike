@@ -125,43 +125,6 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 					changeCamera(CameraUpdateFactory.zoomTo(zoom_level), null);
 				}
 			});
-			// 筛选框区域
-			final RelativeLayout searchArea = (RelativeLayout) mainView
-					.findViewById(R.id.searchArea);
-			final RelativeLayout searchArea2 = (RelativeLayout) mainView
-					.findViewById(R.id.searchArea2);
-			searchArea.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					searchArea2.setVisibility(View.VISIBLE);
-					searchArea.setVisibility(View.GONE);
-				}
-			});
-
-			searchArea2.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					searchArea2.setVisibility(View.GONE);
-					searchArea.setVisibility(View.VISIBLE);
-				}
-			});
-
-			Button searchButton = (Button) mainView
-					.findViewById(R.id.searchButton);
-			searchButton.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					mActivity.showToast("test");
-
-				}
-			});
-
 		}
 
 		ViewGroup parent = (ViewGroup) mainView.getParent();

@@ -460,7 +460,7 @@
                 android:id="@+id/discussList"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#F5F5F5">
+                android:background="#F5F5F5" >
             </ListView>
         </LinearLayout>
     </com.example.bybike.routes.ObservableScrollView>
@@ -476,8 +476,14 @@
         <com.ab.view.sliding.AbSlidingPlayView
             android:id="@+id/mAbSlidingPlayView"
             android:layout_width="fill_parent"
-            android:layout_height="201dip" >
+            android:layout_height="201dp"
+            android:visibility="gone" >
         </com.ab.view.sliding.AbSlidingPlayView>
+
+        <com.amap.api.maps2d.MapView
+            android:id="@+id/bmapView"
+            android:layout_width="fill_parent"
+            android:layout_height="201dp" />
 
         <Button
             android:id="@+id/mapOrPic"
@@ -486,6 +492,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
             android:layout_marginTop="13dp"
+            android:onClick="clickHandler"
             android:background="@drawable/button_map_or_pic" />
     </RelativeLayout>
 
