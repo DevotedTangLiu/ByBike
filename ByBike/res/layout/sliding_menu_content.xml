@@ -29,9 +29,9 @@
         android:layout_width="fill_parent"
         android:layout_height="58dp"
         android:layout_marginTop="-58dp"
+        android:background="@drawable/bottom_background"
         android:baselineAligned="false"
-        android:orientation="horizontal" 
-        android:background="@drawable/bottom_background">
+        android:orientation="horizontal" >
 
         <RelativeLayout
             android:id="@+id/r1"
@@ -40,13 +40,29 @@
             android:layout_weight="1"
             android:background="@drawable/bottom_block_select" >
 
-            <Button
-                android:id="@+id/mapButton"
-                android:layout_width="35dp"
-                android:layout_height="45dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:onClick="onclick"
-                android:background="@drawable/bottom_map_select"/>
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/mapButton"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/bottom_map_select"
+                    android:onClick="onclick" />
+
+                <TextView
+                    android:id="@+id/mapButtonText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                     android:layout_marginTop="2dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="地图"
+                    android:textColor="#4A4A4A"
+                    android:textSize="9sp" />
+            </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
@@ -61,8 +77,8 @@
                 android:layout_width="32dp"
                 android:layout_height="46dp"
                 android:layout_centerInParent="true"
-                android:onClick="onclick"
-                android:background="@drawable/bottom_exercise_select"/>
+                android:background="@drawable/bottom_exercise_select"
+                android:onClick="onclick" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -77,8 +93,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
-                android:onClick="onclick"
-                android:background="@drawable/bottom_ride_select"/>
+                android:background="@drawable/bottom_ride_select"
+                android:onClick="onclick" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -93,8 +109,8 @@
                 android:layout_width="30dp"
                 android:layout_height="48dp"
                 android:layout_centerInParent="true"
-                android:onClick="onclick"
-                android:background="@drawable/bottom_routebook_select"/>
+                android:background="@drawable/bottom_routebook_select"
+                android:onClick="onclick" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -104,12 +120,29 @@
             android:layout_weight="1"
             android:background="@drawable/bottom_block_select" >
 
-            <Button
-                android:id="@+id/myButton"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:onClick="onclick"
-                android:text="我的" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/myButton"
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:background="@drawable/bottom_me_select"
+                    android:onClick="onclick" />
+
+                <TextView
+                    android:id="@+id/myButtonText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="我的"
+                    android:textColor="#4A4A4A"
+                    android:textSize="9sp" />
+            </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
 
