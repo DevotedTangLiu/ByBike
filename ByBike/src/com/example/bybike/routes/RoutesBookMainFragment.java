@@ -13,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RelativeLayout;
 
 import com.ab.view.listener.AbOnListViewListener;
 import com.ab.view.pullview.AbPullListView;
@@ -29,6 +31,11 @@ public class RoutesBookMainFragment extends Fragment {
 	private List<Map<String, Object>> newList = null;
 	private AbPullListView mAbPullListView = null;
 	private RoutesBookListAdapter myListViewAdapter = null;
+	
+	Button orderByTime;
+	Button orderByDistance;
+	Button orderByArea;
+	Button orderByHot;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -89,6 +96,11 @@ public class RoutesBookMainFragment extends Fragment {
 
 		});
 
+		orderByTime = (Button)view.findViewById(R.id.orderByTime);
+		orderByDistance = (Button)view.findViewById(R.id.orderByDistance);
+		orderByArea = (Button)view.findViewById(R.id.orderByArea);
+		orderByHot = (Button)view.findViewById(R.id.orderByHot);
+		orderByTime.setSelected(true);
 		return view;
 	}
 

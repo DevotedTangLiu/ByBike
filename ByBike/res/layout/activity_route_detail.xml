@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <!-- 标题栏区域 -->
 
     <RelativeLayout
         android:id="@+id/titleBar"
@@ -9,16 +11,33 @@
         android:layout_height="60dp"
         android:background="@drawable/title_bar" >
 
+        <RelativeLayout
+            android:id="@+id/goBack"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:onClick="clickHandler"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_width="17dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:background="@drawable/back_button" />
+        </RelativeLayout>
+
         <TextView
-            android:id="@+id/titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="骑行小洲村"
-            android:textColor="@color/text_color"
+            android:textColor="#4A4A4A"
+            android:textSize="20sp"
             android:textStyle="bold" >
         </TextView>
     </RelativeLayout>
+
+    <!-- 可滚动区域 -->
 
     <com.example.bybike.routes.ObservableScrollView
         android:id="@+id/scrollView"
@@ -29,60 +48,292 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:id="@+id/spaceArea"
                 android:layout_width="fill_parent"
-                android:layout_height="250dp"
-                android:orientation="vertical"
+                android:layout_height="201dp"
                 android:background="@color/cover_color"
-                android:visibility="invisible"/>
-            
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="100dp"
-                android:background="@color/blue" >
-            </LinearLayout>
+                android:orientation="vertical"
+                android:visibility="gone" />
 
+            <!-- 里程和时间 -->
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="100dp"
-                android:background="@color/black" >
-            </LinearLayout>
+                android:layout_height="80dp"
+                android:background="@drawable/exercise_detail"
+                android:baselineAligned="false"
+                android:orientation="horizontal" >
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="100dp"
-                android:background="@color/green" >
-            </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="4" >
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="100dp"
-                android:background="@color/blue" >
-            </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical" >
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="100dp"
-                android:background="@color/black" >
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="里程"
+                            android:textColor="#4A4A4A"
+                            android:textSize="14sp" />
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="100dp"
-                android:background="@color/green" >
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/distanceText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="103"
+                                android:textColor="#4A4A4A"
+                                android:textSize="27sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="km"
+                                android:textColor="#9B9B9B"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="4" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="均速"
+                            android:textColor="#4A4A4A"
+                            android:textSize="14sp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/speedText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0.2"
+                                android:textColor="#4A4A4A"
+                                android:textSize="27sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="km/h"
+                                android:textColor="#9B9B9B"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="减碳"
+                                android:textColor="#4A4A4A"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="0.2"
+                                android:textColor="#4A4A4A"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="t"
+                                android:textColor="#9B9B9B"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="时间"
+                                android:textColor="#4A4A4A"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/hour"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="00"
+                                android:textColor="#4A4A4A"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="3dp"
+                                android:text=":"
+                                android:textColor="#9B9B9B"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/minute"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="3dp"
+                                android:text="32"
+                                android:textColor="#4A4A4A"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="3dp"
+                                android:text=":"
+                                android:textColor="#9B9B9B"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/second"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="3dp"
+                                android:text="16"
+                                android:textColor="#4A4A4A"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
             </LinearLayout>
+            <!-- 里程和时间区域结束 -->
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="12dp"
+                android:background="@drawable/divider" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="43dp"
+                android:background="#F5F5F5" >
+
+                <TextView
+                    android:id="@+id/discussCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="17dp"
+                    android:text="评论 (2)"
+                    android:textColor="#9B9B9B"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/discussButton"
+                    android:layout_width="75dp"
+                    android:layout_height="28dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/discuss_button" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/devider" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+            <ListView
+                android:id="@+id/discussList"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#F5F5F5" >
+            </ListView>
         </LinearLayout>
     </com.example.bybike.routes.ObservableScrollView>
 
-    <com.ab.view.sliding.AbSlidingPlayView
-        android:id="@+id/mAbSlidingPlayView"
+    <!-- 地图、图片区域 -->
+
+    <RelativeLayout
+        android:id="@+id/exercisePicArea"
         android:layout_width="fill_parent"
-        android:layout_height="250dip"
+        android:layout_height="201dp"
         android:layout_marginTop="60dp" >
-    </com.ab.view.sliding.AbSlidingPlayView>
-    
+
+        <com.ab.view.sliding.AbSlidingPlayView
+            android:id="@+id/mAbSlidingPlayView"
+            android:layout_width="fill_parent"
+            android:layout_height="201dp"
+            android:visibility="gone" >
+        </com.ab.view.sliding.AbSlidingPlayView>
+
+        <com.amap.api.maps2d.MapView
+            android:id="@+id/bmapView"
+            android:layout_width="fill_parent"
+            android:layout_height="201dp" />
+
+        <Button
+            android:id="@+id/mapOrPic"
+            android:layout_width="65dp"
+            android:layout_height="27dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/button_map_or_pic"
+            android:onClick="clickHandler" />
+    </RelativeLayout>
+
 </RelativeLayout>
