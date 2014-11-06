@@ -65,6 +65,7 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
+        Log.i("i", String.valueOf(i++));
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.exercise_discuss_list_item, null);
             holder = new ViewHolder();

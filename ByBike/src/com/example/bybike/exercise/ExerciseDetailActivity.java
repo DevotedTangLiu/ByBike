@@ -260,4 +260,35 @@ public class ExerciseDetailActivity extends AbActivity {
 		dialog.setContentView(view);
 		dialog.show();
 	}
+	
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		// 退出时销毁定位
+		mMapView.onDestroy();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		// 在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
+		mMapView.onResume();
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		// 在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
+		mMapView.onPause();
+	}
+
+	/**
+	 * 方法必须重写
+	 */
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		mMapView.onSaveInstanceState(outState);
+	}
 }
