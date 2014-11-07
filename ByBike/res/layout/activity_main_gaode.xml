@@ -13,7 +13,6 @@
             android:layout_height="fill_parent" />
 
         <!-- 定位 & 缩放地图模块 -->
-
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -44,7 +43,7 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="11dp"
-            android:layout_marginTop="73dp"
+            android:layout_marginTop="13dp"
             android:background="@drawable/choose_icon" >
         </Button>
 
@@ -100,45 +99,6 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/titleBar"
-                android:layout_width="fill_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/title_bar" >
-
-                <Button
-                    android:id="@+id/search"
-                    android:layout_width="37dp"
-                    android:layout_height="37dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="13dp"
-                    android:background="@drawable/search_button" />
-
-                <LinearLayout
-                    android:layout_width="80dp"
-                    android:layout_height="22dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/bybike" >
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="54dp"
-                    android:layout_height="26dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/message" >
-                </RelativeLayout>
-
-                <Button
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="13dp"
-                    android:background="@drawable/message_redpin" >
-                </Button>
-            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 

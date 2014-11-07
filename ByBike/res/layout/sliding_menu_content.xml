@@ -5,6 +5,49 @@
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/titleBar"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/title_bar" >
+
+        <Button
+            android:id="@+id/search"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:onClick="onclick"
+            android:background="@drawable/search_button" />
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="22dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bybike" >
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="54dp"
+            android:layout_height="26dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/message" >
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/message_redpin" >
+        </Button>
+    </RelativeLayout>
+
+    
+    
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginBottom="58dp" >
@@ -57,8 +100,8 @@
                     android:id="@+id/mapButtonText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                     android:layout_marginTop="2dp"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="2dp"
                     android:text="地图"
                     android:textColor="#4A4A4A"
                     android:textSize="9sp" />
@@ -137,8 +180,8 @@
                     android:id="@+id/myButtonText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="2dp"
                     android:text="我的"
                     android:textColor="#4A4A4A"
                     android:textSize="9sp" />

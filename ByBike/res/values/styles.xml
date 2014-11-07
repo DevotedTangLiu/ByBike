@@ -33,11 +33,17 @@
         <item name="android:background">@android:drawable/bottom_bar</item>
     </style>
 
+    <style name="ButtonBarButton" />
+
     <style name="Theme_dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@drawable/dialog</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="ButtonBarButton" />
+    <style name="translucent">
+        <item name="android:windowBackground">@color/translucent_background</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
 
 </resources>

@@ -1,18 +1,17 @@
 package com.example.bybike.welcome;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
-import com.ab.activity.AbActivity;
 import com.ab.task.AbTaskItem;
 import com.ab.task.AbTaskListener;
 import com.ab.task.AbTaskQueue;
 import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
-import com.example.bybike.util.BitmapUtil;
 
-public class WelcomeActivity extends AbActivity {
+public class WelcomeActivity extends Activity{
 
 	private AbTaskQueue mAbTaskQueue = null;
 
@@ -20,11 +19,7 @@ public class WelcomeActivity extends AbActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setAbContentView(R.layout.activity_welcome);
-		welcome_background = (ImageView) findViewById(R.id.welcome_background);
-		welcome_background.setImageBitmap(BitmapUtil
-				.decodeSampledBitmapFromResource(getResources(),
-						R.drawable.rectangle_background, 540, 960));
+		setContentView(R.layout.activity_welcome);
 		mAbTaskQueue = AbTaskQueue.getInstance();
 	}
 

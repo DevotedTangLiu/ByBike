@@ -343,6 +343,12 @@ public class NewMainActivity extends AbActivity {
 		    changeBackground(5);
 			changeMainFragment(0);
 			break;
+		case R.id.search:
+			Intent i = new Intent();
+			i.setClass(NewMainActivity.this, SearchActivity.class);
+			startActivity(i);
+//			overridePendingTransition(R.anim.fragment_in, 0);
+			break;
 		default:
 			break;
 		}
