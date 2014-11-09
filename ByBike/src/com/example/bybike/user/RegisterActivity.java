@@ -66,6 +66,16 @@ public class RegisterActivity extends AbActivity{
 				register();
 			}
 		});
+		
+		Button exitButton = (Button)findViewById(R.id.exitButton);
+		exitButton.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                RegisterActivity.this.finish();
+            }
+        });
 
 	}
 

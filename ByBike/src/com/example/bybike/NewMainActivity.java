@@ -34,6 +34,7 @@ public class NewMainActivity extends AbActivity {
 	private boolean exit = false;
 	AbTaskItem item1 = null;
 
+	RelativeLayout titleBar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,6 +50,7 @@ public class NewMainActivity extends AbActivity {
 				Constant.FIRSTUSED)) {
 		} 
 
+		titleBar = (RelativeLayout)findViewById(R.id.titleBar);
 		initSteps();
 
 	}
@@ -145,6 +147,7 @@ public class NewMainActivity extends AbActivity {
 				transaction.commit();
 				currentFragment = toFragment;
 			}
+			titleBar.setVisibility(View.GONE);
 //			Intent intent = new Intent();
 //			intent.setClass(this, SettingMainActivity.class);
 //			startActivity(intent);
@@ -187,6 +190,7 @@ public class NewMainActivity extends AbActivity {
 //				}
 				currentFragment = toMainPageFragment;
 			}
+			titleBar.setVisibility(View.VISIBLE);
 			break;
 		case 2:
 			//显示活动列表页面
@@ -217,7 +221,7 @@ public class NewMainActivity extends AbActivity {
 				toExerciseListFragment.showTitleBar();
 				currentFragment = toExerciseListFragment;
 			}
-
+            titleBar.setVisibility(View.VISIBLE);
 			break;
 			
 		case 3:
@@ -248,7 +252,6 @@ public class NewMainActivity extends AbActivity {
 				toFragment.showTitleBar();
 				currentFragment = toFragment;
 			}
-
 			break;
 		case 4:
 			//显示路书页面
@@ -277,7 +280,7 @@ public class NewMainActivity extends AbActivity {
 				toFragment.showTitleBar();
 				currentFragment = toFragment;
 			}
-
+            titleBar.setVisibility(View.VISIBLE);
 			break;
 		default:
 			break;

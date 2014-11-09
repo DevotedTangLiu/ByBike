@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#E4E4E4"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/rentBike"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/sellect_button_selector"
+            android:hint="租车"
+            android:textColor="#989898"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/bikeStore"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/sellect_button_selector"
+            android:hint="车店"
+            android:textColor="#989898"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/bikePark"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/sellect_button_selector"
+            android:hint="停车"
+            android:textColor="#989898"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/scenery"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/sellect_button_selector"
+            android:hint="景点"
+            android:textColor="#989898"
+            android:textSize="10sp" />
+        
+        <Button
+            android:id="@+id/repair"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/sellect_button_selector"
+            android:hint="维修"
+            android:textColor="#989898"
+            android:textSize="10sp" />
+        
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/meals"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/sellect_button_selector"
+            android:hint="餐饮"
+            android:textColor="#989898"
+            android:textSize="10sp" />
+        <Button
+            android:id="@+id/washroom"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/sellect_button_selector"
+            android:hint="洗手间"
+            android:textColor="#989898"
+            android:textSize="10sp" />
+        <Button
+            android:id="@+id/others"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/sellect_button_selector"
+            android:hint="其他"
+            android:textColor="#989898"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/devider" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/white" />
+
+</LinearLayout>

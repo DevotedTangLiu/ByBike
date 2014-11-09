@@ -5,111 +5,177 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="200dp" >
+        android:layout_height="290dp"
+        android:background="@drawable/me_background" >
+
+        <RelativeLayout
+            android:id="@+id/titleBar"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp" >
+
+            <Button
+                android:id="@+id/goToSetting"
+                android:layout_width="57dp"
+                android:layout_height="26dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/setting_button"
+                android:onClick="onclick" />
+
+            <RelativeLayout
+                android:layout_width="54dp"
+                android:layout_height="26dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/message" >
+            </RelativeLayout>
+
+            <Button
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="13dp"
+                android:background="@drawable/message_redpin" >
+            </Button>
+        </RelativeLayout>
 
         <ImageView
-            android:id="@+id/background_image"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:scaleType="centerCrop" />
-
+            android:layout_width="120dp"
+            android:layout_height="125dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="55dp"
+            android:background="@drawable/b1"/>
         <com.example.bybike.util.CircleImageView
-            xmlns:myxmlns="http://schemas.android.com/apk/res/com.example.bybike"
             android:id="@+id/fragment_my_image_user"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="10dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="65dp"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
-            android:src="@drawable/user"
-            myxmlns:border_color="@color/f2f2f2"
-            myxmlns:border_width="@dimen/circle_width" />
+            android:src="@drawable/user" />
+        <!-- myxmlns:border_color="@color/f2f2f2" -->
+        <!-- myxmlns:border_width="@dimen/circle_width" -->
 
-        <Button
-            android:id="@+id/goToMessage"
+        <TextView
+            android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="消息" />
+            android:layout_below="@id/fragment_my_image_user"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:text="Chaolotte Yam"
+            android:textColor="#4A4A4A"
+            android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/goToSetting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/goToMessage"
-            android:text="设置" />
+        <LinearLayout
+            android:id="@+id/userInfo"
+            android:layout_width="fill_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/userName"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="103"
+                    android:textColor="#4A4A4A"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="0.98"
+                    android:textColor="#4A4A4A"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="1024"
+                    android:textColor="#4A4A4A"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/userInfo"
+            android:layout_marginTop="18dp"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/chooseExercise"
+                    android:layout_width="46dp"
+                    android:layout_height="17dp"
+                    android:layout_centerInParent="true" 
+                    android:background="@drawable/exercise_button_selector"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/chooseRouteBook"
+                    android:layout_width="45dp"
+                    android:layout_height="14dp"
+                    android:layout_centerInParent="true" 
+                    android:background="@drawable/routebook_button_selector"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/chooseMarker"
+                    android:layout_width="45dp"
+                    android:layout_height="15dp"
+                    android:layout_centerInParent="true" 
+                    android:background="@drawable/mark_button_selector"/>
+            </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2px"
-        android:background="?android:attr/listDivider" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal" >
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" >
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="test" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:background="?android:attr/listDivider" />
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" >
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="test" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:background="?android:attr/listDivider" />
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" >
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="test" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2px"
-        android:background="?android:attr/listDivider" />
-
-    <FrameLayout
-        android:id="@+id/content_frame_my_mainpage"
+  <android.support.v4.view.ViewPager
+        android:id="@+id/vPager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginBottom="-5dp"
-        android:background="@color/exercise_list_background" />
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" 
+        android:background="#E4E4E4"/>
 
 </LinearLayout>

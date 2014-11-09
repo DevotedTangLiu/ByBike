@@ -45,7 +45,7 @@ public class LoginActivity extends AbActivity {
 
 		login_background = (ImageView) findViewById(R.id.login_background);
 		login_background.setImageBitmap(BitmapUtil.decodeSampledBitmapFromResource(
-				getResources(), R.drawable.login_background, 540, 960));
+				getResources(), R.drawable.register_background, 540, 960));
 
 		TextView havntRegister = (TextView) findViewById(R.id.havntRegister);
 		havntRegister.setOnClickListener(new OnClickListener() {
@@ -68,6 +68,16 @@ public class LoginActivity extends AbActivity {
 				login();
 			}
 		});
+		
+		Button exitButton = (Button)findViewById(R.id.exitButton);
+        exitButton.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                LoginActivity.this.finish();
+            }
+        });
 
 		accountText = (EditText) findViewById(R.id.loginAccount);
 		passwordText = (EditText) findViewById(R.id.loginPassword);

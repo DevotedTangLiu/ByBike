@@ -263,7 +263,7 @@
                 android:background="#F7F7F7">
 
                 <!-- 头像 -->
-                <ImageView
+               <com.example.bybike.util.CircleImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_margin="15dp"

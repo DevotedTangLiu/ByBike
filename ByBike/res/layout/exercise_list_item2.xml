@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="210dp"
+    android:layout_height="170dp"
     android:background="#E4E4E4" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="194dp"
+        android:layout_height="fill_parent"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/exercise_list_background"
+        android:background="@drawable/exercise_item_background2"
         android:orientation="vertical" >
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="83dp"
+            android:layout_height="45dp"
             android:background="@drawable/exercise_pic_background">
 
             <com.example.bybike.util.RoundAngleImageView
                 xmlns:myxmls="http://schemas.android.com/apk/res/com.example.bybike"
                 android:id="@+id/exercisePic"
                 android:layout_width="fill_parent"
-                android:layout_height="83dp"
+                android:layout_height="fill_parent"
                 android:layout_marginTop="1dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:scaleType="centerCrop"
                 myxmls:roundHeight="5dp"
                 myxmls:roundWidth="10dp" />
-            
         </RelativeLayout>
 
         <View
@@ -176,4 +175,11 @@
         </RelativeLayout>
     </LinearLayout>
 
+     <ImageView
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/participated_icon"/>
 </RelativeLayout>
