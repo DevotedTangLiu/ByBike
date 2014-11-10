@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -16,20 +17,22 @@ import com.ab.activity.AbActivity;
 import com.ab.task.AbTaskItem;
 import com.ab.task.AbTaskListener;
 import com.ab.task.AbTaskQueue;
-import com.ab.view.slidingmenu.SlidingMenu;
 import com.example.bybike.exercise.ExerciseListFragment;
 import com.example.bybike.riding.RidingFragment;
 import com.example.bybike.routes.RoutesBookMainFragment;
-import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.user.UserMainPageFragment;
-import com.example.bybike.util.Constant;
-import com.example.bybike.util.SharedPreferencesUtil;
 
 public class NewMainActivity extends AbActivity {
 
-	private SlidingMenu menu;
+//	private SlidingMenu menu;
 	private Fragment currentFragment;
-
+	public int currentItem = 0;
+	public FragmentManager fragmentManager;
+	public Fragment fragment;
+	
+	public String tag = "";
+	public String currentTag = "";//用来保存上面的tag状态
+	
 	private AbTaskQueue mAbTaskQueue = null;
 	private boolean exit = false;
 	AbTaskItem item1 = null;
@@ -41,24 +44,18 @@ public class NewMainActivity extends AbActivity {
 		setAbContentView(R.layout.sliding_menu_content);
 		getTitleBar().setVisibility(View.GONE);
 		currentFragment = new MainPageFragment2();
-		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, currentFragment).commit();
 		// 主视图的Fragment添加
-		/**
-		 * 如果是第一次启动应用，则显示登录页面，提示用户注册登陆，否则直接显示骑行页面
-		 */
-		if (!SharedPreferencesUtil.getSharedPreferences_b(this,
-				Constant.FIRSTUSED)) {
-		} 
-
+		fragmentManager = getSupportFragmentManager();
 		titleBar = (RelativeLayout)findViewById(R.id.titleBar);
 		initSteps();
-
 	}
+	
 
 	private void initSteps() {
 
 	    //初始化导航栏图标
 	    changeBackground(1);
+	    changeMainFragment(R.id.mapButton);
 	    
 		mAbTaskQueue = AbTaskQueue.getInstance();
 		/**
@@ -86,7 +83,7 @@ public class NewMainActivity extends AbActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+//		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -107,185 +104,97 @@ public class NewMainActivity extends AbActivity {
 
 	@Override
 	public void onBackPressed() {
-		if (menu.isMenuShowing()) {
-			menu.showContent();
-		} else {
 			super.onBackPressed();
-		}
 	}
 
-	public void changeMainFragment(int i) {
+	public void changeMainFragment(int toItem) {
 		// TODO Auto-generated method stub
-		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction();
-		switch (i) {
-		case 0:
+		//如果当前页面和点击的页面是同一个，则跳出
+		if(toItem == currentItem) return;
+		
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		Fragment currentFragment = fragmentManager.findFragmentByTag(currentTag);
+		//如果当前页面是半透明的骑行页面，则先把该页面remove掉,再把所有fragment隐藏
+		if(currentTag.equalsIgnoreCase(RidingFragment.class.getSimpleName()))
+		{
+			transaction.remove(currentFragment);
+			List<Fragment>fs = fragmentManager.getFragments();
+			for(Fragment f: fs){
+				transaction.hide(f);
+			}
+			
+		}else if (currentFragment != null && toItem != R.id.rideButton) {
+			// 将当前的Frament隐藏到后台去
+			transaction.hide(currentFragment);
+		}
+		switch (toItem) {
+		case R.id.myButton:
+			tag = UserMainPageFragment.class.getSimpleName();
 			// 显示我的页面
-			if (!(currentFragment instanceof UserMainPageFragment)) {
-				
-			    UserMainPageFragment toFragment = null;
-				List<Fragment> fragments = getSupportFragmentManager()
-						.getFragments();
-				for (Fragment f : fragments) {
-					if (f instanceof UserMainPageFragment) {
-						toFragment = (UserMainPageFragment) f;
-						transaction.show(toFragment);
-					}else if(f instanceof RidingFragment){
-						transaction.remove(f);
-					}else if(f == null){
-						continue;
-					}else{
-						transaction.hide(f);
-					}
-				}			
-				if (null == toFragment) {
-					toFragment = new UserMainPageFragment();
-					transaction.add(R.id.content_frame, toFragment);
-					transaction.show(toFragment);
-				}
-				
-				transaction.commit();
-				currentFragment = toFragment;
+			if (fragmentManager.findFragmentByTag(tag) != null) {
+				fragment = (UserMainPageFragment) fragmentManager
+						.findFragmentByTag(tag);
+			} else {
+				fragment = new UserMainPageFragment();
 			}
 			titleBar.setVisibility(View.GONE);
-//			Intent intent = new Intent();
-//			intent.setClass(this, SettingMainActivity.class);
-//			startActivity(intent);
 			break;
-		case 1:
+			
+		case R.id.mapButton:
 			// 显示地图页面
-			if (!(currentFragment instanceof MainPageFragment2)) {
-
-				MainPageFragment2 toMainPageFragment = null;
-				List<Fragment> fragments = getSupportFragmentManager()
-						.getFragments();
-				for (Fragment f : fragments) {
-
-					if (f instanceof MainPageFragment2) {
-						toMainPageFragment = (MainPageFragment2) f;
-						transaction.show(toMainPageFragment);
-					}else if(f instanceof RidingFragment){
-						transaction.remove(f);
-					}else if(f == null){
-						continue;
-					}else{
-						transaction.hide(f);
-					}
-				}
-				if (null == toMainPageFragment) {
-					toMainPageFragment = new MainPageFragment2();
-					transaction.add(R.id.content_frame, toMainPageFragment);
-					transaction.show(toMainPageFragment);
-				}
-
-				transaction.commit();
-				toMainPageFragment.showTitleBar();
-				// 如果前面的Fragment是LoginFragment或者RegisterFragment，则删除
-//				for (Fragment f : fragments) {
-//					if (f instanceof LoginFragment
-//							|| f instanceof RegisterFragment) {
-//						getSupportFragmentManager().beginTransaction()
-//								.remove(f).commit();
-//					}
-//				}
-				currentFragment = toMainPageFragment;
+			tag = MainPageFragment2.class.getSimpleName();
+			// 显示我的页面
+			if (fragmentManager.findFragmentByTag(tag) != null) {
+				fragment = (MainPageFragment2) fragmentManager
+						.findFragmentByTag(tag);
+			} else {
+				fragment = new MainPageFragment2();
 			}
 			titleBar.setVisibility(View.VISIBLE);
 			break;
-		case 2:
+		case R.id.exerciseButton:
 			//显示活动列表页面
-			if (!(currentFragment instanceof ExerciseListFragment)) {
-
-				ExerciseListFragment toExerciseListFragment = null;
-				List<Fragment> fragments = getSupportFragmentManager()
-						.getFragments();
-				for (Fragment f : fragments) {
-					if (f instanceof ExerciseListFragment) {
-						toExerciseListFragment = (ExerciseListFragment) f;
-						transaction.show(toExerciseListFragment);
-					}else if(f instanceof RidingFragment){
-						transaction.remove(f);
-					}else if(f == null){
-						continue;
-					}else{
-						transaction.hide(f);
-					}
-				}
-				if (null == toExerciseListFragment) {
-					toExerciseListFragment = new ExerciseListFragment();
-					transaction.add(R.id.content_frame, toExerciseListFragment);
-					transaction.show(toExerciseListFragment);
-				}
-				transaction.commit();
-
-				toExerciseListFragment.showTitleBar();
-				currentFragment = toExerciseListFragment;
+			tag = ExerciseListFragment.class.getSimpleName();
+			// 显示我的页面
+			if (fragmentManager.findFragmentByTag(tag) != null) {
+				fragment = (ExerciseListFragment) fragmentManager
+						.findFragmentByTag(tag);
+			} else {
+				fragment = new ExerciseListFragment();
 			}
-            titleBar.setVisibility(View.VISIBLE);
+			titleBar.setVisibility(View.VISIBLE);
 			break;
 			
-		case 3:
+		case R.id.rideButton:
 			//显示骑行页面
-			if (!(currentFragment instanceof RidingFragment)) {
-
-				RidingFragment toFragment = null;
-				List<Fragment> fragments = getSupportFragmentManager()
-						.getFragments();
-				for (Fragment f : fragments) {
-					if (f instanceof RidingFragment) {
-						toFragment = (RidingFragment) f;
-					}else if(f == null){
-						continue;
-					}else{
-						transaction.hide(f);
-					}
-				}
-				transaction.show(currentFragment);
-				if(toFragment != null){
-					transaction.show(toFragment);
-				}else{
-					toFragment = new RidingFragment();
-					transaction.add(R.id.content_frame, toFragment);
-					transaction.show(toFragment);
-				}
-				transaction.commit();
-				toFragment.showTitleBar();
-				currentFragment = toFragment;
-			}
+			tag = RidingFragment.class.getSimpleName();
+			// 显示我的页面
+			fragment = new RidingFragment();
 			break;
-		case 4:
+		case R.id.routeButton:
 			//显示路书页面
-			if (!(currentFragment instanceof RoutesBookMainFragment)) {
-
-				RoutesBookMainFragment toFragment = null;
-				List<Fragment> fragments = getSupportFragmentManager()
-						.getFragments();
-				for (Fragment f : fragments) {
-					if (f instanceof RoutesBookMainFragment) {
-						toFragment = (RoutesBookMainFragment) f;
-					}else if(f == null){
-						continue;
-					}else{
-						transaction.hide(f);
-					}
-				}
-				if(toFragment != null){
-					transaction.show(toFragment);
-				}else{
-					toFragment = new RoutesBookMainFragment();
-					transaction.add(R.id.content_frame, toFragment);
-					transaction.show(toFragment);
-				}
-				transaction.commit();
-				toFragment.showTitleBar();
-				currentFragment = toFragment;
+			tag = RoutesBookMainFragment.class.getSimpleName();
+			// 显示我的页面
+			if (fragmentManager.findFragmentByTag(tag) != null) {
+				fragment = (RoutesBookMainFragment) fragmentManager
+						.findFragmentByTag(tag);
+			} else {
+				fragment = new RoutesBookMainFragment();
 			}
-            titleBar.setVisibility(View.VISIBLE);
+			titleBar.setVisibility(View.VISIBLE);
 			break;
 		default:
 			break;
 		}
 
+		currentTag = tag;
+		currentItem = toItem;
+		if (fragment.isAdded()) {
+			transaction.show(fragment);
+		} else {
+			transaction.add(R.id.content_frame, fragment, currentTag);
+		}
+		transaction.commit();
 	}
 
 	/**
@@ -325,26 +234,26 @@ public class NewMainActivity extends AbActivity {
 		switch (view.getId()) {
 		case R.id.mapButton:
 		    changeBackground(1);
-			changeMainFragment(1);
+			changeMainFragment(view.getId());
 			break;
 
 		case R.id.exerciseButton:
 		    changeBackground(2);
-			changeMainFragment(2);
+			changeMainFragment(view.getId());
 			break;
 			
 		case R.id.rideButton:
 		    changeBackground(3);
-			changeMainFragment(3);
+			changeMainFragment(view.getId());
 			break;
 			
 		case R.id.routeButton:
 		    changeBackground(4);
-			changeMainFragment(4);
+			changeMainFragment(view.getId());
 			break;
 		case R.id.myButton:
 		    changeBackground(5);
-			changeMainFragment(0);
+			changeMainFragment(view.getId());
 			break;
 		case R.id.search:
 			Intent i = new Intent();

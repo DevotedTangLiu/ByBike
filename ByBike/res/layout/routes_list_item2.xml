@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/routes_item_block"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#E6E6E6"
+    android:descendantFocusability="blocksDescendants" >
+
+    <LinearLayout
+        android:id="@+id/upperArea"
+        android:layout_width="fill_parent"
+        android:layout_height="145dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/routebook_item_background2"
+        android:orientation="vertical" >
+
+        <!-- 文字和图片区域 -->
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="78dp"
+            android:layout_marginLeft="23dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp" >
+
+            <ImageView
+                android:id="@+id/routePic"
+                android:layout_width="120dp"
+                android:layout_height="75dp"
+                android:layout_alignParentRight="true"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginRight="13dp"
+                android:layout_toLeftOf="@id/routePic"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="骑行游小洲村"
+                    android:textColor="#4A4A4A"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="13km 小洲村"
+                    android:textColor="#9B9B9B"
+                    android:textSize="9sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:maxLines="2"
+                    android:text="很久以前就打算早点起床，踩车上班。不过一直没有机会啊。今天..."
+                    android:textColor="#646464"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- 时间和按钮 -->
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp" >
+
+            <TextView
+                android:id="@+id/routeTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="23dp"
+                android:text="2014.10.28 14:23"
+                android:textColor="#BBBBBB"
+                android:textSize="9sp" />
+
+            <LinearLayout
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/likeButton"
+                    android:layout_width="41dp"
+                    android:layout_height="22dp"
+                    android:background="@drawable/like_button_selector" >
+
+                    <TextView
+                        android:id="@+id/likeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="25dp"
+                        android:text="9"
+                        android:textColor="#979797"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/talkButton"
+                    android:layout_width="41dp"
+                    android:layout_height="22dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/talk_button_nor" >
+
+                    <TextView
+                        android:id="@+id/talkCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="25dp"
+                        android:text="2"
+                        android:textColor="#979797"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/collectButton"
+                    android:layout_width="41dp"
+                    android:layout_height="22dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/collect_button_selector" >
+
+                    <TextView
+                        android:id="@+id/collectCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="25dp"
+                        android:text="9"
+                        android:textColor="#979797"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="9dp" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="9dp"
+        android:layout_below="@id/upperArea" />
+
+</RelativeLayout>

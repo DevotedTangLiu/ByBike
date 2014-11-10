@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -251,12 +252,50 @@ public class ExerciseDetailActivity extends AbActivity {
 	Button hasBike;
 	Button hasHelmet;
 
+	/**
+	 * 显示报名的对话框
+	 */
 	private void applyClick() {
 		dialog = new Dialog(this, R.style.Theme_dialog);
 		LayoutInflater l = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = l.inflate(R.layout.apply_for_exercise_layout, null);
+		
+		final EditText realNameText = (EditText)view.findViewById(R.id.realName);
+		final EditText phoneNumberText = (EditText)view.findViewById(R.id.phoneNumber);
+		final EditText cardNumberText = (EditText)view.findViewById(R.id.cardNumber);
+		TextView commentText = (TextView)view.findViewById(R.id.comment);
 		hasBike = (Button) view.findViewById(R.id.hasBike);
 		hasHelmet = (Button) view.findViewById(R.id.hasHelmet);
+		Button cancelButton = (Button)view.findViewById(R.id.cancelButton);
+		Button submitButton = (Button)view.findViewById(R.id.submitButton);
+		cancelButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+		submitButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//获取数据
+				String realName = realNameText.getText().toString().trim();
+				String phoneNumber = phoneNumberText.getText().toString().trim();
+				String cardNumber = cardNumberText.getText().toString().trim();
+				if(realName.equals("")){
+					showDialog("温馨提示", "请输入真实姓名");
+				}else if(phoneNumber.equals("")){
+					showDialog("温馨提示", "请输入电话号码");
+				}else if(cardNumber.equals("")){
+					showDialog("温馨提示", "请输入身份证号");
+				}else{
+					dialog.dismiss();
+				}
+			}
+		});
 		dialog.setContentView(view);
 		dialog.show();
 	}
