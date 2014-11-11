@@ -74,14 +74,13 @@ public class ExerciseListFragment extends Fragment {
 						R.id.talkCount, R.id.collectCount });
 		mAbPullListView.setAdapter(myListViewAdapter);
 		// item被点击事件
-		// item被点击事件
 		mAbPullListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
 				Intent i = new Intent();
-				i.setClass(mActivity, ExerciseDetailActivity.class);
+				i.setClass(mActivity, ExerciseDetailActivity2.class);
 				startActivity(i);
 				mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 			}

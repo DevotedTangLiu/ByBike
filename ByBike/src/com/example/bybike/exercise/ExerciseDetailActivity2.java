@@ -7,26 +7,22 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
 import com.ab.bitmap.AbImageDownloader;
-import com.ab.task.AbTaskItem;
-import com.ab.task.AbTaskListener;
-import com.ab.task.AbTaskQueue;
 import com.ab.view.sliding.AbSlidingPlayView;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
@@ -36,9 +32,8 @@ import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
 import com.example.bybike.routes.ObservableScrollView;
 import com.example.bybike.routes.ObservableScrollView.ScrollViewListener;
-import com.example.bybike.util.PublicMethods;
 
-public class ExerciseDetailActivity extends AbActivity {
+public class ExerciseDetailActivity2 extends AbActivity {
 
 	/**
 	 * 高德地图相关
@@ -50,7 +45,6 @@ public class ExerciseDetailActivity extends AbActivity {
 	RelativeLayout exercisePicArea = null;
 	AbSlidingPlayView mAbSlidingPlayView = null;
 	// 滚动区域
-	ObservableScrollView scrollView = null;
 	private LinearLayout spaceArea;
 	// 评论列表
 	ListView discussList = null;
@@ -67,13 +61,8 @@ public class ExerciseDetailActivity extends AbActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setAbContentView(R.layout.activity_exercise_detaill);
+		setContentView(R.layout.activity_exercise_detaill2);
 		getTitleBar().setVisibility(View.GONE);
-		
-		long t1 = System.currentTimeMillis();
-		scrollView = (ObservableScrollView) findViewById(R.id.scrollView);
-		scrollView.setScrollViewListener(scrollChangedListener);
-		spaceArea = (LinearLayout) findViewById(R.id.spaceArea);
 		exercisePicArea = (RelativeLayout) findViewById(R.id.exercisePicArea);
 
 		mAbSlidingPlayView = (AbSlidingPlayView) findViewById(R.id.mAbSlidingPlayView);
@@ -97,48 +86,52 @@ public class ExerciseDetailActivity extends AbActivity {
 							"http://img0.imgtn.bdimg.com/it/u=1196327338,3394668792&fm=21&gp=0.jpg");
 		}
 
-		//按钮点击事件
-		likeButton = (RelativeLayout) findViewById(R.id.likeButton);
-		likeCount = (TextView)findViewById(R.id.likeCount);
-		likeButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (v.isSelected()) {
-					v.setSelected(false);
-					int count = Integer.valueOf(likeCount.getText().toString());
-                    count --;
-                    likeCount.setText(String.valueOf(count));
-				} else {
-					v.setSelected(true);
-					int count = Integer.valueOf(likeCount.getText().toString());
-                    count ++;
-                    likeCount.setText(String.valueOf(count));
-				}
-			}
-		});
-		collectButton = (RelativeLayout) findViewById(R.id.collectButton);
-		collectCount = (TextView)findViewById(R.id.collectCount);
-		collectButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (v.isSelected()) {
-					v.setSelected(false);
-					int count = Integer.valueOf(collectCount.getText().toString());
-                    count --;
-                    collectCount.setText(String.valueOf(count));
-				} else {
-					v.setSelected(true);
-					int count = Integer.valueOf(collectCount.getText().toString());
-                    count ++;
-                    collectCount.setText(String.valueOf(count));
-				}
-			}
-		});
+		// 按钮点击事件
+		// likeButton = (RelativeLayout) findViewById(R.id.likeButton);
+		// likeCount = (TextView)findViewById(R.id.likeCount);
+		// likeButton.setOnClickListener(new OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// // TODO Auto-generated method stub
+		// if (v.isSelected()) {
+		// v.setSelected(false);
+		// int count = Integer.valueOf(likeCount.getText().toString());
+		// count --;
+		// likeCount.setText(String.valueOf(count));
+		// } else {
+		// v.setSelected(true);
+		// int count = Integer.valueOf(likeCount.getText().toString());
+		// count ++;
+		// likeCount.setText(String.valueOf(count));
+		// }
+		// }
+		// });
+		// collectButton = (RelativeLayout) findViewById(R.id.collectButton);
+		// collectCount = (TextView)findViewById(R.id.collectCount);
+		// collectButton.setOnClickListener(new OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// // TODO Auto-generated method stub
+		// if (v.isSelected()) {
+		// v.setSelected(false);
+		// int count = Integer.valueOf(collectCount.getText().toString());
+		// count --;
+		// collectCount.setText(String.valueOf(count));
+		// } else {
+		// v.setSelected(true);
+		// int count = Integer.valueOf(collectCount.getText().toString());
+		// count ++;
+		// collectCount.setText(String.valueOf(count));
+		// }
+		// }
+		// });
 
-		long t2 = System.currentTimeMillis();
 		discussList = (ListView) findViewById(R.id.discussList);
+		// 添加header
+		View detaileader = mInflater.inflate(R.layout.detail_header, null);
+		spaceArea = (LinearLayout) detaileader.findViewById(R.id.spaceArea);
+		discussList.addHeaderView(detaileader);
+
 		discussValueList = new ArrayList<ContentValues>();
 		for (int i = 0; i < 2; i++) {
 			ContentValues v1 = new ContentValues();
@@ -156,12 +149,41 @@ public class ExerciseDetailActivity extends AbActivity {
 			v2.put("discussTime", "10.28 14:48");
 			discussValueList.add(v2);
 		}
-		discussAdapter = new ExerciseDiscussListAdapter(ExerciseDetailActivity.this, discussValueList);
+		discussAdapter = new ExerciseDiscussListAdapter(
+				ExerciseDetailActivity2.this, discussValueList);
 		discussList.setAdapter(discussAdapter);
-		PublicMethods.setListViewHeightBasedOnChildren(discussList);
+		discussList.setOnTouchListener(new OnTouchListener() {
 
-		long t3 = System.currentTimeMillis();
-		
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				// 获得触摸的坐标
+				float x = event.getX();
+				float y = event.getY();
+				float rY = 0;
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					rY = event.getY();
+					break;
+				case MotionEvent.ACTION_MOVE:
+					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) discussList  
+                    .getLayoutParams();  
+					float dis = rY - y;
+                    layoutParams.height -= dis;  
+                    System.out.println("dis:"+dis);
+                    System.out.println("height:" + layoutParams.height);
+                    discussList.setLayoutParams(layoutParams);  
+                    
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+				default:
+					break;
+				}
+				return false;
+			}
+
+		});
 		// ===============初始化地图========================
 		// 获取地图控件引用
 		mMapView = (MapView) findViewById(R.id.bmapView);
@@ -188,10 +210,6 @@ public class ExerciseDetailActivity extends AbActivity {
 				applyClick();
 			}
 		});
-		long t4 = System.currentTimeMillis();
-		Log.i("","findView时间：" + String.valueOf(t2-t1));
-		Log.i("","ListView时间：" + String.valueOf(t3-t2));
-		Log.i("","地图、对话框时间：" + String.valueOf(t4-t3));
 
 	}
 
@@ -256,7 +274,7 @@ public class ExerciseDetailActivity extends AbActivity {
 	 * 退出页面
 	 */
 	private void goBack() {
-		ExerciseDetailActivity.this.finish();
+		ExerciseDetailActivity2.this.finish();
 		overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 	}
 
@@ -274,17 +292,20 @@ public class ExerciseDetailActivity extends AbActivity {
 		dialog = new Dialog(this, R.style.Theme_dialog);
 		LayoutInflater l = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = l.inflate(R.layout.apply_for_exercise_layout, null);
-		
-		final EditText realNameText = (EditText)view.findViewById(R.id.realName);
-		final EditText phoneNumberText = (EditText)view.findViewById(R.id.phoneNumber);
-		final EditText cardNumberText = (EditText)view.findViewById(R.id.cardNumber);
-		TextView commentText = (TextView)view.findViewById(R.id.comment);
+
+		final EditText realNameText = (EditText) view
+				.findViewById(R.id.realName);
+		final EditText phoneNumberText = (EditText) view
+				.findViewById(R.id.phoneNumber);
+		final EditText cardNumberText = (EditText) view
+				.findViewById(R.id.cardNumber);
+		TextView commentText = (TextView) view.findViewById(R.id.comment);
 		hasBike = (Button) view.findViewById(R.id.hasBike);
 		hasHelmet = (Button) view.findViewById(R.id.hasHelmet);
-		Button cancelButton = (Button)view.findViewById(R.id.cancelButton);
-		Button submitButton = (Button)view.findViewById(R.id.submitButton);
+		Button cancelButton = (Button) view.findViewById(R.id.cancelButton);
+		Button submitButton = (Button) view.findViewById(R.id.submitButton);
 		cancelButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -292,21 +313,22 @@ public class ExerciseDetailActivity extends AbActivity {
 			}
 		});
 		submitButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				//获取数据
+				// 获取数据
 				String realName = realNameText.getText().toString().trim();
-				String phoneNumber = phoneNumberText.getText().toString().trim();
+				String phoneNumber = phoneNumberText.getText().toString()
+						.trim();
 				String cardNumber = cardNumberText.getText().toString().trim();
-				if(realName.equals("")){
+				if (realName.equals("")) {
 					showDialog("温馨提示", "请输入真实姓名");
-				}else if(phoneNumber.equals("")){
+				} else if (phoneNumber.equals("")) {
 					showDialog("温馨提示", "请输入电话号码");
-				}else if(cardNumber.equals("")){
+				} else if (cardNumber.equals("")) {
 					showDialog("温馨提示", "请输入身份证号");
-				}else{
+				} else {
 					dialog.dismiss();
 				}
 			}
@@ -314,8 +336,7 @@ public class ExerciseDetailActivity extends AbActivity {
 		dialog.setContentView(view);
 		dialog.show();
 	}
-	
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -345,5 +366,5 @@ public class ExerciseDetailActivity extends AbActivity {
 		super.onSaveInstanceState(outState);
 		mMapView.onSaveInstanceState(outState);
 	}
-	
+
 }
