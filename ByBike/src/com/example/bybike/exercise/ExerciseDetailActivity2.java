@@ -13,6 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,6 +59,18 @@ public class ExerciseDetailActivity2 extends AbActivity {
 	TextView likeCount;
 	RelativeLayout collectButton;
 	TextView collectCount;
+	TextView distance;
+	TextView timeLong;
+	TextView publishTime;
+	TextView exerciseTitle;
+	TextView exerciseRouteAddress;
+	TextView exerciseTime;
+	TextView exerciseDetail;
+	TextView exercisePrice;
+	TextView deadline;
+	TextView applyUserCount;
+	TextView discussCount;
+	Button discussButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,116 +78,96 @@ public class ExerciseDetailActivity2 extends AbActivity {
 		setContentView(R.layout.activity_exercise_detaill2);
 		getTitleBar().setVisibility(View.GONE);
 		exercisePicArea = (RelativeLayout) findViewById(R.id.exercisePicArea);
-
 		mAbSlidingPlayView = (AbSlidingPlayView) findViewById(R.id.mAbSlidingPlayView);
-		// 图片的下载
-		mAbImageDownloader = new AbImageDownloader(this);
-		mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
-		mAbImageDownloader.setNoImage(R.drawable.image_no);
-		mAbImageDownloader.setErrorImage(R.drawable.image_error);
 
-		for (int i = 0; i < 3; i++) {
-
-			final View mPlayView = mInflater.inflate(R.layout.play_view_item,
-					null);
-			ImageView mPlayImage = (ImageView) mPlayView
-					.findViewById(R.id.mPlayImage);
-			mAbSlidingPlayView.setPageLineHorizontalGravity(Gravity.CENTER);
-			mAbSlidingPlayView.addView(mPlayView);
-
-			mAbImageDownloader
-					.display(mPlayImage,
-							"http://img0.imgtn.bdimg.com/it/u=1196327338,3394668792&fm=21&gp=0.jpg");
-		}
-
-		// 按钮点击事件
-		// likeButton = (RelativeLayout) findViewById(R.id.likeButton);
-		// likeCount = (TextView)findViewById(R.id.likeCount);
-		// likeButton.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		// if (v.isSelected()) {
-		// v.setSelected(false);
-		// int count = Integer.valueOf(likeCount.getText().toString());
-		// count --;
-		// likeCount.setText(String.valueOf(count));
-		// } else {
-		// v.setSelected(true);
-		// int count = Integer.valueOf(likeCount.getText().toString());
-		// count ++;
-		// likeCount.setText(String.valueOf(count));
-		// }
-		// }
-		// });
-		// collectButton = (RelativeLayout) findViewById(R.id.collectButton);
-		// collectCount = (TextView)findViewById(R.id.collectCount);
-		// collectButton.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		// if (v.isSelected()) {
-		// v.setSelected(false);
-		// int count = Integer.valueOf(collectCount.getText().toString());
-		// count --;
-		// collectCount.setText(String.valueOf(count));
-		// } else {
-		// v.setSelected(true);
-		// int count = Integer.valueOf(collectCount.getText().toString());
-		// count ++;
-		// collectCount.setText(String.valueOf(count));
-		// }
-		// }
-		// });
-
+		showProgressDialog("正在加载，请稍后...");
 		discussList = (ListView) findViewById(R.id.discussList);
 		// 添加header
-		View detaileader = mInflater.inflate(R.layout.detail_header, null);
-		spaceArea = (LinearLayout) detaileader.findViewById(R.id.spaceArea);
-		discussList.addHeaderView(detaileader);
-
+		final View detailheader = mInflater.inflate(R.layout.detail_header, null);
+		spaceArea = (LinearLayout) detailheader.findViewById(R.id.spaceArea);
+		likeButton = (RelativeLayout)detailheader.findViewById(R.id.likeButton);
+		likeCount = (TextView)detailheader.findViewById(R.id.likeCount);
+		collectButton = (RelativeLayout)detailheader.findViewById(R.id.collectButton);
+		collectCount = (TextView)detailheader.findViewById(R.id.collectCount);
+		distance = (TextView)detailheader.findViewById(R.id.distance);
+		timeLong = (TextView)detailheader.findViewById(R.id.timeLong);
+		publishTime = (TextView)detailheader.findViewById(R.id.publishTime);
+		exerciseTitle = (TextView)detailheader.findViewById(R.id.exerciseTitle);
+		exerciseRouteAddress = (TextView)detailheader.findViewById(R.id.exerciseRouteAddress);
+		exerciseTime = (TextView)detailheader.findViewById(R.id.exerciseTime);
+		exerciseDetail = (TextView)detailheader.findViewById(R.id.exerciseDetail);
+		exercisePrice = (TextView)detailheader.findViewById(R.id.exercisePrice);
+		deadline = (TextView)detailheader.findViewById(R.id.deadline);
+		applyUserCount = (TextView)detailheader.findViewById(R.id.applyUserCount);
+		discussCount = (TextView)detailheader.findViewById(R.id.discussCount);
+		discussButton = (Button)detailheader.findViewById(R.id.discussButton);
+		likeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (v.isSelected()) {
+					v.setSelected(false);
+					int count = Integer.valueOf(likeCount.getText().toString());
+                    count --;
+                    likeCount.setText(String.valueOf(count));
+				} else {
+					v.setSelected(true);
+					int count = Integer.valueOf(likeCount.getText().toString());
+                    count ++;
+                    likeCount.setText(String.valueOf(count));
+				}
+			}
+		});
+		collectButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (v.isSelected()) {
+					v.setSelected(false);
+					int count = Integer.valueOf(collectCount.getText().toString());
+                    count --;
+                    collectCount.setText(String.valueOf(count));
+				} else {
+					v.setSelected(true);
+					int count = Integer.valueOf(collectCount.getText().toString());
+                    count ++;
+                    collectCount.setText(String.valueOf(count));
+				}
+			}
+		});
+		
+		discussList.addHeaderView(detailheader);
 		discussValueList = new ArrayList<ContentValues>();
-		for (int i = 0; i < 2; i++) {
-			ContentValues v1 = new ContentValues();
-			v1.put("userName", "ChaolotteYam");
-			v1.put("discussContent", "有爱。");
-			v1.put("avater",
-					"http://t11.baidu.com/it/u=1610160448,1299213022&fm=56");
-			v1.put("discussTime", "10.28 14:30");
-			discussValueList.add(v1);
-			ContentValues v2 = new ContentValues();
-			v2.put("userName", "Jeronmme_1221");
-			v2.put("discussContent", "今天倍儿爽！");
-			v2.put("avater",
-					"http://t11.baidu.com/it/u=1620038746,1252150868&fm=56");
-			v2.put("discussTime", "10.28 14:48");
-			discussValueList.add(v2);
-		}
 		discussAdapter = new ExerciseDiscussListAdapter(
 				ExerciseDetailActivity2.this, discussValueList);
 		discussList.setAdapter(discussAdapter);
+		/**
+		 * 定义discussList的触摸事件和滚动事件
+		 */
 		discussList.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
-				// 获得触摸的坐标
-				float x = event.getX();
-				float y = event.getY();
-				float rY = 0;
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					rY = event.getY();
+					if (firstCreated) {
+						firstCreated = false;
+						discussList.bringToFront();
+						discussList.requestLayout();
+						discussList.invalidate();
+					}
 					break;
 				case MotionEvent.ACTION_MOVE:
-					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) discussList  
-                    .getLayoutParams();  
-					float dis = rY - y;
-                    layoutParams.height -= dis;  
-                    System.out.println("dis:"+dis);
-                    System.out.println("height:" + layoutParams.height);
-                    discussList.setLayoutParams(layoutParams);  
-                    
+
+					if (detailheader.getTop() < 0) {
+						System.out.println("moving:" + detailheader.getTop());
+						discussList.bringToFront();
+						spaceArea.setVisibility(View.VISIBLE);
+					} else {
+						exercisePicArea.bringToFront();
+						spaceArea.setVisibility(View.INVISIBLE);
+					}
 					break;
 				case MotionEvent.ACTION_UP:
 					break;
@@ -182,8 +176,34 @@ public class ExerciseDetailActivity2 extends AbActivity {
 				}
 				return false;
 			}
-
 		});
+		discussList.setOnScrollListener(new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				switch (scrollState) {
+				case OnScrollListener.SCROLL_STATE_IDLE:
+					if (detailheader.getTop() < 0) {
+						discussList.bringToFront();
+						spaceArea.setVisibility(View.VISIBLE);
+					} else {
+						exercisePicArea.bringToFront();
+						spaceArea.setVisibility(View.INVISIBLE);
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+			}
+		});
+
 		// ===============初始化地图========================
 		// 获取地图控件引用
 		mMapView = (MapView) findViewById(R.id.bmapView);
@@ -213,8 +233,60 @@ public class ExerciseDetailActivity2 extends AbActivity {
 
 	}
 
+	private boolean firstCreated = true;
+
+	
 	/**
-	 * 接受调用
+	 * 初始化视图
+	 */
+	private void loadData() {
+
+		//在地图上显示数据
+		
+		// 下载和显示图片
+		mAbImageDownloader = new AbImageDownloader(this);
+		mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
+		mAbImageDownloader.setNoImage(R.drawable.image_no);
+		mAbImageDownloader.setErrorImage(R.drawable.image_error);
+
+		for (int i = 0; i < 3; i++) {
+
+			final View mPlayView = mInflater.inflate(R.layout.play_view_item,
+					null);
+			ImageView mPlayImage = (ImageView) mPlayView
+					.findViewById(R.id.mPlayImage);
+			mAbSlidingPlayView.setPageLineHorizontalGravity(Gravity.CENTER);
+			mAbSlidingPlayView.addView(mPlayView);
+
+			mAbImageDownloader
+					.display(mPlayImage,
+							"http://img0.imgtn.bdimg.com/it/u=1196327338,3394668792&fm=21&gp=0.jpg");
+		}
+
+		//填充详细数据
+		
+		//填充评论列表
+		for (int i = 0; i < 2; i++) {
+			ContentValues v1 = new ContentValues();
+			v1.put("userName", "ChaolotteYam");
+			v1.put("discussContent", "有爱。");
+			v1.put("avater",
+					"http://t11.baidu.com/it/u=1610160448,1299213022&fm=56");
+			v1.put("discussTime", "10.28 14:30");
+			discussValueList.add(v1);
+			ContentValues v2 = new ContentValues();
+			v2.put("userName", "Jeronmme_1221");
+			v2.put("discussContent", "今天倍儿爽！");
+			v2.put("avater",
+					"http://t11.baidu.com/it/u=1620038746,1252150868&fm=56");
+			v2.put("discussTime", "10.28 14:48");
+			discussValueList.add(v2);
+		}
+		discussAdapter.notifyDataSetChanged();
+	}
+
+	/**
+	 * 接受页面button调用
 	 * 
 	 * @param source
 	 */
@@ -252,23 +324,6 @@ public class ExerciseDetailActivity2 extends AbActivity {
 			break;
 		}
 	}
-
-	private ScrollViewListener scrollChangedListener = new ScrollViewListener() {
-
-		@Override
-		public void onScrollChanged(ObservableScrollView scrollView, int x,
-				int y, int oldx, int oldy) {
-			// TODO Auto-generated method stub
-			if (y > 0) {
-				scrollView.bringToFront();
-				spaceArea.setVisibility(View.VISIBLE);
-			} else {
-				spaceArea.setVisibility(View.INVISIBLE);
-				exercisePicArea.bringToFront();
-			}
-		}
-
-	};
 
 	/**
 	 * 退出页面
@@ -349,6 +404,8 @@ public class ExerciseDetailActivity2 extends AbActivity {
 		super.onResume();
 		// 在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
 		mMapView.onResume();
+		removeProgressDialog();
+		loadData();
 	}
 
 	@Override

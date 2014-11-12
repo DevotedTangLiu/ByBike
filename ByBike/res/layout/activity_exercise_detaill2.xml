@@ -51,8 +51,17 @@
         </TextView>
     </RelativeLayout>
     
+     <!-- 可滚动区域 -->
+    <ListView
+        android:id="@+id/discussList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none" >
+    </ListView>
+    
     <!-- 地图、图片区域 -->
-
     <RelativeLayout
         android:id="@+id/exercisePicArea"
         android:layout_width="fill_parent"
@@ -83,12 +92,5 @@
             android:onClick="clickHandler" />
     </RelativeLayout>
 
-    <!-- 可滚动区域 -->
-
-    <ListView
-        android:id="@+id/discussList"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp">
-    </ListView>
+   
 </RelativeLayout>

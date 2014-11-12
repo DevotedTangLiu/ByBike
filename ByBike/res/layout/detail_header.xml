@@ -208,6 +208,7 @@
         <!-- 活动详情区域 -->
 
         <TextView
+            android:id="@+id/exerciseDetail"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="17dp"
@@ -255,6 +256,7 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/deadline"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="10.27 24:00"
@@ -295,7 +297,7 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/userCount2"
+                android:id="@+id/applyUserCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
