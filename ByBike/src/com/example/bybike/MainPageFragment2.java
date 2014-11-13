@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.example.bybike.marker.MarkerDetailActivity;
 
 /**
  * @author tangliu(mail) 2014-9-18
@@ -230,8 +232,8 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
         markerOption.title("成都市").snippet("test marker");
         markerOption.draggable(false);
         markerOption.icon(BitmapDescriptorFactory
-                .fromResource(R.drawable.me3));
-        Marker marker2 = aMap.addMarker(markerOption);
+                .fromResource(R.drawable.marker_icon_bikestore));
+        Marker marker1 = aMap.addMarker(markerOption);
 
 		// drawMarkers();// 添加10个带有系统默认icon的marker
 	}
@@ -240,7 +242,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 	 // 设置所有maker显示在当前可视区域地图中
         LatLngBounds bounds = new LatLngBounds.Builder()
                 .include(new LatLng(30.679879, 104.064855)).include(nowLocationLatLng).build();
-        aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+        aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
 	}
 	
 	/**
@@ -277,6 +279,10 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 		public void onInfoWindowClick(Marker marker) {
 			// TODO Auto-generated method stub
 			marker.hideInfoWindow();
+			Intent i = new Intent();
+			i.setClass(mActivity, MarkerDetailActivity.class);
+			startActivity(i);
+			mActivity.overridePendingTransition(R.anim.fragment_in, 0);
 		}
 
 	}
@@ -288,9 +294,9 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 
 	  
 	    ImageView v = (ImageView) view.findViewById(R.id.badge);
-	    v.setBackgroundResource(R.drawable.me3);
+	    v.setBackgroundResource(R.drawable.marker_icon_bikestore);
 	    TextView t = (TextView)view.findViewById(R.id.name);
-	    t.setText("大不了");
+	    t.setText("大不溜租车店");
 	    
 	}
 

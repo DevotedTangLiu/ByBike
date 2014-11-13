@@ -28,7 +28,7 @@ public class AccountSettingActivity extends AbActivity {
 		LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, 150);
 		mAbTitleBar.setLayoutParams(params);
 		mAbTitleBar.setTitleTextBold(true);
-		mAbTitleBar.setLogo(R.drawable.back_icon);
+		mAbTitleBar.setLogo(R.drawable.back_button);
 		mAbTitleBar.setTitleBarBackground(R.drawable.title_bar);
 		mAbTitleBar.setTitleBarGravity(Gravity.CENTER, Gravity.CENTER);
 		

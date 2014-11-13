@@ -1,7 +1,5 @@
 package com.example.bybike;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.ab.activity.AbActivity;
@@ -18,14 +17,12 @@ import com.ab.task.AbTaskItem;
 import com.ab.task.AbTaskListener;
 import com.ab.task.AbTaskQueue;
 import com.example.bybike.exercise.ExerciseListFragment;
-import com.example.bybike.riding.RidingFragment;
 import com.example.bybike.routes.RoutesBookMainFragment;
 import com.example.bybike.user.UserMainPageFragment;
 
 public class NewMainActivity extends AbActivity {
 
 //	private SlidingMenu menu;
-	private Fragment currentFragment;
 	public int currentItem = 0;
 	public FragmentManager fragmentManager;
 	public Fragment fragment;
@@ -36,6 +33,8 @@ public class NewMainActivity extends AbActivity {
 	private AbTaskQueue mAbTaskQueue = null;
 	private boolean exit = false;
 	AbTaskItem item1 = null;
+	
+	RelativeLayout clickRideButtonPage = null;
 
 	RelativeLayout titleBar;
 	@Override
@@ -43,7 +42,8 @@ public class NewMainActivity extends AbActivity {
 		super.onCreate(savedInstanceState);
 		setAbContentView(R.layout.sliding_menu_content);
 		getTitleBar().setVisibility(View.GONE);
-		currentFragment = new MainPageFragment2();
+		
+		clickRideButtonPage = (RelativeLayout)findViewById(R.id.cover);
 		// 主视图的Fragment添加
 		fragmentManager = getSupportFragmentManager();
 		titleBar = (RelativeLayout)findViewById(R.id.titleBar);
@@ -111,19 +111,17 @@ public class NewMainActivity extends AbActivity {
 		// TODO Auto-generated method stub
 		//如果当前页面和点击的页面是同一个，则跳出
 		if(toItem == currentItem) return;
+		if(toItem == R.id.rideButton){
+			clickRideButtonPage.setVisibility(View.VISIBLE);
+			currentItem = R.id.rideButton;
+			return;
+		}else{
+			clickRideButtonPage.setVisibility(View.GONE);
+		}
 		
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		Fragment currentFragment = fragmentManager.findFragmentByTag(currentTag);
-		//如果当前页面是半透明的骑行页面，则先把该页面remove掉,再把所有fragment隐藏
-		if(currentTag.equalsIgnoreCase(RidingFragment.class.getSimpleName()))
-		{
-			transaction.remove(currentFragment);
-			List<Fragment>fs = fragmentManager.getFragments();
-			for(Fragment f: fs){
-				transaction.hide(f);
-			}
-			
-		}else if (currentFragment != null && toItem != R.id.rideButton) {
+		if(currentFragment != null) {
 			// 将当前的Frament隐藏到后台去
 			transaction.hide(currentFragment);
 		}
@@ -163,13 +161,6 @@ public class NewMainActivity extends AbActivity {
 				fragment = new ExerciseListFragment();
 			}
 			titleBar.setVisibility(View.VISIBLE);
-			break;
-			
-		case R.id.rideButton:
-			//显示骑行页面
-			tag = RidingFragment.class.getSimpleName();
-			// 显示我的页面
-			fragment = new RidingFragment();
 			break;
 		case R.id.routeButton:
 			//显示路书页面

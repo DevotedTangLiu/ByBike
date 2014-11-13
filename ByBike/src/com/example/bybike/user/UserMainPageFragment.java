@@ -28,7 +28,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.ab.bitmap.AbImageDownloader;
 import com.ab.http.AbHttpUtil;
@@ -40,6 +42,9 @@ import com.example.bybike.adapter.ExerciseListAdapter2;
 import com.example.bybike.adapter.MarkerListAdapter;
 import com.example.bybike.adapter.RoutesBookListAdapter2;
 import com.example.bybike.exercise.ExerciseDetailActivity;
+import com.example.bybike.friends.FriendsActivity;
+import com.example.bybike.marker.MarkerDetailActivity;
+import com.example.bybike.routes.RouteDetailActivity;
 import com.example.bybike.setting.SettingMainActivity;
 
 /**
@@ -87,6 +92,8 @@ public class UserMainPageFragment extends Fragment {
 
 		Button gotoSetting = (Button) view.findViewById(R.id.goToSetting);
 		gotoSetting.setOnClickListener(click);
+		RelativeLayout goToMessage = (RelativeLayout)view.findViewById(R.id.goToMessage);
+		goToMessage.setOnClickListener(click);
 
 		chooseExercise = (Button) view.findViewById(R.id.chooseExercise);
 		chooseExercise.setSelected(true);
@@ -98,7 +105,10 @@ public class UserMainPageFragment extends Fragment {
 
 		mPager = (ViewPager) view.findViewById(R.id.vPager);
 		listViews = new ArrayList<View>();
-
+		
+		TextView friendsCount = (TextView)view.findViewById(R.id.friendsCount);
+        friendsCount.setOnClickListener(click);
+		
 		initViewPager();
 
 		return view;
@@ -171,6 +181,18 @@ public class UserMainPageFragment extends Fragment {
 		myRouteBookListAdapter = new RoutesBookListAdapter2(mActivity,
 				myRouteBookListData);
 		myRouteBookListView.setAdapter(myRouteBookListAdapter);
+		myRouteBookListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+
+				Intent i = new Intent();
+				i.setClass(mActivity, RouteDetailActivity.class);
+				startActivity(i);
+				mActivity.overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
+			}
+		});
 		listViews.add(myRouteBookListLayout);
 
 		/**
@@ -189,6 +211,18 @@ public class UserMainPageFragment extends Fragment {
 		}
 		myMarkerListAdapter = new MarkerListAdapter(mActivity, myMarkerListData);
 		myMarkerListView.setAdapter(myMarkerListAdapter);
+		myMarkerListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+
+				Intent i = new Intent();
+				i.setClass(mActivity, MarkerDetailActivity.class);
+				startActivity(i);
+				mActivity.overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
+			}
+		});
 		listViews.add(myMarkerListLayout);
 
 		/**
@@ -209,6 +243,9 @@ public class UserMainPageFragment extends Fragment {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			switch (v.getId()) {
+			case R.id.goToMessage:
+				createSystemNoticeMessage();
+				break;
 			case R.id.goToSetting:
 				Intent i = new Intent();
 				i.setClass(mActivity, SettingMainActivity.class);
@@ -234,6 +271,13 @@ public class UserMainPageFragment extends Fragment {
 				chooseExercise.setSelected(false);
 				chooseRouteBook.setSelected(false);
 				chooseMarker.setSelected(true);
+				break;
+			case R.id.friendsCount:
+				Intent friendsIntent = new Intent();
+				friendsIntent.setClass(mActivity, FriendsActivity.class);
+				startActivity(friendsIntent);
+				mActivity.overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
 				break;
 			default:
 				break;

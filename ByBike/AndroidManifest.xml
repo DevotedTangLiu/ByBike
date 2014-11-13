@@ -136,6 +136,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 标记点 -->
+        <activity
+            android:name="com.example.bybike.marker.MarkerDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 定位服务service -->
         <meta-data
             android:name="com.amap.api.v2.apikey"

@@ -16,8 +16,8 @@
             android:layout_height="37dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="13dp"
-            android:onClick="onclick"
-            android:background="@drawable/search_button" />
+            android:background="@drawable/search_button"
+            android:onClick="onclick" />
 
         <LinearLayout
             android:layout_width="80dp"
@@ -45,8 +45,6 @@
         </Button>
     </RelativeLayout>
 
-    
-    
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -59,13 +57,34 @@
             android:layout_marginBottom="-5dp"
             android:background="@color/exercise_list_background" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/cover"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@color/cover_color"
-            android:orientation="vertical"
-            android:visibility="gone" />
+            android:background="#90000000"
+            android:clickable="true"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical" >
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/add_marker_button"
+                    android:onClick="onclick" />
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/begin_ride_button"
+                    android:onClick="onclick" />
+            </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
     <LinearLayout

@@ -75,7 +75,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/collectItemsPic"
-            android:text="公共标记"
+            android:text="收藏标记"
             android:textColor="#646464"
             android:textSize="12sp" />
 
