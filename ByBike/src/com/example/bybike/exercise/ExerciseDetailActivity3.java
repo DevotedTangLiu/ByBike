@@ -78,6 +78,28 @@ public class ExerciseDetailActivity3 extends AbActivity {
 		AbsListView.LayoutParams localObject = new AbsListView.LayoutParams(
 				mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
 		discussListView.setHeaderLayoutParams(localObject);
+		
+//		discussListView.getHeaderView().setOnTouchListener(new OnTouchListener() {
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                // TODO Auto-generated method stub
+//                System.out.println("------------header---------------");
+//                System.out.println("view-------"+ v);
+//                v.onTouchEvent(event);
+//                return true;
+//            }
+//        });
+		discussListView.getZoomView().setOnTouchListener(new OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                System.out.println("------------zoom---------------");
+                v.onTouchEvent(event);
+                return true;
+            }
+        });
 
 		// ===============初始化地图========================
 		// 获取地图控件引用
@@ -94,26 +116,6 @@ public class ExerciseDetailActivity3 extends AbActivity {
 		mUiSettings.setScaleControlsEnabled(false);
 		mUiSettings.setMyLocationButtonEnabled(false);
 		aMap.animateCamera(CameraUpdateFactory.zoomTo(15), 100, null);
-		discussListView.getZoomView().setOnTouchListener(new OnTouchListener() {
-	        @Override
-	        public boolean onTouch(View v, MotionEvent event) {
-	            int action = event.getAction();
-	            switch (action) {
-	            case MotionEvent.ACTION_DOWN:
-	                // Disallow ScrollView to intercept touch events.
-	            	discussListView.requestDisallowInterceptTouchEvent(true);
-	                break;
-
-	            case MotionEvent.ACTION_UP:
-	                // Allow ScrollView to intercept touch events.
-	            	discussListView.requestDisallowInterceptTouchEvent(false);
-	                break;
-	            }
-	            // Handle ListView touch events.
-	            v.onTouchEvent(event);
-	            return true;
-	        }
-	    });
 		// ===============================================
 		mAbSlidingPlayView = (AbSlidingPlayView) discussListView.getZoomView()
 				.findViewById(R.id.mAbSlidingPlayView);

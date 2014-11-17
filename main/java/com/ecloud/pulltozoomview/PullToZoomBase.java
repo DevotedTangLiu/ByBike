@@ -1,10 +1,9 @@
 package com.ecloud.pulltozoomview;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -162,9 +161,9 @@ public abstract class PullToZoomBase<T extends View> extends LinearLayout implem
             return false;
         }
 
-//        if (action != MotionEvent.ACTION_DOWN && mIsBeingDragged) {
-//            return true;
-//        }
+        if (action != MotionEvent.ACTION_DOWN && mIsBeingDragged) {
+            return true;
+        }
         switch (action) {
             case MotionEvent.ACTION_MOVE: {
                 if (isReadyForPullStart()) {
@@ -197,7 +196,7 @@ public abstract class PullToZoomBase<T extends View> extends LinearLayout implem
             }
         }
 
-        return false;
+        return mIsBeingDragged;
     }
 
     @Override

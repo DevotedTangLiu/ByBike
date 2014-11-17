@@ -45,7 +45,7 @@ public class PullToZoomListViewEx extends PullToZoomBase<ListView> implements Ab
 
     public PullToZoomListViewEx(Context context, AttributeSet attrs) {
         super(context, attrs);
-//        mRootView.setOnScrollListener(this);
+        mRootView.setOnScrollListener(this);
         mScalingRunnable = new ScalingRunnable();
     }
 

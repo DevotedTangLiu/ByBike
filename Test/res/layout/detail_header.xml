@@ -1,0 +1,384 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    android:background="@null">
+
+    <!-- 里程和时间 -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/exercise_detail"
+        android:baselineAligned="false"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="里程"
+                    android:textColor="#9B9B9B"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="32"
+                    android:textColor="#4A4A4A"
+                    android:textSize="23sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="km"
+                    android:textColor="#9B9B9B"
+                    android:textSize="15dp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="时间"
+                    android:textColor="#9B9B9B"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/timeLong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="约3小时"
+                    android:textColor="#4A4A4A"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+    <!-- 里程和时间区域结束 -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#F5F5F5"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="8dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="8dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发布时间:  "
+                android:textColor="#9B9B9B"
+                android:textSize="12dp" />
+
+            <TextView
+                android:id="@+id/publishTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2014.10.28"
+                android:textColor="#9B9B9B"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="18dp" />
+
+        <!-- 活动主题、地址、时间区域 -->
+
+        <TextView
+            android:id="@+id/exerciseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="17dp"
+            android:text="返老还童 - 老城区环游"
+            android:textColor="#4A4A4A"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="13dp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="17dp"
+                android:background="@drawable/route_button" />
+
+            <TextView
+                android:id="@+id/exerciseRouteAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="约 32km 长寿路-陈家祠"
+                android:textColor="#979797"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="8dp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="17dp"
+                android:background="@drawable/time_button" />
+
+            <TextView
+                android:id="@+id/exerciseTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
+                android:text="2014.10.28 14:00-18:00"
+                android:textColor="#9B9B9B"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <!-- 活动主题、地址、时间区域结束 -->
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="14dp"
+            android:background="@color/devider" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="17dp"
+            android:background="@color/white" />
+
+        <!-- 活动详情区域 -->
+
+        <TextView
+            android:id="@+id/exerciseDetail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:lineSpacingMultiplier="1.3"
+            android:text="@string/exercise_detail"
+            android:textColor="#9B9B9B"
+            android:textSize="13sp" />
+        <!-- 活动详情结束 -->
+        <!-- 报名费用和截止日期区域 -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="17dp"
+                android:text="报名费用：  "
+                android:textColor="#9B9B9B"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/exercisePrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10 元 "
+                android:textColor="#9B9B9B"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="17dp"
+                android:text="截止日期：  "
+                android:textColor="#9B9B9B"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/deadline"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="10.27 24:00"
+                android:textColor="#9B9B9B"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <!-- 报名费用和截止日期区域结束 -->
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/devider" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="14dp"
+            android:layout_marginLeft="17dp"
+            android:background="@color/white" />
+
+        <!-- 报名人数和点赞区域 -->
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="27dp"
+            android:layout_marginBottom="15dp" >
+
+            <TextView
+                android:id="@+id/userCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="17dp"
+                android:text="已报名人数   "
+                android:textColor="#828282"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/applyUserCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/userCount"
+                android:text="32"
+                android:textColor="#828282"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/likeButton"
+                    android:layout_width="49dp"
+                    android:layout_height="27dp"
+                    android:background="@drawable/like_button_selector" >
+
+                    <TextView
+                        android:id="@+id/likeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="26dp"
+                        android:text="9"
+                        android:textColor="#9B9B9B"
+                        android:textSize="11sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/collectButton"
+                    android:layout_width="47dp"
+                    android:layout_height="27dp"
+                    android:layout_marginLeft="9dp"
+                    android:background="@drawable/collect_button_selector" >
+
+                    <TextView
+                        android:id="@+id/collectCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="26dp"
+                        android:text="2"
+                        android:textColor="#9B9B9B"
+                        android:textSize="11sp" />
+                </RelativeLayout>
+
+                <Button
+                    android:layout_width="53dp"
+                    android:layout_height="26dp"
+                    android:layout_marginLeft="9dp"
+                    android:background="@drawable/share_button" />
+            </LinearLayout>
+        </RelativeLayout>
+        <!-- 报名人数和点赞区域结束 -->
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/divider" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="43dp"
+        android:background="#F5F5F5" >
+
+        <TextView
+            android:id="@+id/discussCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17dp"
+            android:text="评论 (2)"
+            android:textColor="#9B9B9B"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/discussButton"
+            android:layout_width="75dp"
+            android:layout_height="28dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/discuss_button" />
+    </RelativeLayout>
+
+</LinearLayout>
