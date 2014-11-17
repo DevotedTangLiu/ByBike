@@ -146,7 +146,7 @@
         <!-- 定位服务service -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7b2e1cdb57233a6430aeb6dfc4545cd8" />
+            android:value="30c47cc7afc75733e2f8ad58e947d31f" />
     </application>
 
 </manifest>
