@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 地图、图片区域 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/exercisePicArea"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:focusable="true" >
+
+    <com.ab.view.sliding.AbSlidingPlayView
+        android:id="@+id/mAbSlidingPlayView"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+    </com.ab.view.sliding.AbSlidingPlayView>
+
+    <com.amap.api.maps2d.MapView
+        android:id="@+id/bmapView"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/mapOrPic"
+        android:layout_width="65dp"
+        android:layout_height="27dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/button_map_or_pic"
+        android:onClick="clickHandler" />
+
+</RelativeLayout>

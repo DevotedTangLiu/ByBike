@@ -80,7 +80,7 @@ public class ExerciseListFragment extends Fragment {
 					int position, long id) {
 
 				Intent i = new Intent();
-				i.setClass(mActivity, ExerciseDetailActivity2.class);
+				i.setClass(mActivity, ExerciseDetailActivity3.class);
 				startActivity(i);
 				mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 			}
