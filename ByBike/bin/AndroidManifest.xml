@@ -7,7 +7,8 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
-
+    <!-- 访问通讯录 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!-- 这个权限用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
     </uses-permission>
@@ -37,7 +38,8 @@
     <!-- 允许应用读取低级别的系统日志文件 -->
     <uses-permission android:name="android.permission.READ_LOGS" >
     </uses-permission>
-<uses-permission android:name="android.permission.WRITE_SETTINGS" /> 
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -46,10 +48,9 @@
         <activity
             android:name="com.example.bybike.welcome.WelcomeActivity"
             android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -59,31 +60,63 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.example.bybike.NewMainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
+
         <!-- 注册、登陆页面 -->
-         <activity
+        <activity
             android:name="com.example.bybike.user.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.example.bybike.user.RegisterActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
-        <!-- 活动类 -->
+        <activity
+            android:name="com.example.bybike.friends.FriendsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
 
+        <!-- 活动类 -->
+        <activity
+            android:name="com.example.bybike.exercise.ExerciseDetailActivity2"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.example.bybike.exercise.ExerciseDetailActivity3"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <!-- 路书 -->
+        <activity
+            android:name="com.example.bybike.routes.RouteDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 搜索 -->
+         <activity
+            android:name="com.example.bybike.SearchActivity"
+            android:theme="@style/translucent"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible">
+        </activity>
         <!-- 设置 -->
         <activity
             android:name="com.example.bybike.setting.SettingMainActivity"
@@ -103,15 +136,17 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 标记点 -->
+        <activity
+            android:name="com.example.bybike.marker.MarkerDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 定位服务service -->
-        <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote" >
-        </service>
         <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="c3r3ItD7MmGGi1aRb2GRinlS" />
+            android:name="com.amap.api.v2.apikey"
+            android:value="30c47cc7afc75733e2f8ad58e947d31f" />
     </application>
 
 </manifest>

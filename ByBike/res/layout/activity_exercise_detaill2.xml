@@ -51,15 +51,7 @@
         </TextView>
     </RelativeLayout>
     
-     <!-- 可滚动区域 -->
-    <ListView
-        android:id="@+id/discussList"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:fastScrollEnabled="false"
-        android:scrollbars="none" >
-    </ListView>
+    
     
     <!-- 地图、图片区域 -->
     <RelativeLayout
@@ -72,14 +64,14 @@
         <com.ab.view.sliding.AbSlidingPlayView
             android:id="@+id/mAbSlidingPlayView"
             android:layout_width="fill_parent"
-            android:layout_height="201dp"
+            android:layout_height="match_parent"
             android:visibility="gone" >
         </com.ab.view.sliding.AbSlidingPlayView>
 
         <com.amap.api.maps2d.MapView
             android:id="@+id/bmapView"
             android:layout_width="fill_parent"
-            android:layout_height="201dp" />
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/mapOrPic"
@@ -90,7 +82,25 @@
             android:layout_marginTop="13dp"
             android:background="@drawable/button_map_or_pic"
             android:onClick="clickHandler" />
+        <LinearLayout
+            android:id="@+id/coverView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:visibility="invisible">
+            
+        </LinearLayout>
     </RelativeLayout>
+    
+     <!-- 可滚动区域 -->
+    <ListView
+        android:id="@+id/discussList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none" >
+    </ListView>
 
    
 </RelativeLayout>

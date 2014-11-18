@@ -89,12 +89,6 @@
 
         <!-- 活动类 -->
         <activity
-            android:name="com.example.bybike.exercise.ExerciseDetailActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.example.bybike.exercise.ExerciseDetailActivity2"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"

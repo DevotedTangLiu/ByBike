@@ -41,7 +41,7 @@ import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseListAdapter2;
 import com.example.bybike.adapter.MarkerListAdapter;
 import com.example.bybike.adapter.RoutesBookListAdapter2;
-import com.example.bybike.exercise.ExerciseDetailActivity;
+import com.example.bybike.exercise.ExerciseDetailActivity2;
 import com.example.bybike.friends.FriendsActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.routes.RouteDetailActivity;
@@ -156,7 +156,7 @@ public class UserMainPageFragment extends Fragment {
 					int position, long id) {
 
 				Intent i = new Intent();
-				i.setClass(mActivity, ExerciseDetailActivity.class);
+				i.setClass(mActivity, ExerciseDetailActivity2.class);
 				startActivity(i);
 				mActivity.overridePendingTransition(R.anim.fragment_in,
 						R.anim.fragment_out);

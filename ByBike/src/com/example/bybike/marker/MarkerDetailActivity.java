@@ -8,14 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.ab.activity.AbActivity;
 import com.ab.bitmap.AbImageDownloader;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
-import com.example.bybike.exercise.ExerciseDetailActivity;
-import com.example.bybike.exercise.ExerciseDetailActivity2;
 
 public class MarkerDetailActivity extends AbActivity {
 

@@ -6,15 +6,22 @@ import java.util.List;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,8 +39,7 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
-import com.example.bybike.routes.ObservableScrollView;
-import com.example.bybike.routes.ObservableScrollView.ScrollViewListener;
+import com.example.bybike.util.DensityUtil;
 
 public class ExerciseDetailActivity2 extends AbActivity {
 
@@ -46,6 +52,7 @@ public class ExerciseDetailActivity2 extends AbActivity {
 	// 图片区域
 	RelativeLayout exercisePicArea = null;
 	AbSlidingPlayView mAbSlidingPlayView = null;
+	LinearLayout coverView;
 	// 滚动区域
 	private LinearLayout spaceArea;
 	// 评论列表
@@ -54,6 +61,8 @@ public class ExerciseDetailActivity2 extends AbActivity {
 	ExerciseDiscussListAdapter discussAdapter = null;
 	// 图片下载类
 	private AbImageDownloader mAbImageDownloader = null;
+
+	View detailheader;
 	// 点赞、评论、分享区域
 	RelativeLayout likeButton;
 	TextView likeCount;
@@ -72,6 +81,9 @@ public class ExerciseDetailActivity2 extends AbActivity {
 	TextView discussCount;
 	Button discussButton;
 
+	private ScalingRunnable mScalingRunnable;
+	private int mHeaderHeight;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,28 +91,52 @@ public class ExerciseDetailActivity2 extends AbActivity {
 		getTitleBar().setVisibility(View.GONE);
 		exercisePicArea = (RelativeLayout) findViewById(R.id.exercisePicArea);
 		mAbSlidingPlayView = (AbSlidingPlayView) findViewById(R.id.mAbSlidingPlayView);
-
-		showProgressDialog("正在加载，请稍后...");
+		coverView = (LinearLayout)findViewById(R.id.coverView);
 		discussList = (ListView) findViewById(R.id.discussList);
+		/**
+		 * 获取屏幕分辨率、设置地图（图片列表）高度
+		 */
+		DisplayMetrics localDisplayMetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+		int mScreenWidth = localDisplayMetrics.widthPixels;
+		mHeaderHeight = (int) (9.0F * (mScreenWidth / 16.0F));
+		RelativeLayout.LayoutParams localObject = new RelativeLayout.LayoutParams(
+				mScreenWidth, mHeaderHeight);
+		localObject.topMargin = DensityUtil.dip2px(this, 60);
+		exercisePicArea.setLayoutParams(localObject);
+		
 		// 添加header
-		final View detailheader = mInflater.inflate(R.layout.detail_header, null);
+		detailheader = mInflater.inflate(R.layout.detail_header, null);
 		spaceArea = (LinearLayout) detailheader.findViewById(R.id.spaceArea);
-		likeButton = (RelativeLayout)detailheader.findViewById(R.id.likeButton);
-		likeCount = (TextView)detailheader.findViewById(R.id.likeCount);
-		collectButton = (RelativeLayout)detailheader.findViewById(R.id.collectButton);
-		collectCount = (TextView)detailheader.findViewById(R.id.collectCount);
-		distance = (TextView)detailheader.findViewById(R.id.distance);
-		timeLong = (TextView)detailheader.findViewById(R.id.timeLong);
-		publishTime = (TextView)detailheader.findViewById(R.id.publishTime);
-		exerciseTitle = (TextView)detailheader.findViewById(R.id.exerciseTitle);
-		exerciseRouteAddress = (TextView)detailheader.findViewById(R.id.exerciseRouteAddress);
-		exerciseTime = (TextView)detailheader.findViewById(R.id.exerciseTime);
-		exerciseDetail = (TextView)detailheader.findViewById(R.id.exerciseDetail);
-		exercisePrice = (TextView)detailheader.findViewById(R.id.exercisePrice);
-		deadline = (TextView)detailheader.findViewById(R.id.deadline);
-		applyUserCount = (TextView)detailheader.findViewById(R.id.applyUserCount);
-		discussCount = (TextView)detailheader.findViewById(R.id.discussCount);
-		discussButton = (Button)detailheader.findViewById(R.id.discussButton);
+		/**
+		 * 设置空白区域的高度和marginTop
+		 */
+		LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(mScreenWidth, mHeaderHeight);
+		exercisePicArea.setLayoutParams(localObject);
+		
+		likeButton = (RelativeLayout) detailheader
+				.findViewById(R.id.likeButton);
+		likeCount = (TextView) detailheader.findViewById(R.id.likeCount);
+		collectButton = (RelativeLayout) detailheader
+				.findViewById(R.id.collectButton);
+		collectCount = (TextView) detailheader.findViewById(R.id.collectCount);
+		distance = (TextView) detailheader.findViewById(R.id.distance);
+		timeLong = (TextView) detailheader.findViewById(R.id.timeLong);
+		publishTime = (TextView) detailheader.findViewById(R.id.publishTime);
+		exerciseTitle = (TextView) detailheader
+				.findViewById(R.id.exerciseTitle);
+		exerciseRouteAddress = (TextView) detailheader
+				.findViewById(R.id.exerciseRouteAddress);
+		exerciseTime = (TextView) detailheader.findViewById(R.id.exerciseTime);
+		exerciseDetail = (TextView) detailheader
+				.findViewById(R.id.exerciseDetail);
+		exercisePrice = (TextView) detailheader
+				.findViewById(R.id.exercisePrice);
+		deadline = (TextView) detailheader.findViewById(R.id.deadline);
+		applyUserCount = (TextView) detailheader
+				.findViewById(R.id.applyUserCount);
+		discussCount = (TextView) detailheader.findViewById(R.id.discussCount);
+		discussButton = (Button) detailheader.findViewById(R.id.discussButton);
 		likeButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -108,13 +144,13 @@ public class ExerciseDetailActivity2 extends AbActivity {
 				if (v.isSelected()) {
 					v.setSelected(false);
 					int count = Integer.valueOf(likeCount.getText().toString());
-                    count --;
-                    likeCount.setText(String.valueOf(count));
+					count--;
+					likeCount.setText(String.valueOf(count));
 				} else {
 					v.setSelected(true);
 					int count = Integer.valueOf(likeCount.getText().toString());
-                    count ++;
-                    likeCount.setText(String.valueOf(count));
+					count++;
+					likeCount.setText(String.valueOf(count));
 				}
 			}
 		});
@@ -124,59 +160,30 @@ public class ExerciseDetailActivity2 extends AbActivity {
 				// TODO Auto-generated method stub
 				if (v.isSelected()) {
 					v.setSelected(false);
-					int count = Integer.valueOf(collectCount.getText().toString());
-                    count --;
-                    collectCount.setText(String.valueOf(count));
+					int count = Integer.valueOf(collectCount.getText()
+							.toString());
+					count--;
+					collectCount.setText(String.valueOf(count));
 				} else {
 					v.setSelected(true);
-					int count = Integer.valueOf(collectCount.getText().toString());
-                    count ++;
-                    collectCount.setText(String.valueOf(count));
+					int count = Integer.valueOf(collectCount.getText()
+							.toString());
+					count++;
+					collectCount.setText(String.valueOf(count));
 				}
 			}
 		});
-		
+
 		discussList.addHeaderView(detailheader);
 		discussValueList = new ArrayList<ContentValues>();
 		discussAdapter = new ExerciseDiscussListAdapter(
 				ExerciseDetailActivity2.this, discussValueList);
 		discussList.setAdapter(discussAdapter);
+
 		/**
 		 * 定义discussList的触摸事件和滚动事件
 		 */
-		discussList.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					if (firstCreated) {
-						firstCreated = false;
-						discussList.bringToFront();
-						discussList.requestLayout();
-						discussList.invalidate();
-					}
-					break;
-				case MotionEvent.ACTION_MOVE:
-
-					if (detailheader.getTop() < 0) {
-						System.out.println("moving:" + detailheader.getTop());
-						discussList.bringToFront();
-						spaceArea.setVisibility(View.VISIBLE);
-					} else {
-						exercisePicArea.bringToFront();
-						spaceArea.setVisibility(View.INVISIBLE);
-					}
-					break;
-				case MotionEvent.ACTION_UP:
-					break;
-				default:
-					break;
-				}
-				return false;
-			}
-		});
+		discussList.setOnTouchListener(onListViewTouch);
 		discussList.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -185,11 +192,11 @@ public class ExerciseDetailActivity2 extends AbActivity {
 				switch (scrollState) {
 				case OnScrollListener.SCROLL_STATE_IDLE:
 					if (detailheader.getTop() < 0) {
-						discussList.bringToFront();
-						spaceArea.setVisibility(View.VISIBLE);
+//						discussList.bringToFront();
+						// spaceArea.setVisibility(View.VISIBLE);
 					} else {
 						exercisePicArea.bringToFront();
-						spaceArea.setVisibility(View.INVISIBLE);
+						coverView.setVisibility(View.GONE);
 					}
 					break;
 				default:
@@ -200,9 +207,19 @@ public class ExerciseDetailActivity2 extends AbActivity {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
+				
 				// TODO Auto-generated method stub
+				if(detailheader.getTop() < 0){
+					int tmp = (int)(Math.abs(detailheader.getTop()) * 255/mHeaderHeight);
+					if(tmp > 255) tmp = 255;
+					int color = Color.argb(tmp,0,0,0);
+					coverView.setVisibility(View.VISIBLE);
+					coverView.setBackgroundColor(color);
+				}
+				
 			}
 		});
+		mScalingRunnable = new ScalingRunnable();
 
 		// ===============初始化地图========================
 		// 获取地图控件引用
@@ -235,14 +252,13 @@ public class ExerciseDetailActivity2 extends AbActivity {
 
 	private boolean firstCreated = true;
 
-	
 	/**
 	 * 初始化视图
 	 */
 	private void loadData() {
 
-		//在地图上显示数据
-		
+		// 在地图上显示数据
+
 		// 下载和显示图片
 		mAbImageDownloader = new AbImageDownloader(this);
 		mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
@@ -263,9 +279,9 @@ public class ExerciseDetailActivity2 extends AbActivity {
 							"http://img0.imgtn.bdimg.com/it/u=1196327338,3394668792&fm=21&gp=0.jpg");
 		}
 
-		//填充详细数据
-		
-		//填充评论列表
+		// 填充详细数据
+
+		// 填充评论列表
 		for (int i = 0; i < 2; i++) {
 			ContentValues v1 = new ContentValues();
 			v1.put("userName", "ChaolotteYam");
@@ -422,6 +438,171 @@ public class ExerciseDetailActivity2 extends AbActivity {
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		mMapView.onSaveInstanceState(outState);
+	}
+
+	/**
+	 * 定义listView的触摸事件
+	 */
+	private OnListViewTouch onListViewTouch = new OnListViewTouch();
+	private float mLastMotionY;
+	private float mInitialMotionY;
+	private boolean isZooming = false;
+
+	private class OnListViewTouch implements OnTouchListener {
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			// TODO Auto-generated method stub
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				mLastMotionY = mInitialMotionY = event.getY();
+				discussList.bringToFront();
+				discussList.requestLayout();
+				discussList.invalidate();
+				return true;
+
+			case MotionEvent.ACTION_MOVE:
+
+				mLastMotionY = event.getY();
+				if ((event.getY() - mInitialMotionY) > 1f && detailheader.getTop() >= 0) {
+					isZooming = true;
+					pullEvent();
+					return true;
+				}
+
+			case MotionEvent.ACTION_UP:
+				if (isZooming) {
+					smoothScrollToTop();
+					isZooming = false;
+					return true;
+				}
+				break;
+			default:
+				break;
+			}
+			return false;
+		}
+
+	}
+
+	
+	/**
+	 * 重置动画，自动滑动到顶部
+	 */
+	protected void smoothScrollToTop() {
+		Log.d("ExerciseDetailActivity2", "smoothScrollToTop --> ");
+		exercisePicArea.bringToFront();
+		coverView.setVisibility(View.GONE);
+		mScalingRunnable.startAnimation(200L);
+	}
+
+	private void pullEvent() {
+		final int newScrollValue;
+		final float initialMotionValue, lastMotionValue;
+
+		initialMotionValue = mInitialMotionY;
+		lastMotionValue = mLastMotionY;
+
+		newScrollValue = Math.round(Math.min(initialMotionValue
+				- lastMotionValue, 0) / 2.0f);
+
+		pullHeaderToZoom(newScrollValue);
+	}
+	
+
+	/**
+	 * 通过设置"headerView"的高度，实现放大的效果
+	 * 
+	 * @param newScrollValue
+	 */
+	protected void pullHeaderToZoom(int newScrollValue) {
+//		Log.d("ExerciseDetailActivity2",
+//				"pullHeaderToZoom --> newScrollValue = " + newScrollValue);
+//		Log.d("ExerciseDetailActivity2",
+//				"pullHeaderToZoom --> mHeaderHeight = " + mHeaderHeight);
+		if (mScalingRunnable != null && !mScalingRunnable.isFinished()) {
+			mScalingRunnable.abortAnimation();
+		}
+
+		ViewGroup.LayoutParams localLayoutParams = exercisePicArea
+				.getLayoutParams();
+		localLayoutParams.height = Math.abs(newScrollValue) + mHeaderHeight;
+		exercisePicArea.setLayoutParams(localLayoutParams);
+
+		LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams) spaceArea.getLayoutParams();
+		llp.height = localLayoutParams.height;
+		spaceArea.setLayoutParams(llp);
+	}
+
+	private static final Interpolator sInterpolator = new Interpolator() {
+		public float getInterpolation(float paramAnonymousFloat) {
+			float f = paramAnonymousFloat - 1.0F;
+			return 1.0F + f * (f * (f * (f * f)));
+		}
+	};
+
+	/**
+	 * 这个runable用于下拉放大列表listview的“header”后，将header和listview弹回原位置
+	 * 
+	 * @author tangliu
+	 * 
+	 */
+	class ScalingRunnable implements Runnable {
+		protected long mDuration;
+		protected boolean mIsFinished = true;
+		protected float mScale;
+		protected long mStartTime;
+
+		ScalingRunnable() {
+		}
+
+		public void abortAnimation() {
+			mIsFinished = true;
+		}
+
+		public boolean isFinished() {
+			return mIsFinished;
+		}
+
+		public void run() {
+			if (exercisePicArea != null) {
+				float f2;
+				ViewGroup.LayoutParams localLayoutParams;
+				LinearLayout.LayoutParams llp;
+				if ((!mIsFinished) && (mScale > 1.0D)) {
+					float f1 = ((float) SystemClock.currentThreadTimeMillis() - (float) mStartTime)
+							/ (float) mDuration;
+					f2 = mScale - (mScale - 1.0F)
+							* sInterpolator.getInterpolation(f1);
+					localLayoutParams = exercisePicArea.getLayoutParams();
+					llp = (LinearLayout.LayoutParams) spaceArea.getLayoutParams();
+					Log.d("ExerciseDetailActivity2",
+							"ScalingRunnable --> f2 = " + f2);
+					if (f2 > 1.0F) {
+						int tmpHeight = (int) f2 * mHeaderHeight;
+						localLayoutParams.height = tmpHeight;
+						exercisePicArea.setLayoutParams(localLayoutParams);
+
+						llp.height = localLayoutParams.height;
+						spaceArea.setLayoutParams(llp);
+
+						exercisePicArea.post(this);
+						return;
+					}
+					mIsFinished = true;
+				}
+			}
+		}
+
+		public void startAnimation(long paramLong) {
+			if (exercisePicArea != null) {
+				mStartTime = SystemClock.currentThreadTimeMillis();
+				mDuration = paramLong;
+				mScale = ((float) (exercisePicArea.getBottom()) / mHeaderHeight);
+				mIsFinished = false;
+				exercisePicArea.post(this);
+			}
+		}
 	}
 
 }
