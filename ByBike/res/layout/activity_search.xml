@@ -7,39 +7,46 @@
     <RelativeLayout
         android:id="@+id/searchBar"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="51dp"
         android:background="@drawable/title_bar" >
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="35dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/search_background" >
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/search_background" 
+            android:orientation="horizontal">
+            
+            <Button
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/search_button_2"
+                android:layout_gravity="center_vertical"/>
 
             <EditText
                 android:id="@+id/searchContent"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="35dp"
-                android:layout_marginRight="25dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="40dp"
+                android:layout_gravity="center_vertical"
                 android:background="@null"
                 android:hint="标记、活动、路书、骑友"
                 android:textColor="#BBBBBB"
                 android:textColorHint="#BBBBBB"
                 android:textSize="13sp" 
                 android:singleLine="true"/>
-
+            
             <Button
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="-30dp"
+                android:layout_gravity="center_vertical"
                 android:background="@drawable/search_clear_button" />
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
     <View
         android:id="@+id/spaceArea"

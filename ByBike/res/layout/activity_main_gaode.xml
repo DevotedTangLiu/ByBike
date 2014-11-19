@@ -13,37 +13,46 @@
             android:layout_height="fill_parent" />
 
         <!-- 定位 & 缩放地图模块 -->
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="15dp"
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="11dp"
-            android:gravity="bottom|right" >
-
-            <Button
+            android:layout_marginBottom="21dp"
+            android:orientation="vertical"
+            android:background="@drawable/zoom_background">
+            <RelativeLayout
                 android:id="@+id/zoom_up"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/zoom_up" />
-
-            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/zoom_up"/>
+            </RelativeLayout>
+            <RelativeLayout
                 android:id="@+id/zoom_down"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_below="@id/zoom_up"
-                android:layout_marginTop="-9dp"
-                android:background="@drawable/zoom_down" />
-        </RelativeLayout>
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/zoom_up"/>
+            </RelativeLayout>
+        </LinearLayout>
 
         <Button
             android:id="@+id/chooseIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="11dp"
-            android:layout_marginTop="13dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="14dp"
             android:background="@drawable/choose_icon" >
         </Button>
 
@@ -52,54 +61,10 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="13dp"
-            android:layout_marginLeft="11dp"
+            android:layout_marginBottom="18dp"
+            android:layout_marginLeft="12dp"
             android:background="@drawable/locate_button" />
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-
-            <RelativeLayout
-                android:id="@+id/searchArea"
-                android:layout_width="fill_parent"
-                android:layout_height="90dp"
-                android:layout_marginTop="-10dp"
-                android:background="@drawable/exercise_list_background1"
-                android:visibility="gone" >
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/searchArea2"
-                android:layout_width="fill_parent"
-                android:layout_height="90dp"
-                android:layout_marginTop="40dp"
-                android:background="@drawable/exercise_list_background1"
-                android:visibility="gone" >
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:layout_centerVertical="true"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:id="@+id/searchButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="test" />
-
-                    <EditText
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:hint="搜索友好店、活动、路书"
-                        android:textColor="@color/black_overlay"
-                        android:textColorHint="@color/black_overlay" />
-                </LinearLayout>
-            </RelativeLayout>
-
-        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
     android:background="#F5F5F5"
     android:orientation="horizontal" >
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="wrap_content" >
 
         <com.example.bybike.util.CircleImageView
             android:id="@+id/imageView"
@@ -19,11 +19,12 @@
             android:scaleType="centerCrop" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/imageView"
             android:layout_marginLeft="9dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginRight="17dp"
+            android:layout_marginTop="13dp"
             android:orientation="vertical" >
 
             <TextView
@@ -41,7 +42,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:singleLine="true"
                 android:textColor="#828282"
                 android:textSize="12sp" 
                 android:text="今天倍儿爽！"/>

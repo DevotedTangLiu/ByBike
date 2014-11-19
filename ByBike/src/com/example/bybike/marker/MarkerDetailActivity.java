@@ -73,6 +73,9 @@ public class MarkerDetailActivity extends AbActivity {
 			goBack();
 			break;
 
+		case R.id.goToMap:
+			goBack();
+			break;
 		default:
 			break;
 		}

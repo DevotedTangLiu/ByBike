@@ -1,6 +1,7 @@
 package com.example.bybike;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,9 +9,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
 import com.ab.task.AbTaskItem;
@@ -55,7 +56,7 @@ public class NewMainActivity extends AbActivity {
 
 	    //初始化导航栏图标
 	    changeBackground(1);
-	    changeMainFragment(R.id.mapButton);
+	    changeMainFragment(R.id.r1);
 	    
 		mAbTaskQueue = AbTaskQueue.getInstance();
 		/**
@@ -111,9 +112,9 @@ public class NewMainActivity extends AbActivity {
 		// TODO Auto-generated method stub
 		//如果当前页面和点击的页面是同一个，则跳出
 		if(toItem == currentItem) return;
-		if(toItem == R.id.rideButton){
+		if(toItem == R.id.r3){
 			clickRideButtonPage.setVisibility(View.VISIBLE);
-			currentItem = R.id.rideButton;
+			currentItem = R.id.r3;
 			return;
 		}else{
 			clickRideButtonPage.setVisibility(View.GONE);
@@ -126,7 +127,7 @@ public class NewMainActivity extends AbActivity {
 			transaction.hide(currentFragment);
 		}
 		switch (toItem) {
-		case R.id.myButton:
+		case R.id.r5:
 			tag = UserMainPageFragment.class.getSimpleName();
 			// 显示我的页面
 			if (fragmentManager.findFragmentByTag(tag) != null) {
@@ -138,7 +139,7 @@ public class NewMainActivity extends AbActivity {
 			titleBar.setVisibility(View.GONE);
 			break;
 			
-		case R.id.mapButton:
+		case R.id.r1:
 			// 显示地图页面
 			tag = MainPageFragment2.class.getSimpleName();
 			// 显示我的页面
@@ -150,7 +151,7 @@ public class NewMainActivity extends AbActivity {
 			}
 			titleBar.setVisibility(View.VISIBLE);
 			break;
-		case R.id.exerciseButton:
+		case R.id.r2:
 			//显示活动列表页面
 			tag = ExerciseListFragment.class.getSimpleName();
 			// 显示我的页面
@@ -162,7 +163,7 @@ public class NewMainActivity extends AbActivity {
 			}
 			titleBar.setVisibility(View.VISIBLE);
 			break;
-		case R.id.routeButton:
+		case R.id.r4:
 			//显示路书页面
 			tag = RoutesBookMainFragment.class.getSimpleName();
 			// 显示我的页面
@@ -223,26 +224,26 @@ public class NewMainActivity extends AbActivity {
 	public void onclick(View view) {
 
 		switch (view.getId()) {
-		case R.id.mapButton:
+		case R.id.r1:
 		    changeBackground(1);
 			changeMainFragment(view.getId());
 			break;
 
-		case R.id.exerciseButton:
+		case R.id.r2:
 		    changeBackground(2);
 			changeMainFragment(view.getId());
 			break;
 			
-		case R.id.rideButton:
+		case R.id.r3:
 		    changeBackground(3);
 			changeMainFragment(view.getId());
 			break;
 			
-		case R.id.routeButton:
+		case R.id.r4:
 		    changeBackground(4);
 			changeMainFragment(view.getId());
 			break;
-		case R.id.myButton:
+		case R.id.r5:
 		    changeBackground(5);
 			changeMainFragment(view.getId());
 			break;
@@ -252,6 +253,9 @@ public class NewMainActivity extends AbActivity {
 			startActivity(i);
 //			overridePendingTransition(R.anim.fragment_in, 0);
 			break;
+		case R.id.cover:
+//			clickRideButtonPage.setVisibility(View.GONE);
+			break;
 		default:
 			break;
 		}
@@ -260,7 +264,8 @@ public class NewMainActivity extends AbActivity {
 
 	int[]ids = new int[]{R.id.r1, R.id.r2, R.id.r3, R.id.r4, R.id.r5};
 	int[]buttonIds = new int[]{R.id.mapButton, R.id.exerciseButton, R.id.rideButton, R.id.routeButton, R.id.myButton};
-
+    int[]texts = new int[]{R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.t5};
+	
 	/**
 	 * 修改导航栏图标和背景
 	  * changeBackground(这里用一句话描述这个方法的作用)
@@ -271,13 +276,16 @@ public class NewMainActivity extends AbActivity {
 	    for(int j = 1; j <= 5; j ++){
 	        
 	        RelativeLayout rl = (RelativeLayout)findViewById(ids[j-1]);
-	        Button b = (Button)findViewById(buttonIds[j-1]);
+	        ImageView b = (ImageView)findViewById(buttonIds[j-1]);
+	        TextView t = (TextView)findViewById(texts[j-1]);
 	        if(j == i){
-	            rl.setSelected(true);
+	            rl.setBackgroundResource(R.drawable.bottom_block_sec);
 	            b.setSelected(true);
+	            t.setTextColor(Color.rgb(100, 100, 100));
 	        }else{
-	            rl.setSelected(false);
+	            rl.setBackgroundDrawable(null);
 	            b.setSelected(false);
+	            t.setTextColor(Color.rgb(180, 180, 180));
 	        }
 	    }
 	}

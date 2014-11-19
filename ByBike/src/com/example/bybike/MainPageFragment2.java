@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -75,8 +76,8 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 	 * 定位和缩放图标
 	 */
 	Button locate = null;
-	Button zoom_up = null;
-	Button zoom_down = null;
+	RelativeLayout zoom_up = null;
+	RelativeLayout zoom_down = null;
 	private float zoom_level = 16;
 	
 	/**
@@ -112,7 +113,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 							MainPageFragment2.this);
 				}
 			});
-			zoom_up = (Button) mainView.findViewById(R.id.zoom_up);
+			zoom_up = (RelativeLayout) mainView.findViewById(R.id.zoom_up);
 			zoom_up.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -127,7 +128,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 				}
 
 			});
-			zoom_down = (Button) mainView.findViewById(R.id.zoom_down);
+			zoom_down = (RelativeLayout) mainView.findViewById(R.id.zoom_down);
 			zoom_down.setOnClickListener(new OnClickListener() {
 
 				@Override
