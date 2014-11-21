@@ -1,5 +1,8 @@
 package com.example.bybike;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
@@ -18,7 +22,9 @@ import com.ab.task.AbTaskItem;
 import com.ab.task.AbTaskListener;
 import com.ab.task.AbTaskQueue;
 import com.example.bybike.exercise.ExerciseListFragment;
+import com.example.bybike.marker.AddMarkerActivity;
 import com.example.bybike.routes.RoutesBookMainFragment;
+import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.user.UserMainPageFragment;
 
 public class NewMainActivity extends AbActivity {
@@ -256,6 +262,17 @@ public class NewMainActivity extends AbActivity {
 		case R.id.cover:
 //			clickRideButtonPage.setVisibility(View.GONE);
 			break;
+		case R.id.goToAddMarker:
+			Intent goToAddMarkerIntent = new Intent();
+			goToAddMarkerIntent.setClass(NewMainActivity.this, AddMarkerActivity.class);
+			startActivity(goToAddMarkerIntent);
+			break;
+		case R.id.goToRide:
+			showDialog("温馨提示", "功能开发中，敬请期待...");
+			break;
+		case R.id.goToMessage:
+			createSystemNoticeMessage();
+			break;
 		default:
 			break;
 		}
@@ -288,5 +305,38 @@ public class NewMainActivity extends AbActivity {
 	            t.setTextColor(Color.rgb(180, 180, 180));
 	        }
 	    }
+	}
+	
+	/**
+	 * 生成系统通知栏消息的例子
+	 */
+	private void createSystemNoticeMessage() {
+		// 获取系统通知服务引用
+		String ns = this.NOTIFICATION_SERVICE;
+		NotificationManager mNotificationManager = (NotificationManager)getSystemService(ns);
+
+		// 自定义下拉视图
+		Notification notification = new Notification();
+		notification.icon = R.drawable.me3;
+		notification.tickerText = "系统通知demo...";
+
+		RemoteViews contentView = new RemoteViews(getPackageName(),
+				R.layout.system_notice_layout);
+		contentView.setTextViewText(R.id.title,
+				"Hello, this message is in a custom expanded view");
+		contentView.setTextViewText(R.id.content,
+				"从前有座山，山上有座庙，庙里有个老和尚，老和尚经常和小和尚说...");
+		notification.contentView = contentView;
+
+		// 通知被点击后，自动消失
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		// 使用自定义下拉视图时，不需要再调用setLatestEventInfo()方法
+		// 但是必须定义 contentIntent
+		Intent intent = new Intent(this, SettingMainActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+				intent, 0);
+		notification.contentIntent = contentIntent;
+
+		mNotificationManager.notify(3, notification);
 	}
 }

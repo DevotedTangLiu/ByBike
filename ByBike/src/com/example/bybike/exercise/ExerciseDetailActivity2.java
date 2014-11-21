@@ -210,6 +210,8 @@ public class ExerciseDetailActivity2 extends AbActivity {
 				
 				// TODO Auto-generated method stub
 				if(detailheader.getTop() < 0){
+					
+					discussList.bringToFront();
 					int tmp = (int)(Math.abs(detailheader.getTop()) * 255/mHeaderHeight);
 					if(tmp > 255) tmp = 255;
 					int color = Color.argb(tmp,0,0,0);
@@ -249,8 +251,6 @@ public class ExerciseDetailActivity2 extends AbActivity {
 		});
 
 	}
-
-	private boolean firstCreated = true;
 
 	/**
 	 * 初始化视图

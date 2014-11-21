@@ -78,7 +78,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 	Button locate = null;
 	RelativeLayout zoom_up = null;
 	RelativeLayout zoom_down = null;
-	private float zoom_level = 16;
+	private float zoom_level = 17;
 	
 	/**
 	 * 筛选按钮
@@ -108,6 +108,8 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					mActivity.removeProgressDialog();
+					mActivity.showProgressDialog("正在定位,请稍后...");
 					mAMapLocationManager.requestLocationData(
 							LocationProviderProxy.AMapNetwork, -1, 5,
 							MainPageFragment2.this);
@@ -229,13 +231,20 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 	private void addMarkersToMap() {
 
 	    MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(new LatLng(30.679879, 104.064855));
-        markerOption.title("成都市").snippet("test marker");
+        markerOption.position(new LatLng(23.136136, 113.328772));
+        markerOption.title("广州").snippet("test marker");
         markerOption.draggable(false);
         markerOption.icon(BitmapDescriptorFactory
                 .fromResource(R.drawable.marker_icon_bikestore));
         Marker marker1 = aMap.addMarker(markerOption);
 
+        MarkerOptions markerOption2 = new MarkerOptions();
+        markerOption.position(new LatLng(23.0963528973, 113.3205434901));
+        markerOption.title("客村").snippet("客村marker");
+        markerOption.draggable(false);
+        markerOption.icon(BitmapDescriptorFactory
+                .fromResource(R.drawable.marker_icon_bikestore));
+        Marker marker2 = aMap.addMarker(markerOption);
 		// drawMarkers();// 添加10个带有系统默认icon的marker
 	}
 
@@ -406,6 +415,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 		// TODO Auto-generated method stub
 		mActivity.removeProgressDialog();
 		if (mListener != null && amapLocation != null) {
+			System.out.println("getErrorCode(): " + amapLocation.getAMapException().getErrorCode());
 			if (amapLocation != null
 					&& amapLocation.getAMapException().getErrorCode() == 0) {
 				mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
@@ -414,7 +424,7 @@ public class MainPageFragment2 extends Fragment implements LocationSource,
 								amapLocation.getLatitude(), amapLocation
 										.getLongitude())), null);
 				nowLocationLatLng = new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude());
-				showAllMarkers();
+//				showAllMarkers();
 			}
 		}
 

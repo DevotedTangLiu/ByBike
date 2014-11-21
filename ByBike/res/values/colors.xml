@@ -16,5 +16,8 @@
     <color name="devider">#D2D2D2</color>
     <color name="window_bg">#88838B8B</color>
     <color name="translucent_background">#90000000</color> 
+    
+    <color name="text_view_color">#646464</color>
+    <color name="text_view_color2">#90646464</color>
 
 </resources>

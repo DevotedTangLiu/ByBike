@@ -91,4 +91,19 @@ public class BitmapUtil {
 			}
 			return null;
 		}
+	    
+	    public static Bitmap compressPhotoFileToBitmap(String filePath, int width, int height) {
+			BitmapFactory.Options opts = new BitmapFactory.Options();
+			opts.inJustDecodeBounds = true;
+			BitmapFactory.decodeFile(filePath, opts);
+			// 压缩到640x480
+			opts.inSampleSize = BitmapUtil.computeSampleSize(opts, -1, width * height);
+			opts.inJustDecodeBounds = false;
+			try {
+				return BitmapFactory.decodeFile(filePath, opts);
+			} catch (OutOfMemoryError err) {
+				// MyLog.D( TAG, err.getMessage( ) );
+			}
+			return null;
+		}
 }

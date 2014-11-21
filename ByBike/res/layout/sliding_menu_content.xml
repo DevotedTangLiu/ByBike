@@ -27,11 +27,13 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/goToMessage"
             android:layout_width="54dp"
             android:layout_height="26dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
+            android:onClick="onclick"
             android:background="@drawable/message" >
         </RelativeLayout>
 
@@ -73,12 +75,14 @@
                 android:orientation="vertical" >
 
                 <Button
+                    android:id="@+id/goToRide"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/begin_ride_button"
                     android:onClick="onclick" />
 
                 <Button
+                    android:id="@+id/goToAddMarker"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginTop="36dp"
