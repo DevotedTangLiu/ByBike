@@ -5,82 +5,10 @@
     android:background="#E6E6E6"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:orientation="horizontal"
-        android:background="#E9E9E9" >
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" >
-
-            <Button
-                android:id="@+id/orderByTime"
-                android:layout_width="65dp"
-                android:layout_height="35dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/sellect_button_selector1" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" >
-
-            <Button
-                android:id="@+id/orderByDistance"
-                android:layout_width="65dp"
-                android:layout_height="35dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/sellect_button_selector2" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" >
-
-            <Button
-                android:id="@+id/orderByArea"
-                android:layout_width="65dp"
-                android:layout_height="35dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/sellect_button_selector3" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" >
-
-            <Button
-                android:id="@+id/orderByHot"
-                android:layout_width="65dp"
-                android:layout_height="35dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/sellect_button_selector4" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/devider" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/white" />
-
     <com.ab.view.pullview.AbPullListView
         android:id="@+id/mListView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginTop="24px"
         android:cacheColorHint="#00000000"
         android:divider="@null"
         android:fastScrollEnabled="false"

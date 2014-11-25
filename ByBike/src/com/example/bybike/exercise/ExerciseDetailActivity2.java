@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,26 +28,24 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ZoomControls;
 
 import com.ab.activity.AbActivity;
 import com.ab.bitmap.AbImageDownloader;
 import com.ab.view.sliding.AbSlidingPlayView;
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.UiSettings;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
 import com.example.bybike.util.DensityUtil;
 
 public class ExerciseDetailActivity2 extends AbActivity {
 
-	/**
-	 * 高德地图相关
-	 */
-	private MapView mMapView;
-	private AMap aMap;
-	private UiSettings mUiSettings;
+	// 基础地图相关
+	MapView mMapView = null;
+	BaiduMap mBaidumap = null;
 	// 图片区域
 	RelativeLayout exercisePicArea = null;
 	AbSlidingPlayView mAbSlidingPlayView = null;
@@ -91,7 +88,7 @@ public class ExerciseDetailActivity2 extends AbActivity {
 		getTitleBar().setVisibility(View.GONE);
 		exercisePicArea = (RelativeLayout) findViewById(R.id.exercisePicArea);
 		mAbSlidingPlayView = (AbSlidingPlayView) findViewById(R.id.mAbSlidingPlayView);
-		coverView = (LinearLayout)findViewById(R.id.coverView);
+		coverView = (LinearLayout) findViewById(R.id.coverView);
 		discussList = (ListView) findViewById(R.id.discussList);
 		/**
 		 * 获取屏幕分辨率、设置地图（图片列表）高度
@@ -104,16 +101,17 @@ public class ExerciseDetailActivity2 extends AbActivity {
 				mScreenWidth, mHeaderHeight);
 		localObject.topMargin = DensityUtil.dip2px(this, 60);
 		exercisePicArea.setLayoutParams(localObject);
-		
+
 		// 添加header
 		detailheader = mInflater.inflate(R.layout.detail_header, null);
 		spaceArea = (LinearLayout) detailheader.findViewById(R.id.spaceArea);
 		/**
 		 * 设置空白区域的高度和marginTop
 		 */
-		LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(mScreenWidth, mHeaderHeight);
+		LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+				mScreenWidth, mHeaderHeight);
 		exercisePicArea.setLayoutParams(localObject);
-		
+
 		likeButton = (RelativeLayout) detailheader
 				.findViewById(R.id.likeButton);
 		likeCount = (TextView) detailheader.findViewById(R.id.likeCount);
@@ -192,7 +190,7 @@ public class ExerciseDetailActivity2 extends AbActivity {
 				switch (scrollState) {
 				case OnScrollListener.SCROLL_STATE_IDLE:
 					if (detailheader.getTop() < 0) {
-//						discussList.bringToFront();
+						// discussList.bringToFront();
 						// spaceArea.setVisibility(View.VISIBLE);
 					} else {
 						exercisePicArea.bringToFront();
@@ -207,18 +205,19 @@ public class ExerciseDetailActivity2 extends AbActivity {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				
+
 				// TODO Auto-generated method stub
-				if(detailheader.getTop() < 0){
-					
+				if (detailheader.getTop() < 0) {
+
 					discussList.bringToFront();
-					int tmp = (int)(Math.abs(detailheader.getTop()) * 255/mHeaderHeight);
-					if(tmp > 255) tmp = 255;
-					int color = Color.argb(tmp,0,0,0);
+					int tmp = (int) (Math.abs(detailheader.getTop()) * 255 / mHeaderHeight);
+					if (tmp > 255)
+						tmp = 255;
+					int color = Color.argb(tmp, 0, 0, 0);
 					coverView.setVisibility(View.VISIBLE);
 					coverView.setBackgroundColor(color);
 				}
-				
+
 			}
 		});
 		mScalingRunnable = new ScalingRunnable();
@@ -226,17 +225,23 @@ public class ExerciseDetailActivity2 extends AbActivity {
 		// ===============初始化地图========================
 		// 获取地图控件引用
 		mMapView = (MapView) findViewById(R.id.bmapView);
-		mMapView.onCreate(savedInstanceState);// 必须要写
-		if (aMap == null) {
-			aMap = mMapView.getMap();
-			mUiSettings = aMap.getUiSettings();
+		mBaidumap = mMapView.getMap();
+		// 默认初始地图放大级别为17级
+		MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(17f);
+		mBaidumap.animateMapStatus(u);
+		// 隐藏自带的地图缩放控件
+		int childCount = mMapView.getChildCount();
+		View zoom = null;
+		for (int i = 0; i < childCount; i++) {
+			View child = mMapView.getChildAt(i);
+			if (child instanceof ZoomControls) {
+				zoom = child;
+				break;
+			}
 		}
-		// 设置原生缩放按钮不可用不可见
-		mUiSettings.setZoomControlsEnabled(false);
-		// 设置比例尺不可见
-		mUiSettings.setScaleControlsEnabled(false);
-		mUiSettings.setMyLocationButtonEnabled(false);
-		aMap.animateCamera(CameraUpdateFactory.zoomTo(15), 100, null);
+		zoom.setVisibility(View.GONE);
+		// 隐藏指南针
+		mBaidumap.getUiSettings().setCompassEnabled(false);
 		// ===============================================
 
 		// 点击报名事件
@@ -432,15 +437,6 @@ public class ExerciseDetailActivity2 extends AbActivity {
 	}
 
 	/**
-	 * 方法必须重写
-	 */
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		mMapView.onSaveInstanceState(outState);
-	}
-
-	/**
 	 * 定义listView的触摸事件
 	 */
 	private OnListViewTouch onListViewTouch = new OnListViewTouch();
@@ -464,7 +460,8 @@ public class ExerciseDetailActivity2 extends AbActivity {
 			case MotionEvent.ACTION_MOVE:
 
 				mLastMotionY = event.getY();
-				if ((event.getY() - mInitialMotionY) > 1f && detailheader.getTop() >= 0) {
+				if ((event.getY() - mInitialMotionY) > 1f
+						&& detailheader.getTop() >= 0) {
 					isZooming = true;
 					pullEvent();
 					return true;
@@ -485,7 +482,6 @@ public class ExerciseDetailActivity2 extends AbActivity {
 
 	}
 
-	
 	/**
 	 * 重置动画，自动滑动到顶部
 	 */
@@ -508,7 +504,6 @@ public class ExerciseDetailActivity2 extends AbActivity {
 
 		pullHeaderToZoom(newScrollValue);
 	}
-	
 
 	/**
 	 * 通过设置"headerView"的高度，实现放大的效果
@@ -516,10 +511,10 @@ public class ExerciseDetailActivity2 extends AbActivity {
 	 * @param newScrollValue
 	 */
 	protected void pullHeaderToZoom(int newScrollValue) {
-//		Log.d("ExerciseDetailActivity2",
-//				"pullHeaderToZoom --> newScrollValue = " + newScrollValue);
-//		Log.d("ExerciseDetailActivity2",
-//				"pullHeaderToZoom --> mHeaderHeight = " + mHeaderHeight);
+		// Log.d("ExerciseDetailActivity2",
+		// "pullHeaderToZoom --> newScrollValue = " + newScrollValue);
+		// Log.d("ExerciseDetailActivity2",
+		// "pullHeaderToZoom --> mHeaderHeight = " + mHeaderHeight);
 		if (mScalingRunnable != null && !mScalingRunnable.isFinished()) {
 			mScalingRunnable.abortAnimation();
 		}
@@ -529,7 +524,8 @@ public class ExerciseDetailActivity2 extends AbActivity {
 		localLayoutParams.height = Math.abs(newScrollValue) + mHeaderHeight;
 		exercisePicArea.setLayoutParams(localLayoutParams);
 
-		LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams) spaceArea.getLayoutParams();
+		LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams) spaceArea
+				.getLayoutParams();
 		llp.height = localLayoutParams.height;
 		spaceArea.setLayoutParams(llp);
 	}
@@ -575,7 +571,8 @@ public class ExerciseDetailActivity2 extends AbActivity {
 					f2 = mScale - (mScale - 1.0F)
 							* sInterpolator.getInterpolation(f1);
 					localLayoutParams = exercisePicArea.getLayoutParams();
-					llp = (LinearLayout.LayoutParams) spaceArea.getLayoutParams();
+					llp = (LinearLayout.LayoutParams) spaceArea
+							.getLayoutParams();
 					Log.d("ExerciseDetailActivity2",
 							"ScalingRunnable --> f2 = " + f2);
 					if (f2 > 1.0F) {

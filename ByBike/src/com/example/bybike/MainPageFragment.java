@@ -21,25 +21,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ZoomControls;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
-import com.baidu.mapapi.map.InfoWindow.OnInfoWindowClickListener;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.marker.MarkerDetailActivity;
 
@@ -65,14 +66,14 @@ public class MainPageFragment extends Fragment {
 	LocationClient mLocClient;
 	public MyLocationListener mMyLocationListener;
 	// 当前位置marker图标
-	private Marker currentLocationMarker;
+	LatLng myCurrentLatLng;
 	BitmapDescriptor currentLocationBitmap;
 	InfoWindow mInfoWindow;
 	List<BitmapDescriptor> bitMapDescriptorList = new ArrayList<BitmapDescriptor>();
 	// 定位和缩放图标
 	Button locate = null;
-	Button zoom_up = null;
-	Button zoom_down = null;
+	RelativeLayout zoom_up = null;
+	RelativeLayout zoom_down = null;
 	private float zoom_level = 17;
 	/**
 	 * 筛选按钮
@@ -98,45 +99,9 @@ public class MainPageFragment extends Fragment {
 			// 获取地图控件引用
 			mMapView = (MapView) mainView.findViewById(R.id.bmapView);
 			mBaidumap = mMapView.getMap();
-			// 默认初始地图放大级别为17级
-			MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(zoom_level);
-			mBaidumap.animateMapStatus(u);
-			// 隐藏自带的地图缩放控件
-			int childCount = mMapView.getChildCount();
-			View zoom = null;
-			for (int i = 0; i < childCount; i++) {
-				View child = mMapView.getChildAt(i);
-				if (child instanceof ZoomControls) {
-					zoom = child;
-					break;
-				}
-			}
-			zoom.setVisibility(View.GONE);
-			// 隐藏指南针
-			mBaidumap.getUiSettings().setCompassEnabled(false);
+			initMap();
 
-			// 修改为自定义marker
-			currentLocationBitmap = BitmapDescriptorFactory
-					.fromResource(R.drawable.me3);
-			mCurrentMode = com.baidu.mapapi.map.MyLocationConfiguration.LocationMode.NORMAL;
-			mBaidumap.setMyLocationConfigeration(new MyLocationConfiguration(
-					mCurrentMode, true, currentLocationBitmap));
-			// 开启定位图层
-			mBaidumap.setMyLocationEnabled(true);
-			mLocClient = new LocationClient(mActivity.getApplicationContext());
-			mMyLocationListener = new MyLocationListener();
-			mLocClient.registerLocationListener(mMyLocationListener);
-			// 设置定位参数
-			LocationClientOption option = new LocationClientOption();
-			option.setOpenGps(true);// 打开gps
-			option.setLocationMode(com.baidu.location.LocationClientOption.LocationMode.Hight_Accuracy);// 设置定位模式
-			option.setCoorType("bd09ll");// 返回的定位结果是百度经纬度，默认值gcj02
-			option.setScanSpan(5000);// 设置发起定位请求的间隔时间为5000ms
-			option.setIsNeedAddress(true);
-			mLocClient.setLocOption(option);
-			mActivity.showProgressDialog("正在定位...");
-			mLocClient.start();// 开始定位
-
+			// 定位图标
 			locate = (Button) mainView.findViewById(R.id.locate);
 			locate.setOnClickListener(new OnClickListener() {
 
@@ -146,7 +111,8 @@ public class MainPageFragment extends Fragment {
 					mLocClient.start();
 				}
 			});
-			zoom_up = (Button) mainView.findViewById(R.id.zoom_up);
+			// 放大按钮
+			zoom_up = (RelativeLayout) mainView.findViewById(R.id.zoom_up);
 			zoom_up.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -162,7 +128,8 @@ public class MainPageFragment extends Fragment {
 					mBaidumap.animateMapStatus(u);
 				}
 			});
-			zoom_down = (Button) mainView.findViewById(R.id.zoom_down);
+			// 缩小按钮
+			zoom_down = (RelativeLayout) mainView.findViewById(R.id.zoom_down);
 			zoom_down.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -179,6 +146,7 @@ public class MainPageFragment extends Fragment {
 				}
 			});
 
+			// 筛选按钮
 			Button chooseIcon = (Button) mainView.findViewById(R.id.chooseIcon);
 			chooseIcon.setOnClickListener(new OnClickListener() {
 
@@ -215,39 +183,6 @@ public class MainPageFragment extends Fragment {
 				}
 			});
 
-			// Marker点击事件
-			mBaidumap.setOnMarkerClickListener(new OnMarkerClickListener() {
-
-				@Override
-				public boolean onMarkerClick(final Marker marker) {
-					// TODO Auto-generated method stub
-					if (marker == currentLocationMarker) {
-
-						View popView = LayoutInflater.from(mActivity).inflate(
-								R.layout.infowindow_interest_points, null);
-						OnInfoWindowClickListener listener = null;
-						listener = new OnInfoWindowClickListener() {
-							public void onInfoWindowClick() {
-								mBaidumap.hideInfoWindow();
-								Intent i = new Intent();
-								i.setClass(mActivity,
-										MarkerDetailActivity.class);
-								startActivity(i);
-								mActivity.overridePendingTransition(
-										R.anim.fragment_in, 0);
-							}
-						};
-
-						LatLng ll = marker.getPosition();
-						mInfoWindow = new InfoWindow(BitmapDescriptorFactory
-								.fromView(popView), ll, -150, listener);
-						mBaidumap.showInfoWindow(mInfoWindow);
-					}
-
-					return true;
-				}
-			});
-
 		}
 
 		ViewGroup parent = (ViewGroup) mainView.getParent();
@@ -258,6 +193,104 @@ public class MainPageFragment extends Fragment {
 
 	}
 
+	/**
+	 * 初始化地图设置
+	 */
+	private void initMap() {
+
+		// 默认初始地图放大级别为17级
+		MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(zoom_level);
+		mBaidumap.animateMapStatus(u);
+		// 隐藏自带的地图缩放控件
+		int childCount = mMapView.getChildCount();
+		View zoom = null;
+		for (int i = 0; i < childCount; i++) {
+			View child = mMapView.getChildAt(i);
+			if (child instanceof ZoomControls) {
+				zoom = child;
+				break;
+			}
+		}
+		zoom.setVisibility(View.GONE);
+		// 隐藏指南针
+		mBaidumap.getUiSettings().setCompassEnabled(false);
+
+		// 修改定位图标为自定义bitmap
+		currentLocationBitmap = BitmapDescriptorFactory
+				.fromResource(R.drawable.me);
+		mCurrentMode = com.baidu.mapapi.map.MyLocationConfiguration.LocationMode.NORMAL;
+		mBaidumap.setMyLocationConfigeration(new MyLocationConfiguration(
+				mCurrentMode, true, currentLocationBitmap));
+
+		// 开启定位图层
+		mBaidumap.setMyLocationEnabled(true);
+		mLocClient = new LocationClient(mActivity.getApplicationContext());
+		mMyLocationListener = new MyLocationListener();
+		mLocClient.registerLocationListener(mMyLocationListener);
+		// 设置定位参数
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setLocationMode(com.baidu.location.LocationClientOption.LocationMode.Hight_Accuracy);// 设置定位模式
+		option.setCoorType("bd09ll");// 返回的定位结果是百度经纬度，默认值gcj02
+		option.setScanSpan(5000);// 设置发起定位请求的间隔时间为5000ms
+		option.setIsNeedAddress(true);
+		option.setNeedDeviceDirect(true);
+		mLocClient.setLocOption(option);
+		mActivity.showProgressDialog("正在定位,请稍后...");
+		mLocClient.start();// 开始定位
+
+		// Marker点击事件
+		mBaidumap.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+			@Override
+			public boolean onMarkerClick(final Marker marker) {
+				// TODO Auto-generated method stub
+
+				View popView = LayoutInflater.from(mActivity).inflate(
+						R.layout.infowindow_interest_points, null);
+				popView.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						mActivity.showToast("i'm on clicked...");
+						mBaidumap.hideInfoWindow();
+						Intent i = new Intent();
+						i.setClass(mActivity, MarkerDetailActivity.class);
+						startActivity(i);
+						mActivity.overridePendingTransition(R.anim.fragment_in,
+								0);
+					}
+				});
+//				OnInfoWindowClickListener listener = new OnInfoWindowClickListener() {
+//					public void onInfoWindowClick() {
+//						mActivity.showToast("i'm on clicked...");
+//						mBaidumap.hideInfoWindow();
+//						Intent i = new Intent();
+//						i.setClass(mActivity, MarkerDetailActivity.class);
+//						startActivity(i);
+//						mActivity.overridePendingTransition(R.anim.fragment_in,
+//								0);
+//					}
+//				};
+
+				LatLng ll = marker.getPosition();
+				mInfoWindow = new InfoWindow(popView, ll, -120);
+//				mInfoWindow = new InfoWindow(BitmapDescriptorFactory
+//						.fromView(popView), ll, -120, listener);
+				mBaidumap.showInfoWindow(mInfoWindow);
+
+				return true;
+			}
+		});
+
+		addMarkersToMap();
+
+	}
+
+	/**
+	 * 筛选按钮监听器
+	 */
 	private OnItemsChooseClickListener onItemsChooseClickListener = new OnItemsChooseClickListener();
 	private Dialog chooseDialog;
 
@@ -301,6 +334,21 @@ public class MainPageFragment extends Fragment {
 	}
 
 	/**
+	 * 向地图添加marker
+	 */
+	private void addMarkersToMap() {
+
+		BitmapDescriptor bikestoreBitmap = BitmapDescriptorFactory
+				.fromResource(R.drawable.marker_icon_bikestore);
+		bitMapDescriptorList.add(bikestoreBitmap);
+
+		LatLng llA = new LatLng(23.136136, 113.328772);
+		OverlayOptions ooA = new MarkerOptions().position(llA)
+				.icon(bikestoreBitmap).zIndex(9).draggable(false);
+		Marker mMarkerA = (Marker) (mBaidumap.addOverlay(ooA));
+	}
+
+	/**
 	 * 实现实位回调监听
 	 */
 	public class MyLocationListener implements BDLocationListener {
@@ -336,15 +384,16 @@ public class MainPageFragment extends Fragment {
 			}
 
 			MyLocationData locData = new MyLocationData.Builder()
-					.accuracy(location.getRadius())
 					// 此处设置开发者获取到的方向信息，顺时针0-360
-					.direction(100).latitude(location.getLatitude())
+					.direction(location.getDirection())
+					.latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaidumap.setMyLocationData(locData);
 
-			LatLng ll = new LatLng(location.getLatitude(),
+			myCurrentLatLng = new LatLng(location.getLatitude(),
 					location.getLongitude());
-			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+			MapStatusUpdate u = MapStatusUpdateFactory
+					.newLatLng(myCurrentLatLng);
 			mBaidumap.animateMapStatus(u);
 			//
 			// 添加折线
@@ -375,9 +424,6 @@ public class MainPageFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mActivity = (NewMainActivity) activity;
-		// 在使用SDK各组件之前初始化context信息，传入ApplicationContext
-		// 注意该方法要再setContentView方法之前实现
-		SDKInitializer.initialize(mActivity.getApplicationContext());
 	}
 
 	@Override

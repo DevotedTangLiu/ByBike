@@ -31,7 +31,7 @@ public class RoutesBookMainFragment extends Fragment {
 	private List<Map<String, Object>> newList = null;
 	private AbPullListView mAbPullListView = null;
 	private RoutesBookListAdapter myListViewAdapter = null;
-	
+
 	Button orderByTime;
 	Button orderByDistance;
 	Button orderByArea;
@@ -46,6 +46,11 @@ public class RoutesBookMainFragment extends Fragment {
 
 		// 获取ListView对象
 		mAbPullListView = (AbPullListView) view.findViewById(R.id.mListView);
+
+		// 添加header
+		View header = mActivity.mInflater.inflate(R.layout.route_list_header,
+				null);
+		mAbPullListView.addHeaderView(header);
 
 		// 打开关闭下拉刷新加载更多功能
 		mAbPullListView.setPullRefreshEnable(true);
@@ -80,7 +85,8 @@ public class RoutesBookMainFragment extends Fragment {
 				Intent i = new Intent();
 				i.setClass(mActivity, RouteDetailActivity.class);
 				startActivity(i);
-				mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+				mActivity.overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
 			}
 		});
 
@@ -96,10 +102,10 @@ public class RoutesBookMainFragment extends Fragment {
 
 		});
 
-		orderByTime = (Button)view.findViewById(R.id.orderByTime);
-		orderByDistance = (Button)view.findViewById(R.id.orderByDistance);
-		orderByArea = (Button)view.findViewById(R.id.orderByArea);
-		orderByHot = (Button)view.findViewById(R.id.orderByHot);
+		orderByTime = (Button) view.findViewById(R.id.orderByTime);
+		orderByDistance = (Button) view.findViewById(R.id.orderByDistance);
+		orderByArea = (Button) view.findViewById(R.id.orderByArea);
+		orderByHot = (Button) view.findViewById(R.id.orderByHot);
 		orderByTime.setSelected(true);
 		return view;
 	}

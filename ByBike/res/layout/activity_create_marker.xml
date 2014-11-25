@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
-    android:focusable="true" 
-    android:focusableInTouchMode="true">
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
 
     <!-- 标题栏区域 -->
 
@@ -81,8 +81,8 @@
                             android:layout_width="54dp"
                             android:layout_height="63dp"
                             android:layout_gravity="center_horizontal"
-                            android:onClick="clickHandler"
-                            android:background="@drawable/marker_icon_rentbike" />
+                            android:background="@drawable/marker_icon_rentbike"
+                            android:onClick="clickHandler" />
 
                         <TextView
                             android:id="@+id/type1text"
@@ -105,8 +105,8 @@
                             android:layout_width="54dp"
                             android:layout_height="63dp"
                             android:layout_gravity="center_horizontal"
-                            android:onClick="clickHandler"
-                            android:background="@drawable/marker_icon_bikestore" />
+                            android:background="@drawable/marker_icon_bikestore"
+                            android:onClick="clickHandler" />
 
                         <TextView
                             android:id="@+id/type2text"
@@ -129,8 +129,8 @@
                             android:layout_width="54dp"
                             android:layout_height="63dp"
                             android:layout_gravity="center_horizontal"
-                            android:onClick="clickHandler"
-                            android:background="@drawable/marker_icon_parking" />
+                            android:background="@drawable/marker_icon_parking"
+                            android:onClick="clickHandler" />
 
                         <TextView
                             android:id="@+id/type3text"
@@ -153,8 +153,8 @@
                             android:layout_width="54dp"
                             android:layout_height="63dp"
                             android:layout_gravity="center_horizontal"
-                            android:onClick="clickHandler"
-                            android:background="@drawable/marker_icon_scenery" />
+                            android:background="@drawable/marker_icon_scenery"
+                            android:onClick="clickHandler" />
 
                         <TextView
                             android:id="@+id/type4text"
@@ -188,8 +188,8 @@
                             android:layout_width="54dp"
                             android:layout_height="63dp"
                             android:layout_gravity="center_horizontal"
-                            android:onClick="clickHandler"
-                            android:background="@drawable/marker_icon_repair" />
+                            android:background="@drawable/marker_icon_repair"
+                            android:onClick="clickHandler" />
 
                         <TextView
                             android:id="@+id/type5text"
@@ -212,8 +212,8 @@
                             android:layout_width="54dp"
                             android:layout_height="63dp"
                             android:layout_gravity="center_horizontal"
-                            android:onClick="clickHandler"
-                            android:background="@drawable/marker_icon_meals" />
+                            android:background="@drawable/marker_icon_meals"
+                            android:onClick="clickHandler" />
 
                         <TextView
                             android:id="@+id/type6text"
@@ -236,8 +236,8 @@
                             android:layout_width="54dp"
                             android:layout_height="63dp"
                             android:layout_gravity="center_horizontal"
-                            android:onClick="clickHandler"
-                            android:background="@drawable/marker_icon_washroom" />
+                            android:background="@drawable/marker_icon_washroom"
+                            android:onClick="clickHandler" />
 
                         <TextView
                             android:id="@+id/type7text"
@@ -260,8 +260,8 @@
                             android:layout_width="54dp"
                             android:layout_height="63dp"
                             android:layout_gravity="center_horizontal"
-                            android:onClick="clickHandler"
-                            android:background="@drawable/marker_icon_others" />
+                            android:background="@drawable/marker_icon_others"
+                            android:onClick="clickHandler" />
 
                         <TextView
                             android:id="@+id/type8text"
@@ -348,14 +348,14 @@
 
                 <!-- 地图 -->
 
-                <com.amap.api.maps2d.MapView
+                <com.baidu.mapapi.map.MapView
                     android:id="@+id/bmapView"
                     android:layout_width="fill_parent"
                     android:layout_height="113dp"
                     android:layout_marginLeft="27dp"
                     android:layout_marginRight="27dp"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/shape" />
+                    android:clickable="true" />
 
                 <!-- 描述 -->
 
@@ -406,9 +406,9 @@
                             android:id="@+id/photo1"
                             android:layout_width="62dp"
                             android:layout_height="64dp"
+                            android:background="@drawable/add_photo_button"
                             android:onClick="clickHandler"
-                            android:scaleType="centerCrop"
-                            android:background="@drawable/add_photo_button" />
+                            android:scaleType="centerCrop" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -421,9 +421,9 @@
                             android:layout_width="62dp"
                             android:layout_height="64dp"
                             android:layout_centerInParent="true"
+                            android:background="@drawable/add_photo_button"
                             android:onClick="clickHandler"
-                            android:scaleType="centerCrop"
-                            android:background="@drawable/add_photo_button" />
+                            android:scaleType="centerCrop" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -436,9 +436,9 @@
                             android:layout_width="62dp"
                             android:layout_height="64dp"
                             android:layout_centerInParent="true"
+                            android:background="@drawable/add_photo_button"
                             android:onClick="clickHandler"
-                            android:scaleType="centerCrop"
-                            android:background="@drawable/add_photo_button" />
+                            android:scaleType="centerCrop" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -451,9 +451,9 @@
                             android:layout_width="62dp"
                             android:layout_height="64dp"
                             android:layout_alignParentRight="true"
+                            android:background="@drawable/add_photo_button"
                             android:onClick="clickHandler"
-                            android:scaleType="centerCrop"
-                            android:background="@drawable/add_photo_button" />
+                            android:scaleType="centerCrop" />
                     </RelativeLayout>
                 </LinearLayout>
 

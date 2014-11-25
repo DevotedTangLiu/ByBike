@@ -16,16 +16,18 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="45dp"
-            android:background="@drawable/exercise_pic_background">
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@drawable/exercise_pic_background" >
 
             <com.example.bybike.util.RoundAngleImageView
                 xmlns:myxmls="http://schemas.android.com/apk/res/com.example.bybike"
                 android:id="@+id/exercisePic"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_marginTop="1dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
+                android:layout_marginTop="2dp"
                 android:scaleType="centerCrop"
                 myxmls:roundHeight="5dp"
                 myxmls:roundWidth="10dp" />
@@ -175,11 +177,12 @@
         </RelativeLayout>
     </LinearLayout>
 
-     <ImageView
-                android:layout_width="50dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="25dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/participated_icon"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/participated_icon" />
+
 </RelativeLayout>

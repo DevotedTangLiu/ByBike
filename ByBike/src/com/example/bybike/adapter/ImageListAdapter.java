@@ -101,7 +101,6 @@ public class ImageListAdapter extends BaseAdapter {
 		OnLikeButtonClick likeListener = null;
 		OnCollectButtonClick collectListener = null;
 		OnTalkButtonClick talkListener = null;
-		System.out.println("position:"+position + "     view is null? " + String.valueOf(convertView == null));
 		if (convertView == null) {
 			// 使用自定义的list_items作为Layout
 			convertView = mInflater.inflate(mResource, parent, false);

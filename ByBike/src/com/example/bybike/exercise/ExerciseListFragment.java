@@ -43,6 +43,10 @@ public class ExerciseListFragment extends Fragment {
 
 		// 获取ListView对象
 		mAbPullListView = (AbPullListView) view.findViewById(R.id.mListView);
+		
+		// 添加header
+		View header = mActivity.mInflater.inflate(R.layout.exercise_list_header, null);
+		mAbPullListView.addHeaderView(header);
 
 		// 打开关闭下拉刷新加载更多功能
 		mAbPullListView.setPullRefreshEnable(true);

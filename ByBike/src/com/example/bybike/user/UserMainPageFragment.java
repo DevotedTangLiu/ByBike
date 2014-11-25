@@ -15,6 +15,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -82,6 +83,8 @@ public class UserMainPageFragment extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		long t1 = System.currentTimeMillis();
 		View view = inflater.inflate(R.layout.fragment_uer_mian_page, null);
 		AbTitleBar mAbTitleBar = mActivity.getTitleBar();
 		mAbTitleBar.setVisibility(View.GONE);
@@ -107,10 +110,17 @@ public class UserMainPageFragment extends Fragment {
 		listViews = new ArrayList<View>();
 		
 		TextView friendsCount = (TextView)view.findViewById(R.id.friendsCount);
+		friendsCount.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);//下划线
         friendsCount.setOnClickListener(click);
 		
+        long t2 = System.currentTimeMillis();
 		initViewPager();
+        long t3 = System.currentTimeMillis();
 
+
+        System.out.println("t2 - t1 = " + String.valueOf(t2 - t1));
+        System.out.println("t3 - t2 = " + String.valueOf(t3 - t2));
+        System.out.println("t3 - t1 = " + String.valueOf(t3 - t1));
 		return view;
 	}
 
@@ -389,7 +399,7 @@ public class UserMainPageFragment extends Fragment {
 
 		// 自定义下拉视图
 		Notification notification = new Notification();
-		notification.icon = R.drawable.me3;
+		notification.icon = R.drawable.ic_launcher;
 		notification.tickerText = "系统通知demo...";
 
 		RemoteViews contentView = new RemoteViews(mActivity.getPackageName(),

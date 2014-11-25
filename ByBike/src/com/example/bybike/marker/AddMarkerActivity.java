@@ -1,15 +1,12 @@
 package com.example.bybike.marker;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,26 +17,24 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ZoomControls;
 
 import com.ab.activity.AbActivity;
 import com.ab.global.AbConstant;
 import com.ab.util.AbFileUtil;
 import com.ab.util.AbStrUtil;
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.UiSettings;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
 import com.example.bybike.R;
 import com.example.bybike.util.BitmapUtil;
 
 public class AddMarkerActivity extends AbActivity {
 
-	/**
-	 * 高德地图相关
-	 */
-	private MapView mMapView;
-	private AMap aMap;
-	private UiSettings mUiSettings;
+	// 基础地图相关
+	MapView mMapView = null;
+	BaiduMap mBaidumap = null;
 
 	private View mAvatarView = null;
 	/* 用来标识请求照相功能的activity */
@@ -76,17 +71,23 @@ public class AddMarkerActivity extends AbActivity {
 		// ===============初始化地图========================
 		// 获取地图控件引用
 		mMapView = (MapView) findViewById(R.id.bmapView);
-		mMapView.onCreate(savedInstanceState);// 必须要写
-		if (aMap == null) {
-			aMap = mMapView.getMap();
-			mUiSettings = aMap.getUiSettings();
+		mBaidumap = mMapView.getMap();
+		// 默认初始地图放大级别为17级
+		MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(17f);
+		mBaidumap.animateMapStatus(u);
+		// 隐藏自带的地图缩放控件
+		int childCount = mMapView.getChildCount();
+		View zoom = null;
+		for (int i = 0; i < childCount; i++) {
+			View child = mMapView.getChildAt(i);
+			if (child instanceof ZoomControls) {
+				zoom = child;
+				break;
+			}
 		}
-		// 设置原生缩放按钮不可用不可见
-		mUiSettings.setZoomControlsEnabled(false);
-		// 设置比例尺不可见
-		mUiSettings.setScaleControlsEnabled(false);
-		mUiSettings.setMyLocationButtonEnabled(false);
-		aMap.animateCamera(CameraUpdateFactory.zoomTo(15), 100, null);
+		zoom.setVisibility(View.GONE);
+		// 隐藏指南针
+		mBaidumap.getUiSettings().setCompassEnabled(false);
 		// ===============================================
 
 		// 初始化图片保存路径
@@ -139,7 +140,7 @@ public class AddMarkerActivity extends AbActivity {
 			}
 
 		});
-		
+
 		/**
 		 * 初始化友好点显示
 		 */
@@ -205,20 +206,21 @@ public class AddMarkerActivity extends AbActivity {
 	/**
 	 * 修改button背景透明度
 	 */
-	private void changeAlpher(int target){
+	private void changeAlpher(int target) {
 
-		for(int i = 1; i <= markerTypeIds.length; i ++){
-			Button b = (Button)findViewById(markerTypeIds[i-1]);
-			TextView t = (TextView)findViewById(markerTypeTextIds[i-1]);
-			if(i != target){
+		for (int i = 1; i <= markerTypeIds.length; i++) {
+			Button b = (Button) findViewById(markerTypeIds[i - 1]);
+			TextView t = (TextView) findViewById(markerTypeTextIds[i - 1]);
+			if (i != target) {
 				b.setAlpha(0.5f);
 				t.setAlpha(0.5f);
-			}else{
+			} else {
 				b.setAlpha(1f);
 				t.setAlpha(1f);
 			}
 		}
 	}
+
 	/**
 	 * 拍照获取图片
 	 */
@@ -355,15 +357,6 @@ public class AddMarkerActivity extends AbActivity {
 		super.onPause();
 		// 在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
 		mMapView.onPause();
-	}
-
-	/**
-	 * 方法必须重写
-	 */
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		mMapView.onSaveInstanceState(outState);
 	}
 
 }

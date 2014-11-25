@@ -259,11 +259,12 @@
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" 
-                android:background="#F7F7F7">
+                android:layout_height="wrap_content"
+                android:background="#F7F7F7" >
 
                 <!-- 头像 -->
-               <com.example.bybike.util.CircleImageView
+
+                <com.example.bybike.util.CircleImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_margin="15dp"
@@ -277,6 +278,7 @@
                     android:orientation="vertical" >
 
                     <!-- 用户名 -->
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -285,6 +287,7 @@
                         android:textSize="14sp" />
 
                     <!-- 路书详情 -->
+
                     <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -296,6 +299,7 @@
                         android:textSize="12sp" />
 
                     <!-- 路径和时间 -->
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -340,11 +344,12 @@
                     </LinearLayout>
 
                     <!-- 点赞等按钮 -->
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
-                        android:layout_margin="15dp"
                         android:layout_gravity="right"
+                        android:layout_margin="15dp"
                         android:layout_marginRight="12dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal" >
@@ -457,7 +462,7 @@
             android:visibility="gone" >
         </com.ab.view.sliding.AbSlidingPlayView>
 
-        <com.amap.api.maps2d.MapView
+        <com.baidu.mapapi.map.MapView
             android:id="@+id/bmapView"
             android:layout_width="fill_parent"
             android:layout_height="201dp" />

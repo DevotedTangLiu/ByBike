@@ -15,14 +15,15 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.ZoomControls;
 
 import com.ab.activity.AbActivity;
 import com.ab.bitmap.AbImageDownloader;
 import com.ab.view.sliding.AbSlidingPlayView;
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.UiSettings;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
 import com.example.bybike.routes.ObservableScrollView.ScrollViewListener;
@@ -30,12 +31,9 @@ import com.example.bybike.util.PublicMethods;
 
 public class RouteDetailActivity extends AbActivity {
 
-	/**
-	 * 高德地图相关
-	 */
-	private MapView mMapView;
-	private AMap aMap;
-	private UiSettings mUiSettings;
+	// 基础地图相关
+	MapView mMapView = null;
+	BaiduMap mBaidumap = null;
 	// 图片区域
 	RelativeLayout exercisePicArea = null;
 	AbSlidingPlayView mAbSlidingPlayView = null;
@@ -129,7 +127,7 @@ public class RouteDetailActivity extends AbActivity {
 			}
 		});
 
-		//加载评论列表
+		// 加载评论列表
 		discussList = (ListView) findViewById(R.id.discussList);
 		discussValueList = new ArrayList<ContentValues>();
 		for (int i = 0; i < 2; i++) {
@@ -153,30 +151,35 @@ public class RouteDetailActivity extends AbActivity {
 		PublicMethods.setListViewHeightBasedOnChildren(discussList);
 		Handler mHandler = new Handler();
 		mHandler.post(new Runnable() {
-		    @Override
-		    public void run() {
-		        scrollView.fullScroll(ScrollView.FOCUS_UP);
-		    }
+			@Override
+			public void run() {
+				scrollView.fullScroll(ScrollView.FOCUS_UP);
+			}
 		});
 		// ===============初始化地图========================
 		// 获取地图控件引用
 		mMapView = (MapView) findViewById(R.id.bmapView);
-		mMapView.onCreate(savedInstanceState);// 必须要写
-		if (aMap == null) {
-			aMap = mMapView.getMap();
-			mUiSettings = aMap.getUiSettings();
+		mBaidumap = mMapView.getMap();
+		// 默认初始地图放大级别为17级
+		MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(17f);
+		mBaidumap.animateMapStatus(u);
+		// 隐藏自带的地图缩放控件
+		int childCount = mMapView.getChildCount();
+		View zoom = null;
+		for (int i = 0; i < childCount; i++) {
+			View child = mMapView.getChildAt(i);
+			if (child instanceof ZoomControls) {
+				zoom = child;
+				break;
+			}
 		}
-		// 设置原生缩放按钮不可用不可见
-		mUiSettings.setZoomControlsEnabled(false);
-		// 设置比例尺不可见
-		mUiSettings.setScaleControlsEnabled(false);
-		mUiSettings.setMyLocationButtonEnabled(false);
-		aMap.animateCamera(CameraUpdateFactory.zoomTo(15), 100, null);
+		zoom.setVisibility(View.GONE);
+		// 隐藏指南针
+		mBaidumap.getUiSettings().setCompassEnabled(false);
 		// ===============================================
 
 	}
 
-	
 	/**
 	 * 接受调用
 	 * 
@@ -202,7 +205,7 @@ public class RouteDetailActivity extends AbActivity {
 			break;
 		}
 	}
-	
+
 	/**
 	 * 退出页面
 	 */
@@ -210,7 +213,7 @@ public class RouteDetailActivity extends AbActivity {
 		RouteDetailActivity.this.finish();
 		overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 	}
-	
+
 	private ScrollViewListener scrollChangedListener = new ScrollViewListener() {
 
 		@Override
@@ -227,7 +230,7 @@ public class RouteDetailActivity extends AbActivity {
 		}
 
 	};
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -247,14 +250,6 @@ public class RouteDetailActivity extends AbActivity {
 		super.onPause();
 		// 在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
 		mMapView.onPause();
-	}
-	/**
-	 * 方法必须重写
-	 */
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		mMapView.onSaveInstanceState(outState);
 	}
 
 }

@@ -147,13 +147,13 @@ public class NewMainActivity extends AbActivity {
 			
 		case R.id.r1:
 			// 显示地图页面
-			tag = MainPageFragment2.class.getSimpleName();
+			tag = MainPageFragment.class.getSimpleName();
 			// 显示我的页面
 			if (fragmentManager.findFragmentByTag(tag) != null) {
-				fragment = (MainPageFragment2) fragmentManager
+				fragment = (MainPageFragment) fragmentManager
 						.findFragmentByTag(tag);
 			} else {
-				fragment = new MainPageFragment2();
+				fragment = new MainPageFragment();
 			}
 			titleBar.setVisibility(View.VISIBLE);
 			break;
@@ -317,7 +317,7 @@ public class NewMainActivity extends AbActivity {
 
 		// 自定义下拉视图
 		Notification notification = new Notification();
-		notification.icon = R.drawable.me3;
+		notification.icon = R.drawable.ic_launcher;
 		notification.tickerText = "系统通知demo...";
 
 		RemoteViews contentView = new RemoteViews(getPackageName(),
