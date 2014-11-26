@@ -83,7 +83,7 @@ public class UserMainPageFragment extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+
 		long t1 = System.currentTimeMillis();
 		View view = inflater.inflate(R.layout.fragment_uer_mian_page, null);
 		AbTitleBar mAbTitleBar = mActivity.getTitleBar();
@@ -95,7 +95,8 @@ public class UserMainPageFragment extends Fragment {
 
 		Button gotoSetting = (Button) view.findViewById(R.id.goToSetting);
 		gotoSetting.setOnClickListener(click);
-		RelativeLayout goToMessage = (RelativeLayout)view.findViewById(R.id.goToMessage);
+		RelativeLayout goToMessage = (RelativeLayout) view
+				.findViewById(R.id.goToMessage);
 		goToMessage.setOnClickListener(click);
 
 		chooseExercise = (Button) view.findViewById(R.id.chooseExercise);
@@ -108,19 +109,18 @@ public class UserMainPageFragment extends Fragment {
 
 		mPager = (ViewPager) view.findViewById(R.id.vPager);
 		listViews = new ArrayList<View>();
-		
-		TextView friendsCount = (TextView)view.findViewById(R.id.friendsCount);
-		friendsCount.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);//下划线
-        friendsCount.setOnClickListener(click);
-		
-        long t2 = System.currentTimeMillis();
+
+		TextView friendsCount = (TextView) view.findViewById(R.id.friendsCount);
+		friendsCount.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);// 下划线
+		friendsCount.setOnClickListener(click);
+
+		long t2 = System.currentTimeMillis();
 		initViewPager();
-        long t3 = System.currentTimeMillis();
+		long t3 = System.currentTimeMillis();
 
-
-        System.out.println("t2 - t1 = " + String.valueOf(t2 - t1));
-        System.out.println("t3 - t2 = " + String.valueOf(t3 - t2));
-        System.out.println("t3 - t1 = " + String.valueOf(t3 - t1));
+		System.out.println("t2 - t1 = " + String.valueOf(t2 - t1));
+		System.out.println("t3 - t2 = " + String.valueOf(t3 - t2));
+		System.out.println("t3 - t1 = " + String.valueOf(t3 - t1));
 		return view;
 	}
 
@@ -259,8 +259,9 @@ public class UserMainPageFragment extends Fragment {
 			case R.id.goToSetting:
 				Intent i = new Intent();
 				i.setClass(mActivity, SettingMainActivity.class);
-				startActivity(i);
-				mActivity.overridePendingTransition(R.anim.fragment_in, 0);
+				mActivity.startActivityForResult(i, 5);
+				mActivity.overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
 				break;
 			case R.id.chooseExercise:
 				mPager.setCurrentItem(0);
@@ -275,7 +276,7 @@ public class UserMainPageFragment extends Fragment {
 				chooseRouteBook.setSelected(true);
 				chooseMarker.setSelected(false);
 				break;
-				
+
 			case R.id.chooseMarker:
 				mPager.setCurrentItem(2);
 				chooseExercise.setSelected(false);
@@ -285,7 +286,7 @@ public class UserMainPageFragment extends Fragment {
 			case R.id.friendsCount:
 				Intent friendsIntent = new Intent();
 				friendsIntent.setClass(mActivity, FriendsActivity.class);
-				startActivity(friendsIntent);
+				mActivity.startActivity(friendsIntent);
 				mActivity.overridePendingTransition(R.anim.fragment_in,
 						R.anim.fragment_out);
 				break;

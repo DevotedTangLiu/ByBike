@@ -29,41 +29,41 @@ import com.example.bybike.user.UserMainPageFragment;
 
 public class NewMainActivity extends AbActivity {
 
-//	private SlidingMenu menu;
+	// private SlidingMenu menu;
 	public int currentItem = 0;
 	public FragmentManager fragmentManager;
 	public Fragment fragment;
-	
+
 	public String tag = "";
-	public String currentTag = "";//用来保存上面的tag状态
-	
+	public String currentTag = "";// 用来保存上面的tag状态
+
 	private AbTaskQueue mAbTaskQueue = null;
 	private boolean exit = false;
 	AbTaskItem item1 = null;
-	
+
 	RelativeLayout clickRideButtonPage = null;
 
 	RelativeLayout titleBar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setAbContentView(R.layout.sliding_menu_content);
 		getTitleBar().setVisibility(View.GONE);
-		
-		clickRideButtonPage = (RelativeLayout)findViewById(R.id.cover);
+
+		clickRideButtonPage = (RelativeLayout) findViewById(R.id.cover);
 		// 主视图的Fragment添加
 		fragmentManager = getSupportFragmentManager();
-		titleBar = (RelativeLayout)findViewById(R.id.titleBar);
+		titleBar = (RelativeLayout) findViewById(R.id.titleBar);
 		initSteps();
 	}
-	
 
 	private void initSteps() {
 
-	    //初始化导航栏图标
-	    changeBackground(1);
-	    changeMainFragment(R.id.r1);
-	    
+		// 初始化导航栏图标
+		changeBackground(1);
+		changeMainFragment(R.id.r1);
+
 		mAbTaskQueue = AbTaskQueue.getInstance();
 		/**
 		 * 任务1： 1. 当用户在MainActivity按下返回键时触发 2.
@@ -90,7 +90,7 @@ public class NewMainActivity extends AbActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.main, menu);
+		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -111,24 +111,26 @@ public class NewMainActivity extends AbActivity {
 
 	@Override
 	public void onBackPressed() {
-			super.onBackPressed();
+		super.onBackPressed();
 	}
 
 	public void changeMainFragment(int toItem) {
 		// TODO Auto-generated method stub
-		//如果当前页面和点击的页面是同一个，则跳出
-		if(toItem == currentItem) return;
-		if(toItem == R.id.r3){
+		// 如果当前页面和点击的页面是同一个，则跳出
+		if (toItem == currentItem)
+			return;
+		if (toItem == R.id.r3) {
 			clickRideButtonPage.setVisibility(View.VISIBLE);
 			currentItem = R.id.r3;
 			return;
-		}else{
+		} else {
 			clickRideButtonPage.setVisibility(View.GONE);
 		}
-		
+
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		Fragment currentFragment = fragmentManager.findFragmentByTag(currentTag);
-		if(currentFragment != null) {
+		Fragment currentFragment = fragmentManager
+				.findFragmentByTag(currentTag);
+		if (currentFragment != null) {
 			// 将当前的Frament隐藏到后台去
 			transaction.hide(currentFragment);
 		}
@@ -144,7 +146,7 @@ public class NewMainActivity extends AbActivity {
 			}
 			titleBar.setVisibility(View.GONE);
 			break;
-			
+
 		case R.id.r1:
 			// 显示地图页面
 			tag = MainPageFragment.class.getSimpleName();
@@ -158,7 +160,7 @@ public class NewMainActivity extends AbActivity {
 			titleBar.setVisibility(View.VISIBLE);
 			break;
 		case R.id.r2:
-			//显示活动列表页面
+			// 显示活动列表页面
 			tag = ExerciseListFragment.class.getSimpleName();
 			// 显示我的页面
 			if (fragmentManager.findFragmentByTag(tag) != null) {
@@ -170,7 +172,7 @@ public class NewMainActivity extends AbActivity {
 			titleBar.setVisibility(View.VISIBLE);
 			break;
 		case R.id.r4:
-			//显示路书页面
+			// 显示路书页面
 			tag = RoutesBookMainFragment.class.getSimpleName();
 			// 显示我的页面
 			if (fragmentManager.findFragmentByTag(tag) != null) {
@@ -192,7 +194,7 @@ public class NewMainActivity extends AbActivity {
 		} else {
 			transaction.add(R.id.content_frame, fragment, currentTag);
 		}
-		transaction.commit();
+		transaction.commitAllowingStateLoss();
 	}
 
 	/**
@@ -221,7 +223,7 @@ public class NewMainActivity extends AbActivity {
 
 		android.os.Process.killProcess(android.os.Process.myPid());
 	}
-	
+
 	/**
 	 * 接受xml页面调用点击方法 onclick(这里用一句话描述这个方法的作用)
 	 * 
@@ -231,40 +233,41 @@ public class NewMainActivity extends AbActivity {
 
 		switch (view.getId()) {
 		case R.id.r1:
-		    changeBackground(1);
+			changeBackground(1);
 			changeMainFragment(view.getId());
 			break;
 
 		case R.id.r2:
-		    changeBackground(2);
+			changeBackground(2);
 			changeMainFragment(view.getId());
 			break;
-			
+
 		case R.id.r3:
-		    changeBackground(3);
+			changeBackground(3);
 			changeMainFragment(view.getId());
 			break;
-			
+
 		case R.id.r4:
-		    changeBackground(4);
+			changeBackground(4);
 			changeMainFragment(view.getId());
 			break;
 		case R.id.r5:
-		    changeBackground(5);
+			changeBackground(5);
 			changeMainFragment(view.getId());
 			break;
 		case R.id.search:
 			Intent i = new Intent();
 			i.setClass(NewMainActivity.this, SearchActivity.class);
 			startActivity(i);
-//			overridePendingTransition(R.anim.fragment_in, 0);
+			// overridePendingTransition(R.anim.fragment_in, 0);
 			break;
 		case R.id.cover:
-//			clickRideButtonPage.setVisibility(View.GONE);
+			// clickRideButtonPage.setVisibility(View.GONE);
 			break;
 		case R.id.goToAddMarker:
 			Intent goToAddMarkerIntent = new Intent();
-			goToAddMarkerIntent.setClass(NewMainActivity.this, AddMarkerActivity.class);
+			goToAddMarkerIntent.setClass(NewMainActivity.this,
+					AddMarkerActivity.class);
 			startActivity(goToAddMarkerIntent);
 			break;
 		case R.id.goToRide:
@@ -276,44 +279,45 @@ public class NewMainActivity extends AbActivity {
 		default:
 			break;
 		}
-		
+
 	}
 
-	int[]ids = new int[]{R.id.r1, R.id.r2, R.id.r3, R.id.r4, R.id.r5};
-	int[]buttonIds = new int[]{R.id.mapButton, R.id.exerciseButton, R.id.rideButton, R.id.routeButton, R.id.myButton};
-    int[]texts = new int[]{R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.t5};
-	
+	int[] ids = new int[] { R.id.r1, R.id.r2, R.id.r3, R.id.r4, R.id.r5 };
+	int[] buttonIds = new int[] { R.id.mapButton, R.id.exerciseButton,
+			R.id.rideButton, R.id.routeButton, R.id.myButton };
+	int[] texts = new int[] { R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.t5 };
+
 	/**
-	 * 修改导航栏图标和背景
-	  * changeBackground(这里用一句话描述这个方法的作用)
-	  * @param i
+	 * 修改导航栏图标和背景 changeBackground(这里用一句话描述这个方法的作用)
+	 * 
+	 * @param i
 	 */
-	private void changeBackground(int i){
-	    
-	    for(int j = 1; j <= 5; j ++){
-	        
-	        RelativeLayout rl = (RelativeLayout)findViewById(ids[j-1]);
-	        ImageView b = (ImageView)findViewById(buttonIds[j-1]);
-	        TextView t = (TextView)findViewById(texts[j-1]);
-	        if(j == i){
-	            rl.setBackgroundResource(R.drawable.bottom_block_sec);
-	            b.setSelected(true);
-	            t.setTextColor(Color.rgb(100, 100, 100));
-	        }else{
-	            rl.setBackgroundDrawable(null);
-	            b.setSelected(false);
-	            t.setTextColor(Color.rgb(180, 180, 180));
-	        }
-	    }
+	private void changeBackground(int i) {
+
+		for (int j = 1; j <= 5; j++) {
+
+			RelativeLayout rl = (RelativeLayout) findViewById(ids[j - 1]);
+			ImageView b = (ImageView) findViewById(buttonIds[j - 1]);
+			TextView t = (TextView) findViewById(texts[j - 1]);
+			if (j == i) {
+				rl.setBackgroundResource(R.drawable.bottom_block_sec);
+				b.setSelected(true);
+				t.setTextColor(Color.rgb(100, 100, 100));
+			} else {
+				rl.setBackgroundDrawable(null);
+				b.setSelected(false);
+				t.setTextColor(Color.rgb(180, 180, 180));
+			}
+		}
 	}
-	
+
 	/**
 	 * 生成系统通知栏消息的例子
 	 */
 	private void createSystemNoticeMessage() {
 		// 获取系统通知服务引用
 		String ns = this.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager)getSystemService(ns);
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 
 		// 自定义下拉视图
 		Notification notification = new Notification();
@@ -338,5 +342,23 @@ public class NewMainActivity extends AbActivity {
 		notification.contentIntent = contentIntent;
 
 		mNotificationManager.notify(3, notification);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (resultCode == RESULT_OK) {
+			
+			switch (requestCode) {
+			case 5:
+				changeBackground(1);
+				changeMainFragment(R.id.r1);
+				break;
+
+			default:
+				break;
+			}
+		}
+
 	}
 }

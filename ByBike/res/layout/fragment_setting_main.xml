@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="#F5F5F5" >
 
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="51dp"
         android:background="@drawable/title_bar" >
+
+        <RelativeLayout
+            android:id="@+id/goBack"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:onClick="onClick"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:background="@drawable/back_button" />
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,112 +38,249 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/exercise_list_background"
-        android:divider="?android:attr/listDivider"
-        android:orientation="vertical"
-        android:showDividers="middle" 
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="52dp"
+        android:orientation="vertical" >
 
-        <LinearLayout
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#C5C5C5" />
+
+        <RelativeLayout
+            android:id="@+id/map"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:background="@color/white" >
+            android:onClick="onClick" >
+
+            <ImageView
+                android:layout_width="21dp"
+                android:layout_height="19dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/setting_icon_map" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="51dp"
                 android:text="离线地图"
-                android:textColor="@color/black_overlay"
-                android:textSize="25sp" />
-        </LinearLayout>
+                android:textColor="#9B9B9B"
+                android:textSize="14sp" />
 
-        <LinearLayout
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="28dp"
+                android:background="@drawable/setting_icon_next" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/devider" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/white" />
+
+        <RelativeLayout
             android:id="@+id/accountSetting"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:background="@color/white" >
+            android:onClick="onClick" >
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="22dp"
+                android:background="@drawable/setting_icon_account" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="51dp"
                 android:text="账号设置"
-                android:textColor="@color/black_overlay"
-                android:textSize="25sp" />
-        </LinearLayout>
+                android:textColor="#9B9B9B"
+                android:textSize="14sp" />
 
-        <LinearLayout
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="28dp"
+                android:background="@drawable/setting_icon_next" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/devider" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/white" />
+
+        <RelativeLayout
+            android:id="@+id/opinion"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:background="@color/white" >
+            android:onClick="onClick" >
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="17dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="23dp"
+                android:background="@drawable/setting_icon_opinion" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="30dp"
-                android:text="反馈意见"
-                android:textColor="@color/black_overlay"
-                android:textSize="25sp" />
-        </LinearLayout>
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="51dp"
+                android:text="意见反馈"
+                android:textColor="#9B9B9B"
+                android:textSize="14sp" />
 
-        <LinearLayout
-            android:id="@+id/updateArea"
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="28dp"
+                android:background="@drawable/setting_icon_next" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/devider" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/white" />
+
+        <RelativeLayout
+            android:id="@+id/update"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:background="@color/white" >
+            android:onClick="onClick" >
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="17dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp"
+                android:background="@drawable/setting_icon_update" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="51dp"
                 android:text="检查更新"
-                android:textColor="@color/black_overlay"
-                android:textSize="25sp" />
-        </LinearLayout>
+                android:textColor="#9B9B9B"
+                android:textSize="14sp" />
 
-        <LinearLayout
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="28dp"
+                android:background="@drawable/setting_icon_next" />
+        </RelativeLayout>
+
+        <View
             android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="50dp" />
+            android:layout_height="11dp"
+            android:background="@drawable/divider" />
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/aboutUs"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:background="@color/white" >
+            android:onClick="onClick" >
+
+            <ImageView
+                android:layout_width="6dp"
+                android:layout_height="18dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="29dp"
+                android:background="@drawable/setting_icon_about" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="51dp"
                 android:text="关于我们"
-                android:textColor="@color/black_overlay"
-                android:textSize="25sp" />
-        </LinearLayout>
+                android:textColor="#9B9B9B"
+                android:textSize="14sp" />
 
-        <LinearLayout
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="28dp"
+                android:background="@drawable/setting_icon_next" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/devider" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/white" />
+
+        <RelativeLayout
+            android:id="@+id/logout"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:background="@color/white" >
+            android:onClick="onClick" >
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="17dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp"
+                android:background="@drawable/setting_icon_logout" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="51dp"
                 android:text="登出"
-                android:textColor="@color/black_overlay"
-                android:textSize="25sp" />
-        </LinearLayout>
+                android:textColor="#9B9B9B"
+                android:textSize="14sp" />
 
-        <LinearLayout
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="28dp"
+                android:background="@drawable/setting_icon_next" />
+        </RelativeLayout>
+
+        <View
             android:layout_width="fill_parent"
-            android:layout_height="0dp" />
+            android:layout_height="11dp"
+            android:background="@drawable/divider" />
     </LinearLayout>
 
 </RelativeLayout>

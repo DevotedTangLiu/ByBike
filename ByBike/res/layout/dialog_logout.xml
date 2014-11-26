@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="266dp"
+    android:layout_height="164dp"
+    android:background="@drawable/dialog_logout_background"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="72dp"
+        android:layout_height="22dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/logout_text" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="41dp"
+        android:layout_marginRight="41dp"
+        android:layout_marginTop="14dp"
+        android:text="登出后不会删除任何历史资料，下次登入依然可以使用本账户。"
+        android:textColor="#646464"
+        android:lineSpacingMultiplier="1.5"
+        android:textSize="11dp" />
+
+    <!-- 取消和保存按钮 -->
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="34dp"
+        android:layout_marginTop="15dp" >
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="42dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="42dp"
+            android:onClick="onClick"
+            android:background="@drawable/cancel_button" />
+
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="69dp"
+            android:layout_height="31dp"
+            android:layout_centerInParent="true"
+            android:onClick="onClick"
+            android:background="@drawable/confirm_button2" />
+    </RelativeLayout>
+
+</LinearLayout>
