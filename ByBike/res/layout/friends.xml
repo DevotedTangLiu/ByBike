@@ -7,8 +7,23 @@
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="51dp"
         android:background="@drawable/title_bar" >
+
+        <RelativeLayout
+            android:id="@+id/goBack"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:onClick="clickHandler"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:background="@drawable/back_button" />
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -18,6 +33,53 @@
             android:textColor="@color/text_color"
             android:textStyle="bold" >
         </TextView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/searchBar"
+        android:layout_width="fill_parent"
+        android:layout_height="51dp"
+        android:background="@drawable/title_bar" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/search_background"
+            android:orientation="horizontal" >
+
+            <Button
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/search_button_2" />
+
+            <EditText
+                android:id="@+id/searchContent"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="40dp"
+                android:background="@null"
+                android:hint=""
+                android:singleLine="true"
+                android:textColor="#BBBBBB"
+                android:textColorHint="#BBBBBB"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/clearSearchText"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="-30dp"
+                android:onClick="clickHandler"
+                android:background="@drawable/search_clear_button" />
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout

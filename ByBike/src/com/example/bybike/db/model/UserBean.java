@@ -24,6 +24,17 @@ public class UserBean {
 	@Column(name = "user_nickname")
 	private String userNickName;
 
+	@Column(name = "pinyinname")
+	private String pinyinname;
+	
+	public String getPinyinname() {
+		return pinyinname;
+	}
+
+	public void setPinyinname(String pinyinname) {
+		this.pinyinname = pinyinname;
+	}
+
 	// 用户密码
 	@Column(name = "password")
 	private String password;
