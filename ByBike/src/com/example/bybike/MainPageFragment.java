@@ -392,6 +392,8 @@ public class MainPageFragment extends Fragment {
 
 			myCurrentLatLng = new LatLng(location.getLatitude(),
 					location.getLongitude());
+			
+			mActivity.currentLatLng = myCurrentLatLng;
 			MapStatusUpdate u = MapStatusUpdateFactory
 					.newLatLng(myCurrentLatLng);
 			mBaidumap.animateMapStatus(u);

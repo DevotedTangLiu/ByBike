@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/riding_background_1"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="51dp" >
+
+            <Button
+                android:id="@+id/quitButton"
+                android:layout_width="40dp"
+                android:layout_height="21dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/qiut_button"
+                android:onClick="clickHandler" />
+
+            <LinearLayout
+                android:layout_width="79dp"
+                android:layout_height="22dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bybike" >
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="4"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="9dp"
+                    android:background="@drawable/riding_distance"
+                    android:contentDescription="@null" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="103"
+                        android:textColor="#4A4A4A"
+                        android:textSize="31sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" km"
+                        android:textColor="#9B9B9B"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="34dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/divider3" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="4"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="9dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/riding_speed"
+                    android:contentDescription="@null" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.4"
+                        android:textColor="#4A4A4A"
+                        android:textSize="31sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" km/h"
+                        android:textColor="#9B9B9B"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="34dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/divider3" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="5"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="8dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/riding_reduce_carbon"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:id="@+id/reduceCarbon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="-4dp"
+                        android:layout_marginLeft="5dp"
+                        android:text="0.2"
+                        android:textColor="#4A4A4A"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" t"
+                        android:textColor="#9B9B9B"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="8dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/riding_time"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:id="@+id/timeUsed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="-4dp"
+                        android:layout_marginLeft="5dp"
+                        android:text="00:32:16"
+                        android:textColor="#4A4A4A"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="60dp"
+        android:layout_marginTop="-5dp" >
+
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/bmapView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true" />
+
+        <!-- 定位 & 缩放地图模块 -->
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="21dp"
+            android:layout_marginRight="11dp"
+            android:background="@drawable/zoom_background"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/zoom_up"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:onClick="clickHandler" >
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/zoom_up" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/zoom_down"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" 
+                android:onClick="clickHandler">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/zoom_up" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/chooseIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="14dp"
+            android:onClick="clickHandler"
+            android:background="@drawable/choose_icon" >
+        </Button>
+
+        <Button
+            android:id="@+id/locate"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="18dp"
+            android:layout_marginLeft="12dp"
+            android:onClick="clickHandler"
+            android:background="@drawable/locate_button" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="-65dp"
+        android:background="@drawable/riding_background_2" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/stopButton"
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:background="@drawable/riding_stop_selector"
+                android:onClick="clickHandler" />
+
+            <Button
+                android:id="@+id/pauseButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/riding_pause_selector"
+                android:onClick="clickHandler" />
+
+            <Button
+                android:id="@+id/resumeButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/riding_resume_selector"
+                android:onClick="clickHandler"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/addMarkerButton"
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/riding_addmarker_selector"
+                android:onClick="clickHandler" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

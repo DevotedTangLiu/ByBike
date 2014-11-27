@@ -21,8 +21,10 @@ import com.ab.activity.AbActivity;
 import com.ab.task.AbTaskItem;
 import com.ab.task.AbTaskListener;
 import com.ab.task.AbTaskQueue;
+import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.exercise.ExerciseListFragment;
 import com.example.bybike.marker.AddMarkerActivity;
+import com.example.bybike.riding.RidingActivity;
 import com.example.bybike.routes.RoutesBookMainFragment;
 import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.user.UserMainPageFragment;
@@ -44,6 +46,8 @@ public class NewMainActivity extends AbActivity {
 	RelativeLayout clickRideButtonPage = null;
 
 	RelativeLayout titleBar;
+	
+	public LatLng currentLatLng;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -271,7 +275,14 @@ public class NewMainActivity extends AbActivity {
 			startActivity(goToAddMarkerIntent);
 			break;
 		case R.id.goToRide:
-			showDialog("温馨提示", "功能开发中，敬请期待...");
+			Intent goToRidingIntent = new Intent();
+			goToRidingIntent.setClass(NewMainActivity.this,
+					RidingActivity.class);
+			goToRidingIntent.putExtra("latitude", currentLatLng.latitude);
+			goToRidingIntent.putExtra("longitude", currentLatLng.longitude);
+			startActivity(goToRidingIntent);
+			overridePendingTransition(R.anim.fragment_in,
+					R.anim.fragment_out);
 			break;
 		case R.id.goToMessage:
 			createSystemNoticeMessage();

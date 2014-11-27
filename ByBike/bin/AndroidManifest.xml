@@ -159,6 +159,14 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <!-- 骑行 -->
+        <activity
+            android:name="com.example.bybike.riding.RidingActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="c3r3ItD7MmGGi1aRb2GRinlS" />
