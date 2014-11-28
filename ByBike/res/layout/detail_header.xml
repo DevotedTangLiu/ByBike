@@ -348,9 +348,11 @@
                 </RelativeLayout>
 
                 <Button
+                    android:id="@+id/shareButton"
                     android:layout_width="53dp"
                     android:layout_height="26dp"
                     android:layout_marginLeft="9dp"
+                    android:onClick="clickHandler"
                     android:background="@drawable/share_button" />
             </LinearLayout>
         </RelativeLayout>

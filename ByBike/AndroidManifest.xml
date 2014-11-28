@@ -7,6 +7,11 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
     <!-- 访问通讯录 -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!-- 这个权限用于进行网络定位 -->
@@ -139,7 +144,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-          <activity
+        <activity
             android:name="com.example.bybike.setting.SendOpinionActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
@@ -166,11 +171,36 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
+
+        <!-- 分享 -->
+        <activity
+            android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+            <intent-filter>
+                <data android:scheme="tencent100371282" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!-- 微信分享回调 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- 百度地图 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="c3r3ItD7MmGGi1aRb2GRinlS" />
-
+        <!-- 定位服务 -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
