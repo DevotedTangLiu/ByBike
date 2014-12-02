@@ -15,16 +15,25 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="83dp"
+            android:layout_height="88dp"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
             android:background="@drawable/exercise_pic_background" >
+
+            <!-- <ImageView -->
+            <!-- android:id="@+id/exercisePic" -->
+            <!-- android:layout_width="fill_parent" -->
+            <!-- android:layout_height="83dp" -->
+            <!-- android:layout_marginLeft="2dp" -->
+            <!-- android:layout_marginRight="2dp" -->
+            <!-- android:layout_marginTop="1dp" -->
+            <!-- android:scaleType="centerCrop" /> -->
 
             <com.example.bybike.util.RoundAngleImageView
                 xmlns:myxmls="http://schemas.android.com/apk/res/com.example.bybike"
                 android:id="@+id/exercisePic"
                 android:layout_width="fill_parent"
-                android:layout_height="83dp"
+                android:layout_height="88dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:layout_marginTop="1dp"
@@ -35,7 +44,7 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="10dp" />
+            android:layout_height="8dp" />
 
         <TextView
             android:id="@+id/exerciseTitle"
@@ -73,7 +82,7 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="6dp" />
+            android:layout_height="5dp" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -98,7 +107,7 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="12dp" />
+            android:layout_height="11dp" />
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -176,5 +185,13 @@
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="9dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/participated_icon" />
 
 </RelativeLayout>

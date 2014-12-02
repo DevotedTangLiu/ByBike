@@ -301,26 +301,26 @@ public class MainPageFragment extends Fragment {
 			// TODO Auto-generated method stub
 			switch (v.getId()) {
 			case R.id.publicItemsButton1:
-				publicItemsButton1.setVisibility(View.GONE);
+				publicItemsButton1.setVisibility(View.INVISIBLE);
 				publicItemsButton2.setVisibility(View.VISIBLE);
 				publicItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_sel);
 				break;
 
 			case R.id.publicItemsButton2:
-				publicItemsButton2.setVisibility(View.GONE);
+				publicItemsButton2.setVisibility(View.INVISIBLE);
 				publicItemsButton1.setVisibility(View.VISIBLE);
 				publicItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_nor);
 				break;
 			case R.id.collectItemsButton1:
-				collectItemsButton1.setVisibility(View.GONE);
+				collectItemsButton1.setVisibility(View.INVISIBLE);
 				collectItemsButton2.setVisibility(View.VISIBLE);
 				collectItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_sel);
 				break;
 			case R.id.collectItemsButton2:
-				collectItemsButton2.setVisibility(View.GONE);
+				collectItemsButton2.setVisibility(View.INVISIBLE);
 				collectItemsButton1.setVisibility(View.VISIBLE);
 				collectItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_nor);

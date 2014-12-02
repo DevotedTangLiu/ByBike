@@ -22,6 +22,7 @@ import com.example.bybike.adapter.ImageListAdapter.OnTalkButtonClick;
 
 /**
  * 路数列表的Adapter
+ * 这个adapter专用于“我的”页面列表展示
  * 
  * @author tangliu
  * 

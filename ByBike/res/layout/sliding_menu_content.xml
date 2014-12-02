@@ -19,12 +19,23 @@
             android:background="@drawable/search_button"
             android:onClick="onclick" />
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/titleIcon"
             android:layout_width="79dp"
             android:layout_height="22dp"
+            android:contentDescription="@null"
             android:layout_centerInParent="true"
-            android:background="@drawable/bybike" >
-        </LinearLayout>
+            android:background="@drawable/bybike">
+        </ImageView>
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text=""
+            android:textColor="@color/text_color"
+            android:textStyle="bold" >
+        </TextView>
 
         <RelativeLayout
             android:id="@+id/goToMessage"
@@ -159,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="2dp"
-                    android:text="我的"
+                    android:text="活动"
                     android:textColor="#B4B4B4"
                     android:textSize="9sp" />
             </LinearLayout>

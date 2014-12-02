@@ -45,7 +45,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="53dp"
             android:background="@drawable/slide_button"
-            android:visibility="gone"/>
+            android:visibility="invisible"/>
         <ImageButton
             android:id="@+id/publicItemsButton2"
             android:layout_width="30dp"
@@ -96,7 +96,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="53dp"
             android:background="@drawable/slide_button"
-            android:visibility="gone" />
+            android:visibility="invisible" />
         <ImageButton
             android:id="@+id/collectItemsButton2"
             android:layout_width="30dp"

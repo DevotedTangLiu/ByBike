@@ -48,6 +48,11 @@ public class NewMainActivity extends AbActivity {
 	RelativeLayout titleBar;
 	
 	public LatLng currentLatLng;
+	/**
+	 * 标题
+	 */
+	private TextView titleText ;
+	private ImageView titleIcon;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +61,11 @@ public class NewMainActivity extends AbActivity {
 		getTitleBar().setVisibility(View.GONE);
 
 		clickRideButtonPage = (RelativeLayout) findViewById(R.id.cover);
+		titleText = (TextView)findViewById(R.id.titleText);
+		titleIcon = (ImageView)findViewById(R.id.titleIcon);
+		titleBar = (RelativeLayout) findViewById(R.id.titleBar);
 		// 主视图的Fragment添加
 		fragmentManager = getSupportFragmentManager();
-		titleBar = (RelativeLayout) findViewById(R.id.titleBar);
 		initSteps();
 	}
 
@@ -320,6 +327,25 @@ public class NewMainActivity extends AbActivity {
 				t.setTextColor(Color.rgb(180, 180, 180));
 			}
 		}
+		
+		if(i == 1){
+		    titleText.setVisibility(View.GONE);
+		    titleIcon.setVisibility(View.VISIBLE);
+		}else if(i == 2){
+		    titleText.setVisibility(View.VISIBLE);
+		    titleText.setText("活动");
+            titleIcon.setVisibility(View.INVISIBLE);
+		}else if(i == 3){
+		    titleText.setVisibility(View.VISIBLE);
+            titleText.setText("骑行");
+            titleIcon.setVisibility(View.INVISIBLE);
+        }else if(i == 4){
+            titleText.setVisibility(View.VISIBLE);
+            titleText.setText("路书");
+            titleIcon.setVisibility(View.INVISIBLE);
+        }else{
+            return;
+        }
 	}
 
 	/**

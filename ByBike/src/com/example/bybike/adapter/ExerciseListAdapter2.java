@@ -23,7 +23,7 @@ import com.example.bybike.R;
 
 /**
  * Copyright (c) 2011 All rights reserved 名称：MyListViewAdapter
- * 描述：在Adapter中释放Bitmap
+ * 描述：这个adapter专用于“我的”页面列表展示
  * 
  * @author zhaoqp
  * @date 2011-12-10
@@ -31,7 +31,7 @@ import com.example.bybike.R;
  */
 public class ExerciseListAdapter2 extends BaseAdapter {
 
-	private static String TAG = "ImageListAdapter";
+	private static String TAG = "ExerciseListAdapter2";
 	private static final boolean D = true;
 
 	private Context mContext;

@@ -170,8 +170,11 @@ public class ImageListAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(TAG, String.valueOf(position));
-			v.setSelected(true);
+		    if(v.isSelected()){
+                v.setSelected(false);
+            }else{
+                v.setSelected(true);
+            }
 		}
 	}
 
@@ -185,8 +188,11 @@ public class ImageListAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(TAG, String.valueOf(position));
-			v.setSelected(true);
+		    if(v.isSelected()){
+		        v.setSelected(false);
+		    }else{
+		        v.setSelected(true);
+		    }
 		}
 	}
 

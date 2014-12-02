@@ -1,5 +1,6 @@
 package com.example.bybike.riding;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,12 +16,12 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.ZoomControls;
 
 import com.ab.activity.AbActivity;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
-import com.baidu.location.BDNotifyListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
@@ -44,7 +46,7 @@ import com.example.bybike.R;
 import com.example.bybike.marker.AddMarkerActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
 
-public class RidingActivity extends AbActivity {
+public class RidingActivity extends AbActivity{
 
 	// 基础地图相关
 	MapView mMapView = null;
@@ -82,6 +84,12 @@ public class RidingActivity extends AbActivity {
 	 */
 	List<LatLng> points = new ArrayList<LatLng>();
 	List<LatLng> back_points = new ArrayList<LatLng>();
+	
+	TextView distance;
+	TextView speed;
+	TextView carbonReduce;
+	TextView timeUsed;
+	DecimalFormat decimalformat=new DecimalFormat(".##");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,17 +101,30 @@ public class RidingActivity extends AbActivity {
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		mBaidumap = mMapView.getMap();
 
-		System.out.println(getIntent().getExtras().get("longitude"));
 		currentLatLng = new LatLng(getIntent().getExtras()
 				.getDouble("latitude"), getIntent().getExtras().getDouble(
 				"longitude"));
 
 		points.clear();
 		points.add(currentLatLng);
+		
+		distance = (TextView)findViewById(R.id.distance);
+		speed = (TextView)findViewById(R.id.speed);
+		carbonReduce = (TextView)findViewById(R.id.reduceCarbon);
+		timeUsed = (TextView)findViewById(R.id.timeUsed);
 
 		initMap();
+		initData();
 	}
 
+	private void initData(){
+	    distance.setText("0.0");
+	    speed.setText("0.0");
+	    carbonReduce.setText("0.0");
+	    timeUsed.setText("00:00:00");
+	    
+	    handler.postDelayed(runnable, 1000);  
+	}
 	/**
 	 * 初始化地图设置
 	 */
@@ -138,6 +159,7 @@ public class RidingActivity extends AbActivity {
 		mLocClient = new LocationClient(getApplicationContext());
 		mMyLocationListener = new MyLocationListener();
 		mLocClient.registerLocationListener(mMyLocationListener);
+		
 		// 设置定位参数
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
@@ -247,11 +269,13 @@ public class RidingActivity extends AbActivity {
 		case R.id.pauseButton:
 			v.setVisibility(View.GONE);
 			findViewById(R.id.resumeButton).setVisibility(View.VISIBLE);
+			isRiding = false;
 			mLocClient.stop();// 停止定位
 			break;
 		case R.id.resumeButton:
 			v.setVisibility(View.GONE);
 			findViewById(R.id.pauseButton).setVisibility(View.VISIBLE);
+			isRiding = true;
 			mLocClient.start();// 开始定位
 			break;
 
@@ -418,8 +442,8 @@ public class RidingActivity extends AbActivity {
 				//计算两次定位之间的距离
 				Double dis = DistanceUtil.getDistance(
 						points.get(0), points.get(1));
-				showToast(String.valueOf(dis));
-
+				
+				distance.setText(decimalformat.format(dis + Double.parseDouble(distance.getText().toString())));
 				points.remove(0);
 			}
 			if (back_points.size() >= 100) {
@@ -433,6 +457,9 @@ public class RidingActivity extends AbActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		if(handler != null){
+		    handler.removeCallbacks(runnable);
+		}
 		// 退出时销毁定位
 		mLocClient.stop();
 		// 关闭定位图层
@@ -461,9 +488,28 @@ public class RidingActivity extends AbActivity {
 		mMapView.onPause();
 	}
 	
-	public class MyNotifyListener extends BDNotifyListener {
-		
-		
-		
-	}
+	Handler handler = new Handler();  
+	long totalSecs = 0;
+	boolean isRiding = true;
+    Runnable runnable = new Runnable() {  
+        @Override  
+        public void run() {  
+            if(isRiding){
+                totalSecs ++;
+                int hours = (int)(totalSecs/3600);
+                int mins = (int)(totalSecs - hours*3600)/60;
+                int secs = (int)(totalSecs - hours*3600)%60;
+                timeUsed.setText(String.format("%1$02d:%2$02d:%3$02d", hours, mins, secs));  
+                handler.postDelayed(this, 1000); 
+            }else{
+                handler.postDelayed(this, 1000); 
+            }
+         
+        }  
+    };  
+    
+    
+
+    
+   
 }

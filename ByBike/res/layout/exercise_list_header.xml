@@ -40,7 +40,7 @@
                 android:layout_height="35dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/sellect_button_selector"
-                android:text="喜欢数"
+                android:text="公里数"
                 android:textColor="#BBBBBB"
                 android:textSize="15sp" />
         </RelativeLayout>
@@ -56,7 +56,7 @@
                 android:layout_height="35dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/sellect_button_selector"
-                android:text="收藏数"
+                android:text="按地区"
                 android:textColor="#BBBBBB"
                 android:textSize="15sp" />
         </RelativeLayout>
@@ -72,7 +72,7 @@
                 android:layout_height="35dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/sellect_button_selector"
-                android:text="公里数"
+                android:text="热门度"
                 android:textColor="#BBBBBB"
                 android:textSize="15sp" />
         </RelativeLayout>
