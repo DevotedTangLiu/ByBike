@@ -19,6 +19,7 @@ import android.widget.ZoomControls;
 import com.ab.activity.AbActivity;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
+import com.baidu.location.BDNotifyListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
@@ -34,7 +35,11 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.overlayutil.BusLineOverlay;
+import com.baidu.mapapi.overlayutil.OverlayManager;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.example.bybike.R;
 import com.example.bybike.marker.AddMarkerActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
@@ -72,6 +77,12 @@ public class RidingActivity extends AbActivity {
 	ImageView publicItemBackground;
 	ImageView collectItemBackground;
 
+	/**
+	 * 定义一个列表，存放定位点，在地图上绘制路线
+	 */
+	List<LatLng> points = new ArrayList<LatLng>();
+	List<LatLng> back_points = new ArrayList<LatLng>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,6 +97,10 @@ public class RidingActivity extends AbActivity {
 		currentLatLng = new LatLng(getIntent().getExtras()
 				.getDouble("latitude"), getIntent().getExtras().getDouble(
 				"longitude"));
+
+		points.clear();
+		points.add(currentLatLng);
+
 		initMap();
 	}
 
@@ -188,6 +203,9 @@ public class RidingActivity extends AbActivity {
 			mLocClient.start();// 开始定位
 
 		}
+		
+		
+		
 
 	}
 
@@ -229,10 +247,12 @@ public class RidingActivity extends AbActivity {
 		case R.id.pauseButton:
 			v.setVisibility(View.GONE);
 			findViewById(R.id.resumeButton).setVisibility(View.VISIBLE);
+			mLocClient.stop();// 停止定位
 			break;
 		case R.id.resumeButton:
 			v.setVisibility(View.GONE);
 			findViewById(R.id.pauseButton).setVisibility(View.VISIBLE);
+			mLocClient.start();// 开始定位
 			break;
 
 		case R.id.zoom_down:
@@ -387,26 +407,26 @@ public class RidingActivity extends AbActivity {
 			mBaidumap.animateMapStatus(u);
 			//
 			// 添加折线
-			// points.add(ll);
-			// back_points.add(ll);
-			// if (points.size() >= 2) {
-			//
-			// OverlayOptions ooPolyline = new PolylineOptions().width(10)
-			// .color(0xAAFF0000).points(points);
-			// mBaidumap.addOverlay(ooPolyline);
-			//
-			// String dis = String.valueOf(DistanceUtil.getDistance(
-			// points.get(0), points.get(1)));
-			// String speed = String.valueOf(location.getSpeed());
-			// mActivity.showToast("速度：" + speed + "       距离：" + dis);
-			// points.remove(0);
-			// }
-			// if (back_points.size() >= 100) {
-			// back_points.clear();
-			// }
-			// OverlayManager om=new BusLineOverlay(mBaidumap);
-			// om.zoomToSpan();
-			mLocClient.stop();
+			points.add(myCurrentLatLng);
+			back_points.add(myCurrentLatLng);
+			if (points.size() >= 2) {
+
+				OverlayOptions ooPolyline = new PolylineOptions().width(10)
+						.color(0xAAFF0000).points(points);
+				mBaidumap.addOverlay(ooPolyline);
+
+				//计算两次定位之间的距离
+				Double dis = DistanceUtil.getDistance(
+						points.get(0), points.get(1));
+				showToast(String.valueOf(dis));
+
+				points.remove(0);
+			}
+			if (back_points.size() >= 100) {
+				back_points.clear();
+			}
+			OverlayManager om = new BusLineOverlay(mBaidumap);
+			om.zoomToSpan();
 		}
 	}
 
@@ -439,5 +459,11 @@ public class RidingActivity extends AbActivity {
 		super.onPause();
 		// 在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
 		mMapView.onPause();
+	}
+	
+	public class MyNotifyListener extends BDNotifyListener {
+		
+		
+		
 	}
 }
