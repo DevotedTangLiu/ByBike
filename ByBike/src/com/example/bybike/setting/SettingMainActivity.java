@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 
 import com.ab.activity.AbActivity;
 import com.example.bybike.R;
+import com.example.bybike.user.LoginActivity;
 
 public class SettingMainActivity extends AbActivity implements OnClickListener {
 
@@ -37,6 +38,9 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
             break;
         case R.id.aboutUs:
+            i.setClass(this, LoginActivity.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
             break;
         case R.id.logout:
             showLogoutDialog();

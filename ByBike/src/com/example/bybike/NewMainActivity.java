@@ -53,6 +53,7 @@ public class NewMainActivity extends AbActivity {
 	 */
 	private TextView titleText ;
 	private ImageView titleIcon;
+	private ImageView b;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class NewMainActivity extends AbActivity {
 		titleText = (TextView)findViewById(R.id.titleText);
 		titleIcon = (ImageView)findViewById(R.id.titleIcon);
 		titleBar = (RelativeLayout) findViewById(R.id.titleBar);
+		b = (ImageView)findViewById(R.id.rideButton);
 		// 主视图的Fragment添加
 		fragmentManager = getSupportFragmentManager();
 		initSteps();
@@ -127,16 +129,12 @@ public class NewMainActivity extends AbActivity {
 
 	public void changeMainFragment(int toItem) {
 		// TODO Auto-generated method stub
+	    //先关闭骑行页面
+	    b.setSelected(false);
+        clickRideButtonPage.setVisibility(View.GONE);
 		// 如果当前页面和点击的页面是同一个，则跳出
 		if (toItem == currentItem)
 			return;
-		if (toItem == R.id.r3) {
-			clickRideButtonPage.setVisibility(View.VISIBLE);
-			currentItem = R.id.r3;
-			return;
-		} else {
-			clickRideButtonPage.setVisibility(View.GONE);
-		}
 
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		Fragment currentFragment = fragmentManager
@@ -254,8 +252,7 @@ public class NewMainActivity extends AbActivity {
 			break;
 
 		case R.id.r3:
-			changeBackground(3);
-			changeMainFragment(view.getId());
+		    showRiding();
 			break;
 
 		case R.id.r4:
@@ -273,8 +270,8 @@ public class NewMainActivity extends AbActivity {
 			// overridePendingTransition(R.anim.fragment_in, 0);
 			break;
 		case R.id.cover:
-			// clickRideButtonPage.setVisibility(View.GONE);
-			break;
+		    showRiding();
+            break;
 		case R.id.goToAddMarker:
 			Intent goToAddMarkerIntent = new Intent();
 			goToAddMarkerIntent.setClass(NewMainActivity.this,
@@ -305,6 +302,21 @@ public class NewMainActivity extends AbActivity {
 			R.id.rideButton, R.id.routeButton, R.id.myButton };
 	int[] texts = new int[] { R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.t5 };
 
+	/**
+	 * 点击骑行按钮，特殊处理
+	  * showRiding(这里用一句话描述这个方法的作用)
+	 */
+	private void showRiding(){
+	    
+	    if(b.isSelected()){
+	        b.setSelected(false);
+	        clickRideButtonPage.setVisibility(View.GONE);
+	    }else{
+	        b.setSelected(true);
+	        clickRideButtonPage.setVisibility(View.VISIBLE);
+	    }
+	    
+	}
 	/**
 	 * 修改导航栏图标和背景 changeBackground(这里用一句话描述这个方法的作用)
 	 * 

@@ -135,6 +135,7 @@
         <activity
             android:name="com.example.bybike.setting.AccountSettingActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>

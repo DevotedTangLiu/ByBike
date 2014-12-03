@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
@@ -21,30 +23,22 @@ public class AccountSettingActivity extends AbActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setAbContentView(R.layout.activity_setting_accountsetting);
+		getTitleBar().setVisibility(View.GONE);
 
-		AbTitleBar mAbTitleBar = getTitleBar();
-		mAbTitleBar.getTitleTextButton().setTextColor(Color.rgb(110, 110, 110));
-		mAbTitleBar.setTitleText("账号设置");
-		LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, 150);
-		mAbTitleBar.setLayoutParams(params);
-		mAbTitleBar.setTitleTextBold(true);
-		mAbTitleBar.setLogo(R.drawable.back_button);
-		mAbTitleBar.setTitleBarBackground(R.drawable.title_bar);
-		mAbTitleBar.setTitleBarGravity(Gravity.CENTER, Gravity.CENTER);
 		
 		Boolean islogined = SharedPreferencesUtil.getSharedPreferences_b(this,
 				Constant.ISLOGINED);
-		if (!islogined) {
-			Intent intent = new Intent();
-			intent.setClass(AccountSettingActivity.this, LoginActivity.class);
-			startActivityForResult(intent, goToLoginActivityFlag);
-		}
+//		if (!islogined) {
+//			Intent intent = new Intent();
+//			intent.setClass(AccountSettingActivity.this, LoginActivity.class);
+//			startActivityForResult(intent, goToLoginActivityFlag);
+//		}
 		String account = SharedPreferencesUtil.getSharedPreferences_s(this, Constant.USERACCOUNT);
 		String nickName = SharedPreferencesUtil.getSharedPreferences_s(this, Constant.USERNICKNAME);
-		TextView userAccountText = (TextView)findViewById(R.id.userAccount);
-		userAccountText.setText(account);
-		EditText newUserAccountText = (EditText)findViewById(R.id.newUserAccount);
-		newUserAccountText.setText(nickName);
+//		TextView userAccountText = (TextView)findViewById(R.id.userAccount);
+//		userAccountText.setText(account);
+//		EditText newUserAccountText = (EditText)findViewById(R.id.newUserAccount);
+//		newUserAccountText.setText(nickName);
 
 	}
 
@@ -67,4 +61,24 @@ public class AccountSettingActivity extends AbActivity {
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+	
+	
+	boolean saved = false;
+	public void onClick(View v){
+	    switch (v.getId()) {
+        case R.id.saveButton:
+            if(!saved){
+                saved = true;
+                v.setBackgroundResource(R.drawable.accountsetting_save_button_success);
+            }
+            break;
+
+        case R.id.goBack:
+            AccountSettingActivity.this.finish();
+            break;
+        default:
+            break;
+        }
+	}
+	
 }

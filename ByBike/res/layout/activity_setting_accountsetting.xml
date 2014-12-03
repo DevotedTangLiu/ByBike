@@ -2,136 +2,263 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/exercise_list_background"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <!-- 标题栏 -->
+
+    <RelativeLayout
+        android:id="@+id/titleBar"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="30dp"
-        android:orientation="vertical" >
+        android:layout_height="51dp"
+        android:background="@drawable/title_bar" >
+
+        <RelativeLayout
+            android:id="@+id/goBack"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:onClick="onClick"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:background="@drawable/back_button" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="账号设置"
+            android:textColor="@color/text_color"
+            android:textStyle="bold" >
+        </TextView>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#C5C5C5" />
+    <!-- 标题栏结束 -->
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal" >
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <!-- 账号 -->
+
+            <TextView
+                android:id="@+id/account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:text="iamdfk@gmail.com"
+                android:textColor="#D2D2D2"
+                android:textSize="14sp" />
+
+            <!-- 头像 -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="123dp"
+                android:layout_marginTop="5dp" >
+
+                <ImageView
+                    android:layout_width="106dp"
+                    android:layout_height="123dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/b1"
+                    android:contentDescription="@null" />
+
+                <com.example.bybike.util.CircleImageView
+                    android:id="@+id/userHeadImage"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@null"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/user" />
+            </RelativeLayout>
+            <!-- 账号 -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="账号："
-                android:textColor="@color/text_color"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/userAccount"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="250840302@qq.com"
-                android:textColor="@color/text_color"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="53dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/login_input_background" >
-
-            <EditText
-                android:id="@+id/newUserAccount"
-                android:layout_width="fill_parent"
-                android:layout_height="53dp"
-                android:layout_marginLeft="8dp"
-                android:background="@null"
-                android:hint="习大大"
-                android:textColor="@color/black_overlay"
-                android:textColorHint="@color/black_overlay" >
-            </EditText>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal" >
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="2dp"
+                android:text="点击设置头像"
+                android:textColor="#D2D2D2"
+                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="修改密码："
-                android:textColor="@color/text_color"
-                android:textSize="20sp" />
-        </LinearLayout>
+                android:layout_marginLeft="70dp"
+                android:layout_marginTop="15dp"
+                android:text="昵称"
+                android:textColor="#D2D2D2"
+                android:textSize="12sp" />
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="53dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/login_input_background" >
-
-            <EditText
-                android:id="@+id/oldPassword"
+            <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="53dp"
-                android:layout_marginLeft="8dp"
-                android:background="@null"
-                android:hint="现有密码"
-                android:inputType="textPassword"
-                android:textColor="@color/black_overlay"
-                android:textColorHint="@color/black_overlay" >
-            </EditText>
-        </LinearLayout>
+                android:layout_height="40dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/login_input_background" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="53dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/login_input_background" >
+                <EditText
+                    android:id="@+id/userNickName"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:hint="ChaolotteYam"
+                    android:singleLine="true"
+                    android:textColor="#D2D2D2"
+                    android:textColorHint="#D2D2D2"
+                    android:textSize="16sp" >
+                </EditText>
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/newPassword"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="70dp"
+                android:layout_marginTop="23dp"
+                android:text="修改密码"
+                android:textColor="#D2D2D2"
+                android:textSize="12sp" />
+
+            <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="53dp"
-                android:layout_marginLeft="8dp"
-                android:background="@null"
-                android:hint="设置新密码"
-                android:inputType="textPassword"
-                android:textColor="@color/black_overlay"
-                android:textColorHint="@color/black_overlay" >
-            </EditText>
-        </LinearLayout>
+                android:layout_height="40dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/login_input_background" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="53dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/login_input_background" >
+                <EditText
+                    android:id="@+id/oldPassword"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:hint="旧密码..."
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textColor="#D2D2D2"
+                    android:textColorHint="#D2D2D2"
+                    android:textSize="16sp" >
+                </EditText>
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/repeatNewPassword"
+            <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="53dp"
-                android:layout_marginLeft="8dp"
-                android:background="@null"
-                android:hint="重复新密码"
-                android:inputType="textPassword"
-                android:textColor="@color/black_overlay"
-                android:textColorHint="@color/black_overlay" >
-            </EditText>
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="70dp"
+                    android:layout_marginRight="70dp"
+                    android:background="@drawable/login_input_background" >
+
+                    <EditText
+                        android:id="@+id/newPassword"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:background="@null"
+                        android:hint="新密码..."
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        android:textColor="#D2D2D2"
+                        android:textColorHint="#D2D2D2"
+                        android:textSize="16sp" >
+                    </EditText>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/newPasswordIcon"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="40dp"
+                    android:background="@drawable/account_setting_error" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="70dp"
+                    android:layout_marginRight="70dp"
+                    android:background="@drawable/login_input_background" >
+
+                    <EditText
+                        android:id="@+id/repeatPassword"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:background="@null"
+                        android:hint="确认密码..."
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        android:textColor="#D2D2D2"
+                        android:textColorHint="#D2D2D2"
+                        android:textSize="16sp" >
+                    </EditText>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/repeatPasswordIcon"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="40dp"
+                    android:background="@drawable/account_setting_ok" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:text="*新旧密码不能相同。"
+                android:textColor="#FA6406"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="90dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:onClick="onClick"
+                android:background="@drawable/accountsetting_save_button" />
         </LinearLayout>
-        
-        <Button
-            android:id="@+id/submitButton"
-            android:layout_width="fill_parent"
-            android:layout_height="53dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/submit_button" />
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
