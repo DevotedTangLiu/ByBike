@@ -3,6 +3,7 @@ package com.example.bybike.user;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,7 @@ import com.ab.http.AbStringHttpResponseListener;
 import com.example.bybike.R;
 import com.example.bybike.util.BitmapUtil;
 import com.example.bybike.util.Constant;
+import com.example.bybike.util.NetUtil;
 
 public class RegisterActivity extends AbActivity{
 	
@@ -30,12 +32,20 @@ public class RegisterActivity extends AbActivity{
 	EditText password;
 	EditText repeatPsd;
 	
+	String accountString;
+	String nicknameString;
+	String passwordString;
+	
+	Intent intent;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setAbContentView(R.layout.activity_register);
 		getTitleBar().setVisibility(View.GONE);
 
+		intent = getIntent();
+		
 		register_background = (ImageView) findViewById(R.id.register_background);
 		register_background.setImageBitmap(BitmapUtil.decodeSampledBitmapFromResource(
 				getResources(), R.drawable.register_background, 540, 960));
@@ -84,19 +94,36 @@ public class RegisterActivity extends AbActivity{
 	 */
 	private void register(){
 		
-		String accountString = account.getText().toString().trim();
-		String nicknameString = nickname.getText().toString().trim();
-		String passwordString = password.getText().toString().trim();
-		String repeatPwdString = repeatPsd.getText().toString().trim();
-		
-		if(!passwordString.equals(repeatPwdString)){
-			showDialog("温馨提示", "密码不一致，请重新输入");
+		if(!NetUtil.isConnnected(this)){
+			showDialog("温馨提示","网络不可用，请设置您的网络后重试");
 			return;
 		}
 		
+		accountString = account.getText().toString().trim();
+		nicknameString = nickname.getText().toString().trim();
+		passwordString = password.getText().toString().trim();
+//		String repeatPwdString = repeatPsd.getText().toString().trim();
+		
+		if(!accountString.contains("@") || !accountString.contains(".")){
+			showDialog("温馨提示", "请输入正确的邮箱地址");
+			return;
+		}
+		if(nicknameString.equalsIgnoreCase("")){
+			showDialog("温馨提示", "昵称不能为空，请重新输入");
+			return;
+		}
+		if(passwordString.length() < 6){
+			showDialog("温馨提示", "密码长度不能小于6，请重新输入");
+			return;
+		}
+//		if(!passwordString.equals(repeatPwdString)){
+//			showDialog("温馨提示", "密码不一致，请重新输入");
+//			return;
+//		}
+		
 		String urlString =  Constant.serverUrl + Constant.registerUrl;
 		AbRequestParams params = new AbRequestParams();
-	    params.put("username", nicknameString);
+	    params.put("name", nicknameString);
 	    params.put("email", accountString);
 	    params.put("password", passwordString);
 	    params.put("channel", "1");
@@ -112,6 +139,8 @@ public class RegisterActivity extends AbActivity{
 			// 开始执行前
 			@Override
 			public void onStart() {
+				
+				showProgressDialog("正在注册，请稍后...");
 			}
 
 			// 失败，调用
@@ -124,7 +153,7 @@ public class RegisterActivity extends AbActivity{
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-
+				removeProgressDialog();
 			};
 
 		});
@@ -135,13 +164,25 @@ public class RegisterActivity extends AbActivity{
 		// TODO Auto-generated method stub
 		try {
 			JSONObject responseObj = new JSONObject(content);
-			String code = responseObj.getString("code");
-			if("10000".equals(code)){
-				String userId = responseObj.getString("userId");
-				String username = responseObj.getString("username");
-				String sessionId = responseObj.getString("sessionId");
+			
+			JSONObject metaObj = responseObj.getJSONObject("meta_data");
+			String code = metaObj.getString("respone_code").trim();
+			if("0".equals(code)){
+				String sessionId = metaObj.getString("jsessionid").trim();
+				intent.putExtra("nickname", nicknameString);
+				intent.putExtra("password", passwordString);
+				intent.putExtra("email", accountString);
+				intent.putExtra("sessionId", sessionId);
+				
+				setResult(RESULT_OK, intent);
+				RegisterActivity.this.finish();
+				
+			}else if("1".equals(code)){
+				
+				showDialog("温馨提示", "该邮箱已注册，请更换邮箱！");
+				
 			}else{
-				showDialog("温馨提示", "注册失败，请稍后重试");
+				showDialog("温馨提示", responseObj.getString("describe"));
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

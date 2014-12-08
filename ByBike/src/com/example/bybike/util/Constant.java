@@ -43,13 +43,13 @@ public class Constant {
 	/**
 	 * 服务器地址
 	 */
-	public static final String serverUrl = "";
+	public static final String serverUrl = "http://115.29.209.37:8080/bybike_ser";
 	/**
 	 * 注册接口地址
 	 */
-    public static final String registerUrl = "/users/register/email";
+    public static final String registerUrl = "/mc/registerByEmail";
     /**
      * 登陆接口地址
      */
-    public static final String loginUrl = "/users/login";
+    public static final String loginUrl = "/m/login";
 }
