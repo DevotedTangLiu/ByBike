@@ -27,7 +27,10 @@ import com.example.bybike.marker.AddMarkerActivity;
 import com.example.bybike.riding.RidingActivity;
 import com.example.bybike.routes.RoutesBookMainFragment;
 import com.example.bybike.setting.SettingMainActivity;
+import com.example.bybike.user.LoginActivity;
 import com.example.bybike.user.UserMainPageFragment;
+import com.example.bybike.util.Constant;
+import com.example.bybike.util.SharedPreferencesUtil;
 
 public class NewMainActivity extends AbActivity {
 
@@ -54,6 +57,8 @@ public class NewMainActivity extends AbActivity {
 	private TextView titleText ;
 	private ImageView titleIcon;
 	private ImageView b;
+	
+	private final int GO_TO_LOGIN_ACTIVITY = 10001;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -260,8 +265,19 @@ public class NewMainActivity extends AbActivity {
 			changeMainFragment(view.getId());
 			break;
 		case R.id.r5:
-			changeBackground(5);
-			changeMainFragment(view.getId());
+			/**
+			 * 如果点击“我的”按钮，想进入“我的页面”,则需要先判断用户是否已经登录
+			 * 如果已登录，则直接进入，否则先进入登陆页面登陆后再进入我的页面
+			 */
+
+			if(SharedPreferencesUtil.getSharedPreferences_b(this, Constant.ISLOGINED)){
+				changeBackground(5);
+				changeMainFragment(view.getId());
+			}else{
+				Intent i = new Intent();
+				i.setClass(NewMainActivity.this, LoginActivity.class);
+				startActivityForResult(i, GO_TO_LOGIN_ACTIVITY);
+			}
 			break;
 		case R.id.search:
 			Intent i = new Intent();
@@ -404,9 +420,16 @@ public class NewMainActivity extends AbActivity {
 				changeMainFragment(R.id.r1);
 				break;
 
+			case GO_TO_LOGIN_ACTIVITY:
+				if(SharedPreferencesUtil.getSharedPreferences_b(NewMainActivity.this, Constant.ISLOGINED)){
+					changeBackground(5);
+					changeMainFragment(R.id.r5);
+				}
+				break;
 			default:
 				break;
 			}
+			
 		}
 
 	}
