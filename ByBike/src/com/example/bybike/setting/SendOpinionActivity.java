@@ -5,6 +5,11 @@
  */
 package com.example.bybike.setting;
 
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,9 +18,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
+import com.ab.http.AbHttpUtil;
+import com.ab.http.AbRequestParams;
+import com.ab.http.AbStringHttpResponseListener;
 import com.example.bybike.R;
+import com.example.bybike.db.dao.UserBeanDao;
+import com.example.bybike.db.model.UserBean;
+import com.example.bybike.user.LoginActivity;
+import com.example.bybike.util.Constant;
+import com.example.bybike.util.NetUtil;
+import com.example.bybike.util.SharedPreferencesUtil;
 
 /**
  * @author tangliu(mail) 2014-11-26
@@ -25,11 +40,23 @@ import com.example.bybike.R;
  */
 public class SendOpinionActivity extends AbActivity {
 
+    TextView opinion;
+    TextView contactView;
+ // http请求帮助类
+    private AbHttpUtil mAbHttpUtil = null;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setAbContentView(R.layout.activity_opinion);
 		getTitleBar().setVisibility(View.GONE);
+		
+		opinion = (TextView)findViewById(R.id.opinionDetail);
+		contactView = (TextView)findViewById(R.id.contact);
+		
+		// 获取Http工具类
+        mAbHttpUtil = AbHttpUtil.getInstance(this);
+        mAbHttpUtil.setDebug(false);
 
 	}
 
@@ -41,13 +68,64 @@ public class SendOpinionActivity extends AbActivity {
 			this.finish();
 			break;
 		case R.id.sendButton:
-			showResultDialog();
+		    sendOpinion();
 			break;
 		default:
 			break;
 		}
 	}
 
+	private void sendOpinion(){
+	    String opinionContent = opinion.getText().toString().trim();
+	    String contact = contactView.getText().toString().trim();
+	    
+	    if(!NetUtil.isConnnected(this)){
+            showDialog("温馨提示","网络不可用，请设置您的网络后重试");
+            return;
+        }
+	    if("".equalsIgnoreCase(opinionContent)){
+	        showDialog("温馨提示","意见内容不能为空");
+            return;
+	    }
+        
+        String urlString = Constant.serverUrl + Constant.suggestionUrl;
+        urlString += ";jsessionid=";
+        urlString += SharedPreferencesUtil.getSharedPreferences_s(SendOpinionActivity.this, Constant.SESSION);
+        AbRequestParams p = new AbRequestParams();
+        p.put("content", opinionContent);
+        p.put("contact", contact);
+        // 绑定参数
+        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+            // 获取数据成功会调用这里
+            @Override
+            public void onSuccess(int statusCode, String content) {
+
+                processResult(content);
+            };
+
+            // 开始执行前
+            @Override
+            public void onStart() {
+                showProgressDialog("正在提交，请稍后...");
+            }
+
+            // 失败，调用
+            @Override
+            public void onFailure(int statusCode, String content,
+                    Throwable error) {
+            }
+
+            // 完成后调用，失败，成功
+            @Override
+            public void onFinish() {
+                removeProgressDialog();
+            };
+
+        });
+	    
+	    
+	}
 	/**
 	 * 发送成功对话框
 	 */
@@ -72,4 +150,27 @@ public class SendOpinionActivity extends AbActivity {
 		dialog.show();
 	}
 
+	
+	protected void processResult(String content) {
+        // TODO Auto-generated method stub
+        try {
+            JSONObject responseObj = new JSONObject(content);
+            String code = responseObj.getString("code");
+            if ("0".equals(code)) {
+
+                String sessionId = responseObj.getString("jsessionid");
+                SharedPreferencesUtil.saveSharedPreferences_s(SendOpinionActivity.this, Constant.SESSION, sessionId);
+                showResultDialog();
+                
+            } else {
+                
+                showDialog("温馨提示", responseObj.getString("message"));
+            }
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            showDialog("温馨提示", "提交失败，请稍后重试");
+        }
+
+    }
 }

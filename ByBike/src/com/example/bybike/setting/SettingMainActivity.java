@@ -1,5 +1,8 @@
 package com.example.bybike.setting;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,16 +12,29 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.ab.activity.AbActivity;
+import com.ab.http.AbHttpUtil;
+import com.ab.http.AbRequestParams;
+import com.ab.http.AbStringHttpResponseListener;
 import com.example.bybike.R;
 import com.example.bybike.user.LoginActivity;
+import com.example.bybike.util.Constant;
+import com.example.bybike.util.NetUtil;
+import com.example.bybike.util.SharedPreferencesUtil;
 
 public class SettingMainActivity extends AbActivity implements OnClickListener {
+
+    // http请求帮助类
+    private AbHttpUtil mAbHttpUtil = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setAbContentView(R.layout.fragment_setting_main);
         getTitleBar().setVisibility(View.GONE);
+
+        // 获取Http工具类
+        mAbHttpUtil = AbHttpUtil.getInstance(this);
+        mAbHttpUtil.setDebug(false);
 
     }
 
@@ -64,9 +80,7 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
             }
-            Intent intent = getIntent();
-            setResult(RESULT_OK, intent);
-            this.finish();
+            logout();
             break;
         default:
             break;
@@ -90,6 +104,69 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void logout() {
+        if (!NetUtil.isConnnected(this)) {
+            showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+            return;
+        }
+        String urlString = Constant.serverUrl + Constant.logoutUrl;
+        urlString += ";jsessionid=";
+        urlString += SharedPreferencesUtil.getSharedPreferences_s(SettingMainActivity.this, Constant.SESSION);
+        mAbHttpUtil.get(urlString, new AbStringHttpResponseListener() {
+
+            // 获取数据成功会调用这里
+            @Override
+            public void onSuccess(int statusCode, String content) {
+
+                processResult(content);
+            };
+
+            // 开始执行前
+            @Override
+            public void onStart() {
+                showProgressDialog("正在登出，请稍后...");
+            }
+
+            // 失败，调用
+            @Override
+            public void onFailure(int statusCode, String content,
+                    Throwable error) {
+            }
+
+            // 完成后调用，失败，成功
+            @Override
+            public void onFinish() {
+                removeProgressDialog();
+            };
+
+        });
+    }
+    
+    protected void processResult(String content) {
+        // TODO Auto-generated method stub
+        try {
+            JSONObject responseObj = new JSONObject(content);
+            String code = responseObj.getString("code");
+            if ("0".equals(code)) {
+                String sessionId = responseObj.getString("jsessionid");
+                SharedPreferencesUtil.saveSharedPreferences_s(SettingMainActivity.this, Constant.SESSION, sessionId);
+                SharedPreferencesUtil.saveSharedPreferences_b(SettingMainActivity.this, Constant.ISLOGINED, false);
+                Intent intent = getIntent();
+                setResult(RESULT_OK, intent);
+                this.finish();
+                
+            } else {
+                
+                showDialog("温馨提示", responseObj.getString("message"));
+            }
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            showDialog("温馨提示", "提交失败，请稍后重试");
+        }
+
     }
 
 }

@@ -16,6 +16,10 @@ public class Constant {
      */
 	public static final String ISLOGINED = "islogined";
 	/**
+	 * 当前session
+	 */
+	public static final String SESSION = "session";
+	/**
 	 * 用户id
 	 */
 	public static final String USERID = "userId";
@@ -52,4 +56,21 @@ public class Constant {
      * 登陆接口地址
      */
     public static final String loginUrl = "/m/login";
+    /**
+     * 提交建议接口地址
+     */
+    public static final String suggestionUrl = "/m/suggestion/save";
+    
+    /**
+     * 退出登录接口
+     */
+    public static final String logoutUrl = "/m/mobileLogout";
+    /**
+     * 修改密码接口
+     */
+    public static final String updatePasswordUrl = "/m/modifyPwd";
+    /**
+     * 更新用户资料接口
+     */
+    public static final String updateUserInfoUrl = "/m/editUser";
 }

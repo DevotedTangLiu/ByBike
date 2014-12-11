@@ -60,7 +60,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="30dp"
-                android:text="iamdfk@gmail.com"
                 android:textColor="#D2D2D2"
                 android:textSize="14sp" />
 
@@ -86,17 +85,20 @@
                     android:layout_marginTop="8dp"
                     android:contentDescription="@null"
                     android:scaleType="centerCrop"
+                    android:onClick="onClick"
                     android:src="@drawable/user" />
             </RelativeLayout>
             <!-- 账号 -->
 
             <TextView
+                android:id="@+id/changePicText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="2dp"
                 android:text="点击设置头像"
                 android:textColor="#D2D2D2"
+                android:onClick="onClick"
                 android:textSize="14sp" />
 
             <TextView
@@ -123,7 +125,6 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:background="@null"
-                    android:hint="ChaolotteYam"
                     android:singleLine="true"
                     android:textColor="#D2D2D2"
                     android:textColorHint="#D2D2D2"
@@ -199,7 +200,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="40dp"
-                    android:background="@drawable/account_setting_error" />
+                    android:background="@drawable/account_setting_error" 
+                    android:visibility="invisible"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -237,7 +239,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="40dp"
-                    android:background="@drawable/account_setting_ok" />
+                    android:background="@drawable/account_setting_ok" 
+                    android:visibility="invisible"/>
             </RelativeLayout>
 
             <TextView

@@ -1,5 +1,9 @@
 package com.example.bybike.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -106,4 +110,26 @@ public class BitmapUtil {
 			}
 			return null;
 		}
+	    
+	    
+	    //通过降低图片质量压缩图片
+	    public static void compressBmpToFile(Bitmap bmp,File file){
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int options = 90;
+            bmp.compress(Bitmap.CompressFormat.JPEG, options, baos);
+            //压缩到100K
+            while (baos.toByteArray().length / 1024 > 100) { 
+                    baos.reset();
+                    options -= 10;
+                    bmp.compress(Bitmap.CompressFormat.JPEG, options, baos);
+            }
+            try {
+                    FileOutputStream fos = new FileOutputStream(file);
+                    fos.write(baos.toByteArray());
+                    fos.flush();
+                    fos.close();
+            } catch (Exception e) {
+                    e.printStackTrace();
+            }
+    }
 }

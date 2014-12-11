@@ -59,6 +59,7 @@ public class NewMainActivity extends AbActivity {
 	private ImageView b;
 	
 	private final int GO_TO_LOGIN_ACTIVITY = 10001;
+	private final int GO_TO_SETTING_MAIN_ACTIVITY = 10005;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -415,7 +416,7 @@ public class NewMainActivity extends AbActivity {
 		if (resultCode == RESULT_OK) {
 			
 			switch (requestCode) {
-			case 5:
+			case GO_TO_SETTING_MAIN_ACTIVITY:
 				changeBackground(1);
 				changeMainFragment(R.id.r1);
 				break;
