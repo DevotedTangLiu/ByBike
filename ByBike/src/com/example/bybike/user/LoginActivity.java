@@ -22,7 +22,6 @@ import com.ab.http.AbStringHttpResponseListener;
 import com.example.bybike.R;
 import com.example.bybike.db.dao.UserBeanDao;
 import com.example.bybike.db.model.UserBean;
-import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.util.BitmapUtil;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
@@ -118,7 +117,10 @@ public class LoginActivity extends AbActivity {
             // 获取数据成功会调用这里
             @Override
             public void onSuccess(int statusCode, String content) {
-
+//            	content = content.replaceAll("\\\\", "");
+//            	content = content.replaceAll(":\"{", ":{");
+//            	content = content.replaceAll("}\"", "}");
+            	
                 processResult(content);
             };
 
@@ -154,9 +156,9 @@ public class LoginActivity extends AbActivity {
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
                 String sessionId = responseObj.getString("jsessionid");
-                JSONObject dataObject = responseObj.getJSONObject("data");
-                nickname = dataObject.getString("name");
-                account = dataObject.getString("loginName");
+//                JSONObject dataObject = responseObj.getJSONObject("data");
+//                nickname = dataObject.getString("name");
+//                account = dataObject.getString("loginName");
                 
                 userDao = new UserBeanDao(LoginActivity.this);
                 // (1)获取数据库
@@ -170,7 +172,7 @@ public class LoginActivity extends AbActivity {
                     user.setUserEmail(account);
                     user.setPassword(password);
                     user.setSession(sessionId);
-                    user.setUserNickName(nickname);
+//                    user.setUserNickName(nickname);
                     userDao.update(user);
 
                 } else {
@@ -178,7 +180,7 @@ public class LoginActivity extends AbActivity {
                     user.setSession(sessionId);
                     user.setUserEmail(account);
                     user.setPassword(password);
-                    user.setUserNickName(nickname);
+//                    user.setUserNickName(nickname);
                     userDao.insert(user);
                 }
 
@@ -188,7 +190,7 @@ public class LoginActivity extends AbActivity {
                 SharedPreferencesUtil.saveSharedPreferences_s(LoginActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERACCOUNT, this.account);
                 SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERPASSWORD, this.password);
-                SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERNICKNAME, nickname);
+//                SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERNICKNAME, nickname);
                 SharedPreferencesUtil.saveSharedPreferences_b(this, Constant.ISLOGINED, true);
 
                 Intent intent = getIntent();

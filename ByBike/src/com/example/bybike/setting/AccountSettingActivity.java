@@ -354,7 +354,10 @@ public class AccountSettingActivity extends AbActivity {
             urlString += ";jsessionid=";
             urlString += SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION);
             AbRequestParams p = new AbRequestParams();
-            p.put("file", headPicFile,"multipart/form-data");
+            p.put("name", newNickName);
+            if(headPicFile != null){
+            	p.put("img", headPicFile,"multipart/form-data");
+            }
             // 绑定参数
             mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
