@@ -196,6 +196,20 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        
+        <!-- 配置一个Service组件 -->
+        <service android:name="com.example.bybike.pushnotification.PushMsgRealService" >
+            <intent-filter>
+
+                <!-- 为该Service组件的intent-filter配置action -->
+                <action android:name="org.crazyit.service.FIRST_SERVICE" />
+            </intent-filter>
+        </service>
+         <receiver android:name="com.example.bybike.pushnotification.MyBroadReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <!-- 百度地图 -->
         <meta-data

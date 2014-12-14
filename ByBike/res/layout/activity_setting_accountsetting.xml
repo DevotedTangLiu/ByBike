@@ -251,7 +251,8 @@
                 android:layout_marginTop="15dp"
                 android:text="*新旧密码不能相同。"
                 android:textColor="#FA6406"
-                android:textSize="10sp" />
+                android:textSize="10sp" 
+                android:visibility="invisible"/>
 
             <Button
                 android:id="@+id/saveButton"

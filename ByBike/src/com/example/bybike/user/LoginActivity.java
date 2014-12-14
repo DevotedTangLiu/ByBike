@@ -117,9 +117,6 @@ public class LoginActivity extends AbActivity {
             // 获取数据成功会调用这里
             @Override
             public void onSuccess(int statusCode, String content) {
-//            	content = content.replaceAll("\\\\", "");
-//            	content = content.replaceAll(":\"{", ":{");
-//            	content = content.replaceAll("}\"", "}");
             	
                 processResult(content);
             };
@@ -156,9 +153,15 @@ public class LoginActivity extends AbActivity {
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
                 String sessionId = responseObj.getString("jsessionid");
-//                JSONObject dataObject = responseObj.getJSONObject("data");
-//                nickname = dataObject.getString("name");
-//                account = dataObject.getString("loginName");
+                JSONObject dataObject = responseObj.getJSONObject("data");
+                nickname = dataObject.getString("name");
+                account = dataObject.getString("loginName");
+                String headPic;
+                try{
+                    headPic = dataObject.getString("headUrl");
+                }catch(JSONException e){
+                    headPic = "";
+                }
                 
                 userDao = new UserBeanDao(LoginActivity.this);
                 // (1)获取数据库
@@ -172,7 +175,8 @@ public class LoginActivity extends AbActivity {
                     user.setUserEmail(account);
                     user.setPassword(password);
                     user.setSession(sessionId);
-//                    user.setUserNickName(nickname);
+                    user.setUserNickName(nickname);
+                    user.setPicUrl(headPic);
                     userDao.update(user);
 
                 } else {
@@ -180,7 +184,8 @@ public class LoginActivity extends AbActivity {
                     user.setSession(sessionId);
                     user.setUserEmail(account);
                     user.setPassword(password);
-//                    user.setUserNickName(nickname);
+                    user.setUserNickName(nickname);
+                    user.setPicUrl(headPic);
                     userDao.insert(user);
                 }
 
@@ -190,7 +195,8 @@ public class LoginActivity extends AbActivity {
                 SharedPreferencesUtil.saveSharedPreferences_s(LoginActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERACCOUNT, this.account);
                 SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERPASSWORD, this.password);
-//                SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERNICKNAME, nickname);
+                SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERNICKNAME, nickname);
+                SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERAVATARURL, headPic);
                 SharedPreferencesUtil.saveSharedPreferences_b(this, Constant.ISLOGINED, true);
 
                 Intent intent = getIntent();

@@ -61,7 +61,15 @@ public class BitmapUtil {
 			}
 			return inSampleSize;
 		}
-	    
+	    /**
+	     * 通过resourceId返回压缩后的bitmap
+	      * decodeSampledBitmapFromResource(这里用一句话描述这个方法的作用)
+	      * @param res
+	      * @param resId
+	      * @param reqWidth
+	      * @param reqHeight
+	      * @return
+	     */
 	    public static Bitmap decodeSampledBitmapFromResource(Resources res,
 				int resId, int reqWidth, int reqHeight) {
 			// 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
@@ -80,28 +88,25 @@ public class BitmapUtil {
 			}
 			return null;
 		}
-	    
-	    public static Bitmap compressPhotoFileToBitmap(String filePath) {
-			BitmapFactory.Options opts = new BitmapFactory.Options();
-			opts.inJustDecodeBounds = true;
-			BitmapFactory.decodeFile(filePath, opts);
-			// 压缩到640x640
-			opts.inSampleSize = BitmapUtil.computeSampleSize(opts, -1, 640 * 640);
-			opts.inJustDecodeBounds = false;
-			try {
-				return BitmapFactory.decodeFile(filePath, opts);
-			} catch (OutOfMemoryError err) {
-				// MyLog.D( TAG, err.getMessage( ) );
-			}
-			return null;
-		}
-	    
+	  
+	    /**
+	     * 通过file路径返回压缩后的bitmap
+	      * compressPhotoFileToBitmap(这里用一句话描述这个方法的作用)
+	      * @param filePath
+	      * @param width
+	      * @param height
+	      * @return
+	     */
 	    public static Bitmap compressPhotoFileToBitmap(String filePath, int width, int height) {
 			BitmapFactory.Options opts = new BitmapFactory.Options();
 			opts.inJustDecodeBounds = true;
 			BitmapFactory.decodeFile(filePath, opts);
-			// 压缩到640x480
-			opts.inSampleSize = BitmapUtil.computeSampleSize(opts, -1, width * height);
+			
+			int oriWidth = opts.outWidth;
+			int oriHeight = opts.outHeight;
+			int reqheight = width*oriHeight/oriWidth;
+			// 按比例，将宽度压缩到640
+			opts.inSampleSize = BitmapUtil.computeSampleSize(opts, -1, width * reqheight);
 			opts.inJustDecodeBounds = false;
 			try {
 				return BitmapFactory.decodeFile(filePath, opts);

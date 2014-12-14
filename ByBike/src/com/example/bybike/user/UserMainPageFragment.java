@@ -47,6 +47,7 @@ import com.example.bybike.friends.FriendsActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.routes.RouteDetailActivity;
 import com.example.bybike.setting.SettingMainActivity;
+import com.example.bybike.util.CircleImageView;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.SharedPreferencesUtil;
 
@@ -115,7 +116,13 @@ public class UserMainPageFragment extends Fragment {
 		//设置用户名字
 		TextView userName = (TextView)view.findViewById(R.id.userName);
 		userName.setText(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERNICKNAME));
-
+		//设置用户头像
+		mAbImageDownloader = new AbImageDownloader(mActivity);
+		CircleImageView userHeadImageView = (CircleImageView)view.findViewById(R.id.fragment_my_image_user);
+		String userHeadPicUrl = SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERAVATARURL);
+		if(userHeadPicUrl.length() > 0){
+		    mAbImageDownloader.display(userHeadImageView, Constant.serverUrl + userHeadPicUrl);
+		}
 		//填充用户活动、路书、友好点数据
 		mPager = (ViewPager) view.findViewById(R.id.vPager);
         listViews = new ArrayList<View>();

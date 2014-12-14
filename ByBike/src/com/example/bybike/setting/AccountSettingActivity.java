@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
+import com.ab.bitmap.AbImageDownloader;
 import com.ab.global.AbConstant;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
@@ -55,6 +56,8 @@ public class AccountSettingActivity extends AbActivity {
     private File mCurrentPhotoFile;
     private String mFileName;
 
+    // 图片下载类
+    private AbImageDownloader mAbImageDownloader = null;
     // 头像图片
     CircleImageView userHeadImage;
     Bitmap headBitMap;
@@ -76,21 +79,31 @@ public class AccountSettingActivity extends AbActivity {
         super.onCreate(savedInstanceState);
         setAbContentView(R.layout.activity_setting_accountsetting);
         getTitleBar().setVisibility(View.GONE);
+        
+        // 获取Http工具类
+        mAbHttpUtil = AbHttpUtil.getInstance(this);
+        mAbHttpUtil.setDebug(false);
 
+        //设置用户账号和昵称
         String account = SharedPreferencesUtil.getSharedPreferences_s(this, Constant.USERACCOUNT);
         String nickName = SharedPreferencesUtil.getSharedPreferences_s(this, Constant.USERNICKNAME);
-
         TextView userAccountText = (TextView) findViewById(R.id.account);
         userAccountText.setText(account);
         userNickNameText = (EditText) findViewById(R.id.userNickName);
         userNickNameText.setText(nickName);
 
+        //设置头像
+        mAbImageDownloader = new AbImageDownloader(AccountSettingActivity.this);
         userHeadImage = (CircleImageView) findViewById(R.id.userHeadImage);
+        String userHeadPicUrl = SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.USERAVATARURL);
+        if(userHeadPicUrl.length() > 0){
+            mAbImageDownloader.display(userHeadImage, Constant.serverUrl + userHeadPicUrl);
+        }
         oldPassword = (EditText) findViewById(R.id.oldPassword);
         newPassword = (EditText) findViewById(R.id.newPassword);
-        newPassword.addTextChangedListener(new MyTextWatcher());
+        newPassword.addTextChangedListener(mtw);
         repeatPassword = (EditText) findViewById(R.id.repeatPassword);
-        repeatPassword.addTextChangedListener(new MyTextWatcher2());
+        repeatPassword.addTextChangedListener(mtw);
         tips = (TextView) findViewById(R.id.tips);
 
         newPasswordIcon = (ImageView) findViewById(R.id.newPasswordIcon);
@@ -144,9 +157,7 @@ public class AccountSettingActivity extends AbActivity {
 
         });
 
-        // 获取Http工具类
-        mAbHttpUtil = AbHttpUtil.getInstance(this);
-        mAbHttpUtil.setDebug(false);
+       
     }
 
     /**
@@ -240,14 +251,11 @@ public class AccountSettingActivity extends AbActivity {
     public void onClick(View v) {
         switch (v.getId()) {
         case R.id.saveButton:
-
             updateUserInfo();
             break;
-
         case R.id.goBack:
             AccountSettingActivity.this.finish();
             break;
-
         case R.id.userHeadImage:
             showDialog(1, mAvatarView);
             break;
@@ -355,9 +363,7 @@ public class AccountSettingActivity extends AbActivity {
             urlString += SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION);
             AbRequestParams p = new AbRequestParams();
             p.put("name", newNickName);
-            if(headPicFile != null){
-            	p.put("img", headPicFile,"multipart/form-data");
-            }
+            p.put("img", headPicFile,"multipart/form-data");
             // 绑定参数
             mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -365,7 +371,7 @@ public class AccountSettingActivity extends AbActivity {
                 @Override
                 public void onSuccess(int statusCode, String content) {
 
-                    processUpdateInfoResult(content, newNickName);
+                    processUpdateInfoResult(content);
                 };
 
                 // 开始执行前
@@ -407,19 +413,26 @@ public class AccountSettingActivity extends AbActivity {
       * @param content
       * @param newNickName
       */
-    protected void processUpdateInfoResult(String content, String newNickName) {
+    protected void processUpdateInfoResult(String content) {
         // TODO Auto-generated method stub
         try {
             JSONObject responseObj = new JSONObject(content);
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
 
+                JSONObject dataObject = responseObj.getJSONObject("data");
+                String nickname = dataObject.getString("name");
+                String headUrl = dataObject.getString("headUrl");
+                
                 String sessionId = responseObj.getString("jsessionid");
                 Button b = (Button) findViewById(R.id.saveButton);
                 b.setBackgroundResource(R.drawable.accountsetting_save_button_success);
 
                 SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION, sessionId);
-                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERNICKNAME, newNickName);
+                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERNICKNAME, nickname);
+                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERAVATARURL, headUrl);
+                
+                showToast("保存成功");
 
             } else {
 
@@ -469,6 +482,7 @@ public class AccountSettingActivity extends AbActivity {
     /**
      * 通过TextWatcher去观察输入框中输入的内容
      */
+    private MyTextWatcher mtw = new MyTextWatcher(); 
     class MyTextWatcher implements TextWatcher {
 
         @Override
@@ -495,35 +509,7 @@ public class AccountSettingActivity extends AbActivity {
                     newPasswordIcon.setVisibility(View.VISIBLE);
                     tips.setVisibility(View.INVISIBLE);
                 }
-
-            } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            // TODO Auto-generated method stub
-
-        }
-    }
-
-    /**
-     * 通过TextWatcher去观察输入框中输入的内容
-     */
-    class MyTextWatcher2 implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            // TODO Auto-generated method stub
-            try {
+                
                 String newPsd = newPassword.getText().toString().trim();
                 if (s.toString().length() > 0 && !s.toString().equals(newPsd)) {
                     repeatPasswordIcon.setBackgroundResource(R.drawable.account_setting_error);

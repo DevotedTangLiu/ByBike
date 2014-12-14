@@ -73,4 +73,16 @@ public class Constant {
      * 更新用户资料接口
      */
     public static final String updateUserInfoUrl = "/m/editUser";
+    /**
+     * 通过session判断是否在线的url
+     */
+    public static final String checkIfOnLineUrl = "/m/checkLogin";
+    /**
+     * 设置推送消息获取的间隔，单位毫秒
+     */
+    public static final long NOTIFICATION_PUSH_INTERVAL = 30000;
+    /**
+     * 消息推送接口
+     */
+    public static final String pushUrl = "/mc/propellingList";
 }
