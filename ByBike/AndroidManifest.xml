@@ -135,9 +135,9 @@
         <activity
             android:name="com.example.bybike.setting.AccountSettingActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustResize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
         <activity
             android:name="com.example.bybike.setting.UpdateActivity"
@@ -172,7 +172,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-
+        <!-- 消息列表 -->
+        <activity
+            android:name="com.example.bybike.message.MessageListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 分享 -->
         <activity
             android:name="cn.sharesdk.framework.ShareSDKUIShell"
@@ -196,7 +202,7 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        
+
         <!-- 配置一个Service组件 -->
         <service android:name="com.example.bybike.pushnotification.PushMsgRealService" >
             <intent-filter>
@@ -205,7 +211,8 @@
                 <action android:name="org.crazyit.service.FIRST_SERVICE" />
             </intent-filter>
         </service>
-         <receiver android:name="com.example.bybike.pushnotification.MyBroadReceiver" >
+
+        <receiver android:name="com.example.bybike.pushnotification.MyBroadReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

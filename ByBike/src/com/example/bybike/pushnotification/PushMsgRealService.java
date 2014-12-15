@@ -113,8 +113,8 @@ public class PushMsgRealService extends Service {
 						String code = resultObj.getString("code");
 						if ("0".equals(code)) {
 							
-							String sessionId = resultObj.getString("jsessionid");
-							SharedPreferencesUtil.saveSharedPreferences_s(PushMsgRealService.this, Constant.SESSION, sessionId);
+//							String sessionId = resultObj.getString("jsessionid");
+//							SharedPreferencesUtil.saveSharedPreferences_s(PushMsgRealService.this, Constant.SESSION, sessionId);
 
 							JSONArray messageArray = resultObj.getJSONArray("data");
 							for (int i = 0; i < messageArray.length(); i++) {

@@ -12,7 +12,7 @@
 
         <RelativeLayout
             android:id="@+id/goBack"
-            android:layout_width="50dp"
+            android:layout_width="80dp"
             android:layout_height="fill_parent"
             android:onClick="onClick"
             android:orientation="vertical" >
@@ -41,7 +41,7 @@
         android:background="#C5C5C5" />
 
     <ImageView
-        android:layout_width="87dp"
+        android:layout_width="95dp"
         android:layout_height="131dp"
         android:layout_marginTop="66dp"
         android:layout_gravity="center_horizontal"

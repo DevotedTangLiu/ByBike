@@ -45,6 +45,7 @@ import com.example.bybike.adapter.RoutesBookListAdapter2;
 import com.example.bybike.exercise.ExerciseDetailActivity2;
 import com.example.bybike.friends.FriendsActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
+import com.example.bybike.message.MessageListActivity;
 import com.example.bybike.routes.RouteDetailActivity;
 import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.util.CircleImageView;
@@ -83,6 +84,12 @@ public class UserMainPageFragment extends Fragment {
 
 	private ViewPager mPager;// 页卡内容
 	private List<View> listViews; // Tab页面列表
+	
+	/**
+	 * 用户信息
+	 */
+	TextView userName;
+	CircleImageView userHeadImageView;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -114,15 +121,11 @@ public class UserMainPageFragment extends Fragment {
 		friendsCount.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);// 下划线
 		friendsCount.setOnClickListener(click);
 		//设置用户名字
-		TextView userName = (TextView)view.findViewById(R.id.userName);
-		userName.setText(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERNICKNAME));
+		userName = (TextView)view.findViewById(R.id.userName);
 		//设置用户头像
 		mAbImageDownloader = new AbImageDownloader(mActivity);
-		CircleImageView userHeadImageView = (CircleImageView)view.findViewById(R.id.fragment_my_image_user);
-		String userHeadPicUrl = SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERAVATARURL);
-		if(userHeadPicUrl.length() > 0){
-		    mAbImageDownloader.display(userHeadImageView, Constant.serverUrl + userHeadPicUrl);
-		}
+		userHeadImageView = (CircleImageView)view.findViewById(R.id.fragment_my_image_user);
+		
 		//填充用户活动、路书、友好点数据
 		mPager = (ViewPager) view.findViewById(R.id.vPager);
         listViews = new ArrayList<View>();
@@ -261,7 +264,11 @@ public class UserMainPageFragment extends Fragment {
 			// TODO Auto-generated method stub
 			switch (v.getId()) {
 			case R.id.goToMessage:
-				createSystemNoticeMessage();
+				Intent goToMessageIntent = new Intent();
+				goToMessageIntent.setClass(mActivity,
+						MessageListActivity.class);
+				mActivity.startActivity(goToMessageIntent);
+				mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 				break;
 			case R.id.goToSetting:
 				Intent i = new Intent();
@@ -396,37 +403,14 @@ public class UserMainPageFragment extends Fragment {
 		mActivity = (NewMainActivity) activity;
 	}
 
-	/**
-	 * 生成系统通知栏消息的例子
-	 */
-	private void createSystemNoticeMessage() {
-		// 获取系统通知服务引用
-		String ns = mActivity.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) mActivity
-				.getSystemService(ns);
-
-		// 自定义下拉视图
-		Notification notification = new Notification();
-		notification.icon = R.drawable.ic_launcher;
-		notification.tickerText = "系统通知demo...";
-
-		RemoteViews contentView = new RemoteViews(mActivity.getPackageName(),
-				R.layout.system_notice_layout);
-		contentView.setTextViewText(R.id.title,
-				"Hello, this message is in a custom expanded view");
-		contentView.setTextViewText(R.id.content,
-				"从前有座山，山上有座庙，庙里有个老和尚，老和尚经常和小和尚说...");
-		notification.contentView = contentView;
-
-		// 通知被点击后，自动消失
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		// 使用自定义下拉视图时，不需要再调用setLatestEventInfo()方法
-		// 但是必须定义 contentIntent
-		Intent intent = new Intent(mActivity, SettingMainActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(mActivity, 0,
-				intent, 0);
-		notification.contentIntent = contentIntent;
-
-		mNotificationManager.notify(3, notification);
+	@Override
+	public void onResume(){
+		super.onResume();
+		userName.setText(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERNICKNAME));
+		String userHeadPicUrl = SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERAVATARURL);
+		if(userHeadPicUrl.length() > 0){
+		    mAbImageDownloader.display(userHeadImageView, Constant.serverUrl + userHeadPicUrl);
+		}
+		
 	}
 }

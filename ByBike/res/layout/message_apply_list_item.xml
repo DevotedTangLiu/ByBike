@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="80dp"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:background="#F5F5F5" >
+
+    <com.example.bybike.util.CircleImageView
+        android:id="@+id/imageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="17dp"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop" />
+    
+    <ImageView
+        android:id="@+id/notifyIcon"
+        android:layout_width="45dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="23dp"
+        android:contentDescription="@null"
+        android:scaleType="fitXY" 
+        android:src="@drawable/message_list_notify_button"></ImageView>
+
+    <TextView
+        android:id="@+id/messageContent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="50dp"
+        android:maxLines="3"
+        android:layout_centerVertical="true"
+        android:text="ChaolotteYam 邀请您加为好友"
+        android:textColor="#4A4A4A"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/messageTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="13dp"
+        android:text="10.28 14:50"
+        android:textColor="#BBBBBB"
+        android:textSize="12sp" />
+
+</RelativeLayout>
