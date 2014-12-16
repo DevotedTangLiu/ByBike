@@ -8,6 +8,9 @@ package com.example.bybike;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -24,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ZoomControls;
 
+import com.ab.http.AbHttpUtil;
+import com.ab.http.AbStringHttpResponseListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -43,6 +48,10 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.marker.MarkerDetailActivity;
+import com.example.bybike.setting.SettingMainActivity;
+import com.example.bybike.util.Constant;
+import com.example.bybike.util.NetUtil;
+import com.example.bybike.util.SharedPreferencesUtil;
 
 /**
  * @author tangliu(mail) 2014-9-18
@@ -57,6 +66,9 @@ public class MainPageFragment extends Fragment {
 	 * 缓存Fragment的view,避免每次切换页面时重新加载页面
 	 */
 	private View mainView;
+
+	// http请求帮助类
+	private AbHttpUtil mAbHttpUtil = null;
 
 	// 基础地图相关
 	MapView mMapView = null;
@@ -93,6 +105,9 @@ public class MainPageFragment extends Fragment {
 			Bundle savedInstanceState) {
 
 		mActivity.getTitleBar().setVisibility(View.GONE);
+		// 获取Http工具类
+		mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
+		mAbHttpUtil.setDebug(false);
 
 		if (mainView == null) {
 			mainView = inflater.inflate(R.layout.activity_main_baidu, null);
@@ -189,6 +204,7 @@ public class MainPageFragment extends Fragment {
 		if (parent != null) {
 			parent.removeView(mainView);
 		}
+
 		return mainView;
 
 	}
@@ -249,7 +265,7 @@ public class MainPageFragment extends Fragment {
 				View popView = LayoutInflater.from(mActivity).inflate(
 						R.layout.infowindow_interest_points, null);
 				popView.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
@@ -262,29 +278,17 @@ public class MainPageFragment extends Fragment {
 								0);
 					}
 				});
-//				OnInfoWindowClickListener listener = new OnInfoWindowClickListener() {
-//					public void onInfoWindowClick() {
-//						mActivity.showToast("i'm on clicked...");
-//						mBaidumap.hideInfoWindow();
-//						Intent i = new Intent();
-//						i.setClass(mActivity, MarkerDetailActivity.class);
-//						startActivity(i);
-//						mActivity.overridePendingTransition(R.anim.fragment_in,
-//								0);
-//					}
-//				};
-
+				//
 				LatLng ll = marker.getPosition();
 				mInfoWindow = new InfoWindow(popView, ll, -120);
-//				mInfoWindow = new InfoWindow(BitmapDescriptorFactory
-//						.fromView(popView), ll, -120, listener);
 				mBaidumap.showInfoWindow(mInfoWindow);
 
 				return true;
 			}
 		});
 
-		addMarkersToMap();
+		queryMarkerList();
+		// addMarkersToMap();
 
 	}
 
@@ -328,6 +332,83 @@ public class MainPageFragment extends Fragment {
 			default:
 				break;
 			}
+
+		}
+
+	}
+
+	/**
+	 * 查找marker列表
+	 */
+	private void queryMarkerList() {
+
+		if (!NetUtil.isConnnected(mActivity)) {
+			return;
+		}
+		String urlString = Constant.serverUrl + Constant.getMarkerListUrl;
+		urlString += ";jsessionid=";
+		urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity,
+				Constant.SESSION);
+		// 绑定参数
+		mAbHttpUtil.get(urlString, new AbStringHttpResponseListener() {
+
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
+
+				processMarkerListResult(content);
+			};
+
+			// 开始执行前
+			@Override
+			public void onStart() {
+			}
+
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
+
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+			};
+
+		});
+
+	}
+
+	/**
+	 * 处理返回结果
+	 * 
+	 * @param resultString
+	 */
+	BitmapDescriptor bikestoreBitmap = BitmapDescriptorFactory
+			.fromResource(R.drawable.marker_icon_bikestore);
+
+	private void processMarkerListResult(String resultString) {
+
+		try {
+			JSONObject resultObject = new JSONObject(resultString);
+			String code = resultObject.getString("code");
+			if ("0".equals(code)) {
+				JSONArray dataArray = resultObject.getJSONArray("data");
+				for (int i = 0; i < dataArray.length(); i++) {
+
+					JSONObject jo = dataArray.getJSONObject(i);
+
+					double lat = jo.getDouble("lat");
+					double lng = jo.getDouble("lng");
+					LatLng llA = new LatLng(lat, lng);
+					OverlayOptions ooA = new MarkerOptions().position(llA)
+							.icon(bikestoreBitmap).zIndex(9).draggable(false);
+
+					Marker mMarkerA = (Marker) (mBaidumap.addOverlay(ooA));
+
+				}
+			}
+		} catch (Exception e) {
 
 		}
 
@@ -392,32 +473,11 @@ public class MainPageFragment extends Fragment {
 
 			myCurrentLatLng = new LatLng(location.getLatitude(),
 					location.getLongitude());
-			
+
 			mActivity.currentLatLng = myCurrentLatLng;
 			MapStatusUpdate u = MapStatusUpdateFactory
 					.newLatLng(myCurrentLatLng);
 			mBaidumap.animateMapStatus(u);
-			//
-			// 添加折线
-			// points.add(ll);
-			// back_points.add(ll);
-			// if (points.size() >= 2) {
-			//
-			// OverlayOptions ooPolyline = new PolylineOptions().width(10)
-			// .color(0xAAFF0000).points(points);
-			// mBaidumap.addOverlay(ooPolyline);
-			//
-			// String dis = String.valueOf(DistanceUtil.getDistance(
-			// points.get(0), points.get(1)));
-			// String speed = String.valueOf(location.getSpeed());
-			// mActivity.showToast("速度：" + speed + "       距离：" + dis);
-			// points.remove(0);
-			// }
-			// if (back_points.size() >= 100) {
-			// back_points.clear();
-			// }
-			// OverlayManager om=new BusLineOverlay(mBaidumap);
-			// om.zoomToSpan();
 			mLocClient.stop();
 		}
 	}
@@ -464,4 +524,5 @@ public class MainPageFragment extends Fragment {
 		if (mActivity != null) {
 		}
 	}
+
 }

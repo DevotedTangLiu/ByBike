@@ -158,8 +158,8 @@ public class SendOpinionActivity extends AbActivity {
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
 
-                String sessionId = responseObj.getString("jsessionid");
-                SharedPreferencesUtil.saveSharedPreferences_s(SendOpinionActivity.this, Constant.SESSION, sessionId);
+//                String sessionId = responseObj.getString("jsessionid");
+//                SharedPreferencesUtil.saveSharedPreferences_s(SendOpinionActivity.this, Constant.SESSION, sessionId);
                 showResultDialog();
                 
             } else {

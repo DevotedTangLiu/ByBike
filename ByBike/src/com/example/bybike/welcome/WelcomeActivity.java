@@ -43,7 +43,7 @@ public class WelcomeActivity extends AbActivity {
         Intent intent = new Intent(WelcomeActivity.this, PushMsgRealService.class);
         startService(intent);
 
-//        checkOnLine();
+        checkOnLine();
 
     }
 
@@ -88,8 +88,8 @@ public class WelcomeActivity extends AbActivity {
             JSONObject responseObj = new JSONObject(content);
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
-                String sessionId = responseObj.getString("jsessionid");
-                SharedPreferencesUtil.saveSharedPreferences_s(WelcomeActivity.this, Constant.SESSION, sessionId);
+//                String sessionId = responseObj.getString("jsessionid");
+//                SharedPreferencesUtil.saveSharedPreferences_s(WelcomeActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_b(WelcomeActivity.this, Constant.ISLOGINED, true);
 
             } else {

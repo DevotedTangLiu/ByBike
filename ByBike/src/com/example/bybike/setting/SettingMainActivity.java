@@ -151,7 +151,7 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
                 String sessionId = responseObj.getString("jsessionid");
-                SharedPreferencesUtil.saveSharedPreferences_s(SettingMainActivity.this, Constant.SESSION, sessionId);
+//                SharedPreferencesUtil.saveSharedPreferences_s(SettingMainActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_b(SettingMainActivity.this, Constant.ISLOGINED, false);
                 Intent intent = getIntent();
                 setResult(RESULT_OK, intent);

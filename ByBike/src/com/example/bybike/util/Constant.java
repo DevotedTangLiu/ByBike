@@ -80,9 +80,13 @@ public class Constant {
     /**
      * 设置推送消息获取的间隔，单位毫秒
      */
-    public static final long NOTIFICATION_PUSH_INTERVAL = 30000;
+    public static final long NOTIFICATION_PUSH_INTERVAL = 600000;
     /**
      * 消息推送接口
      */
     public static final String pushUrl = "/mc/propellingList";
+    /**
+     * 友好点列表
+     */
+	public static final String getMarkerListUrl = "/m/marker/list";
 }

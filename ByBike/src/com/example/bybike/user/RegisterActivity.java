@@ -166,12 +166,12 @@ public class RegisterActivity extends AbActivity {
             JSONObject responseObj = new JSONObject(content);
             String code = responseObj.getString("code").trim();
             if ("0".equals(code)) {
-                String sessionId = responseObj.getString("jsessionid").trim();
-                SharedPreferencesUtil.saveSharedPreferences_s(RegisterActivity.this, Constant.SESSION, sessionId);
+//                String sessionId = responseObj.getString("jsessionid").trim();
+//                SharedPreferencesUtil.saveSharedPreferences_s(RegisterActivity.this, Constant.SESSION, sessionId);
                 intent.putExtra("nickname", nicknameString);
                 intent.putExtra("password", passwordString);
                 intent.putExtra("email", accountString);
-                intent.putExtra("sessionId", sessionId);
+//                intent.putExtra("sessionId", sessionId);
 
                 setResult(RESULT_OK, intent);
                 RegisterActivity.this.finish();

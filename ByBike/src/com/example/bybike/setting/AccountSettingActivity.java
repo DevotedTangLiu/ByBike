@@ -428,7 +428,7 @@ public class AccountSettingActivity extends AbActivity {
                 Button b = (Button) findViewById(R.id.saveButton);
                 b.setBackgroundResource(R.drawable.accountsetting_save_button_success);
 
-                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION, sessionId);
+//                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERNICKNAME, nickname);
                 SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERAVATARURL, headUrl);
                 
@@ -461,7 +461,7 @@ public class AccountSettingActivity extends AbActivity {
                 Button b = (Button) findViewById(R.id.saveButton);
                 b.setBackgroundResource(R.drawable.accountsetting_save_button_success);
 
-                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION, sessionId);
+//                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERPASSWORD, newPassword.getText().toString()
                         .trim());
                 

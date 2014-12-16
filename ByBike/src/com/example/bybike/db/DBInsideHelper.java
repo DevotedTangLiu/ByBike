@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.ab.db.orm.AbDBHelper;
 import com.example.bybike.db.model.ExerciseBean;
+import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.db.model.RouteBookBean;
 import com.example.bybike.db.model.UserBean;
 
@@ -24,7 +25,7 @@ public class DBInsideHelper extends AbDBHelper {
 	private static final int DBVERSION = 1;
 	// 要初始化的表
 	private static final Class<?>[] clazz = { UserBean.class,
-			ExerciseBean.class, RouteBookBean.class };
+			ExerciseBean.class, RouteBookBean.class, MarkerBean.class };
 
 	public DBInsideHelper(Context context) {
 		super(context, DBNAME, null, DBVERSION, clazz);
