@@ -101,12 +101,15 @@ public class RidingActivity extends AbActivity{
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		mBaidumap = mMapView.getMap();
 
-		currentLatLng = new LatLng(getIntent().getExtras()
-				.getDouble("latitude"), getIntent().getExtras().getDouble(
-				"longitude"));
-
 		points.clear();
-		points.add(currentLatLng);
+		Bundle bundle = getIntent().getExtras();
+		if(bundle != null){
+			Double latitude = bundle.getDouble("latitude");
+			Double longtitude = bundle.getDouble("longtitude");
+			currentLatLng = new LatLng(latitude, longtitude);
+			points.add(currentLatLng);
+		}
+
 		
 		distance = (TextView)findViewById(R.id.distance);
 		speed = (TextView)findViewById(R.id.speed);

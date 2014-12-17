@@ -104,8 +104,7 @@ public class PushMsgRealService extends Service {
 		public void run() {
 			while (isRunning) {
 				try {
-					// 休息10分钟 600000
-					Thread.sleep(Integer.parseInt(getNoticeTime()));
+					
 					String data = getPromotMessageFromServer();
 					// long id;
 					try {
@@ -134,6 +133,8 @@ public class PushMsgRealService extends Service {
 						e.printStackTrace();
 						// Log.e("JSONException2", e.toString());
 					}
+					// 休息10分钟 600000
+					Thread.sleep(Integer.parseInt(getNoticeTime()));
 
 				} catch (InterruptedException e) {
 					e.printStackTrace();

@@ -302,7 +302,7 @@ public class NewMainActivity extends AbActivity {
 			goToRidingIntent.setClass(NewMainActivity.this,
 					RidingActivity.class);
 			goToRidingIntent.putExtra("latitude", currentLatLng.latitude);
-			goToRidingIntent.putExtra("longitude", currentLatLng.longitude);
+			goToRidingIntent.putExtra("longtitude", currentLatLng.longitude);
 			startActivity(goToRidingIntent);
 			overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 			break;

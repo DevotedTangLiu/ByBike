@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
@@ -21,11 +22,16 @@ import com.ab.activity.AbActivity;
 import com.ab.bitmap.AbImageDownloader;
 import com.ab.view.sliding.AbSlidingPlayView;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
+import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
+import com.example.bybike.exercise.ExerciseDetailActivity3;
+import com.example.bybike.riding.RidingActivity;
 import com.example.bybike.routes.ObservableScrollView.ScrollViewListener;
 import com.example.bybike.util.PublicMethods;
 
@@ -176,6 +182,19 @@ public class RouteDetailActivity extends AbActivity {
 		zoom.setVisibility(View.GONE);
 		// 隐藏指南针
 		mBaidumap.getUiSettings().setCompassEnabled(false);
+		mBaidumap.setOnMapClickListener(new OnMapClickListener() {
+			public void onMapClick(LatLng point) {
+				
+				Intent i = new Intent();
+				i.setClass(RouteDetailActivity.this, RidingActivity.class);
+				startActivity(i);
+				overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+			}
+
+			public boolean onMapPoiClick(MapPoi poi) {
+				return false;
+			}
+		});
 		// ===============================================
 
 	}

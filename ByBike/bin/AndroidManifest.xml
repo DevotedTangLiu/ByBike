@@ -151,6 +151,12 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.example.bybike.setting.OfflineMapActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 标记点 -->
         <activity
             android:name="com.example.bybike.marker.MarkerDetailActivity"
@@ -195,6 +201,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <!-- 微信分享回调 -->
         <activity
             android:name=".wxapi.WXEntryActivity"
@@ -203,7 +210,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!-- 配置一个Service组件 -->
+        <!-- 推送的Service组件 -->
         <service android:name="com.example.bybike.pushnotification.PushMsgRealService" >
             <intent-filter>
 

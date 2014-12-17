@@ -62,6 +62,9 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             showLogoutDialog();
             break;
         case R.id.map:
+            i.setClass(this, OfflineMapActivity.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
             break;
         case R.id.opinion:
             i.setClass(this, SendOpinionActivity.class);
