@@ -6,7 +6,7 @@
     android:background="#F3F3F4">
 
     <ImageView
-        android:layout_width="108dp"
+        android:layout_width="118dp"
         android:layout_height="160dp"
         android:background="@drawable/welcome_logo"
         android:layout_centerInParent="true"/>

@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.ZoomControls;
 
 import com.ab.http.AbHttpUtil;
@@ -47,6 +48,7 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.util.Constant;
@@ -264,12 +266,14 @@ public class MainPageFragment extends Fragment {
 
 				View popView = LayoutInflater.from(mActivity).inflate(
 						R.layout.infowindow_interest_points, null);
+				
+				TextView name = (TextView)popView.findViewById(R.id.name);
+				name.setText(marker.getExtraInfo().getString("name"));
 				popView.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						mActivity.showToast("i'm on clicked...");
 						mBaidumap.hideInfoWindow();
 						Intent i = new Intent();
 						i.setClass(mActivity, MarkerDetailActivity.class);
@@ -386,7 +390,8 @@ public class MainPageFragment extends Fragment {
 	 */
 	BitmapDescriptor bikestoreBitmap = BitmapDescriptorFactory
 			.fromResource(R.drawable.marker_icon_bikestore);
-
+	
+	List<MarkerBean>markerList = new ArrayList<MarkerBean>();
 	private void processMarkerListResult(String resultString) {
 
 		try {
@@ -405,7 +410,23 @@ public class MainPageFragment extends Fragment {
 							.icon(bikestoreBitmap).zIndex(9).draggable(false);
 
 					Marker mMarkerA = (Marker) (mBaidumap.addOverlay(ooA));
-
+					Bundle b = new Bundle();
+					b.putString("name", jo.getString("name"));
+					b.putString("id", jo.getString("id"));
+					mMarkerA.setExtraInfo(b);
+					
+					MarkerBean mb = new MarkerBean();
+					mb.setMarkerId(jo.getString("id"));
+					mb.setLatitude(lat);
+					mb.setLongitude(lng);
+					mb.setMarkerName(jo.getString("name"));
+					mb.setImgurl1(jo.getString("imgUrl1"));
+					mb.setImgurl2(jo.getString("imgUrl2"));
+					mb.setImgurl3(jo.getString("imgUrl3"));
+					mb.setImgurl4(jo.getString("imgUrl4"));
+					mb.setImgurl5(jo.getString("imgUrl5"));
+					mb.setDescription(jo.getString("remarks"));
+					mb.setAddress(jo.getString("address"));
 				}
 			}
 		} catch (Exception e) {

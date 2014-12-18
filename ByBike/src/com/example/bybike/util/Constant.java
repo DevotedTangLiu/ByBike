@@ -47,36 +47,36 @@ public class Constant {
 	/**
 	 * 服务器地址
 	 */
-	public static final String serverUrl = "http://115.29.209.37:8080/bybike_ser";
+	public static final String serverUrl = "http://115.29.209.37:8080";
 	/**
 	 * 注册接口地址
 	 */
-    public static final String registerUrl = "/mc/registerByEmail";
+    public static final String registerUrl = "/bybike_ser/mc/registerByEmail";
     /**
      * 登陆接口地址
      */
-    public static final String loginUrl = "/m/login";
+    public static final String loginUrl = "/bybike_ser/m/login";
     /**
      * 提交建议接口地址
      */
-    public static final String suggestionUrl = "/m/suggestion/save";
+    public static final String suggestionUrl = "/bybike_ser/m/suggestion/save";
     
     /**
      * 退出登录接口
      */
-    public static final String logoutUrl = "/m/mobileLogout";
+    public static final String logoutUrl = "/bybike_ser/m/mobileLogout";
     /**
      * 修改密码接口
      */
-    public static final String updatePasswordUrl = "/m/modifyPwd";
+    public static final String updatePasswordUrl = "/bybike_ser/m/modifyPwd";
     /**
      * 更新用户资料接口
      */
-    public static final String updateUserInfoUrl = "/m/editUser";
+    public static final String updateUserInfoUrl = "/bybike_ser/m/editUser";
     /**
      * 通过session判断是否在线的url
      */
-    public static final String checkIfOnLineUrl = "/m/checkLogin";
+    public static final String checkIfOnLineUrl = "/bybike_ser/m/checkLogin";
     /**
      * 设置推送消息获取的间隔，单位毫秒
      */
@@ -84,9 +84,9 @@ public class Constant {
     /**
      * 消息推送接口
      */
-    public static final String pushUrl = "/mc/propellingList";
+    public static final String pushUrl = "/bybike_ser/mc/propellingList";
     /**
      * 友好点列表
      */
-	public static final String getMarkerListUrl = "/m/marker/list";
+	public static final String getMarkerListUrl = "/bybike_ser/m/marker/list";
 }

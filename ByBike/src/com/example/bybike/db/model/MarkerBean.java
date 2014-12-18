@@ -37,19 +37,19 @@ public class MarkerBean {
 		this.markerType = markerType;
 	}
 
-	public String getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(String longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
-	public String getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(String latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
@@ -172,10 +172,10 @@ public class MarkerBean {
 	private String markerType;
 
 	@Column(name = "longitude")
-	private String longitude;
+	private double longitude;
 
 	@Column(name = "latitude")
-	private String latitude;
+	private double latitude;
 
 	@Column(name = "marker_name")
 	private String markerName;
@@ -202,7 +202,7 @@ public class MarkerBean {
 	private String address;
 
 	// 包含实体的存储，指定外键
-	@Relations(name = "stock", type = "one2one", foreignKey = "marker_id", action = "query_insert")
+	@Relations(name = "creater", type = "one2one", foreignKey = "marker_id", action = "query_insert")
 	private UserBean creater;
 
 	@Column(name = "creater_id")
@@ -219,5 +219,16 @@ public class MarkerBean {
 
 	@Column(name = "collect_count")
 	private String collectCount;
+	
+	@Column(name = "description")
+	private String description;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 }
