@@ -9,15 +9,17 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.ab.bitmap.AbImageDownloader;
 import com.example.bybike.R;
+import com.example.bybike.user.UserPageActivity;
 import com.example.bybike.util.CircleImageView;
 
 /**
@@ -30,11 +32,13 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
 
+    private Context context;
     private List<ContentValues> list;
     // 图片下载器
     private AbImageDownloader mAbImageDownloader = null;
 
     public ExerciseDiscussListAdapter(Context context, List<ContentValues> list) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.list = list;
 
@@ -64,6 +68,7 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
+        OnImageClickListener click = null;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.exercise_discuss_list_item, null);
             holder = new ViewHolder();
@@ -71,9 +76,16 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
             holder.discussContent = (TextView) convertView.findViewById(R.id.discussContent);
             holder.discussTime = (TextView) convertView.findViewById(R.id.discussTime);
             holder.avater = (CircleImageView) convertView.findViewById(R.id.imageView);
+            
+            click = new OnImageClickListener();
+            holder.avater.setOnClickListener(click);
+            
             convertView.setTag(holder);
+            convertView.setTag(holder.avater.getId(), click);// 对监听对象保存
+            
         } else {
             holder = (ViewHolder) convertView.getTag();
+            click = (OnImageClickListener) convertView.getTag(holder.avater.getId());// 重新获得监听对象
         }
 
         ContentValues v = this.list.get(position);
@@ -90,6 +102,22 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
         TextView discussContent;
         TextView discussTime;
         com.example.bybike.util.CircleImageView avater;
+    }
+    
+    class OnImageClickListener implements OnClickListener {
+
+        int position;
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent i = new Intent();
+            i.setClass(context, UserPageActivity.class);
+            context.startActivity(i);
+        }
     }
 
 }

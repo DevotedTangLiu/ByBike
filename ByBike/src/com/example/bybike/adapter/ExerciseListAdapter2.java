@@ -10,12 +10,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ab.activity.AbActivity;
 import com.ab.bitmap.AbImageDownloader;
 import com.ab.global.AbConstant;
 import com.example.bybike.NewMainActivity;
@@ -35,7 +34,7 @@ public class ExerciseListAdapter2 extends BaseAdapter {
 	private static final boolean D = true;
 
 	private Context mContext;
-	private NewMainActivity mActivity;
+	private AbActivity mActivity;
 	// xml转View对象
 	private LayoutInflater mInflater;
 	// 单行的布局
@@ -62,7 +61,7 @@ public class ExerciseListAdapter2 extends BaseAdapter {
 	 * @param to
 	 *            view的id
 	 */
-	public ExerciseListAdapter2(Context context, NewMainActivity activity,
+	public ExerciseListAdapter2(Context context, AbActivity activity,
 			List data, int resource, String[] from, int[] to) {
 		this.mContext = context;
 		this.mActivity = activity;

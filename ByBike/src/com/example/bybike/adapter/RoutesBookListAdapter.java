@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,11 @@ import android.widget.TextView;
 
 import com.ab.bitmap.AbImageDownloader;
 import com.example.bybike.R;
+import com.example.bybike.adapter.ExerciseDiscussListAdapter.OnImageClickListener;
 import com.example.bybike.adapter.ImageListAdapter.OnCollectButtonClick;
 import com.example.bybike.adapter.ImageListAdapter.OnLikeButtonClick;
 import com.example.bybike.adapter.ImageListAdapter.OnTalkButtonClick;
+import com.example.bybike.user.UserPageActivity;
 
 /**
  * 路数列表的Adapter
@@ -85,6 +88,7 @@ public class RoutesBookListAdapter extends BaseAdapter {
 		OnLikeButtonClick likeListener = null;
 		OnCollectButtonClick collectListener = null;
 		OnTalkButtonClick talkListener = null;
+		 OnImageClickListener imageClick = null;
 		final ViewHolder holder;
 		if (convertView == null) {
 			// 使用自定义的list_items作为Layout
@@ -111,16 +115,22 @@ public class RoutesBookListAdapter extends BaseAdapter {
 			holder.collectButton.setOnClickListener(collectListener);
 			talkListener = new OnTalkButtonClick();
 			holder.talkButton.setOnClickListener(talkListener);
+			
+			imageClick = new OnImageClickListener();
+            holder.avatorPic.setOnClickListener(imageClick);
 
 			convertView.setTag(holder);
 			convertView.setTag(holder.likeButton.getId(), likeListener);// 对监听对象保存
 			convertView.setTag(holder.collectButton.getId(), collectListener);
 			convertView.setTag(holder.talkButton.getId(), talkListener);
+			convertView.setTag(holder.avatorPic.getId(), imageClick);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 			likeListener = (OnLikeButtonClick) convertView.getTag(holder.likeButton.getId());// 重新获得监听对象
 			collectListener = (OnCollectButtonClick) convertView.getTag(holder.collectButton.getId());// 重新获得监听对象
 			talkListener = (OnTalkButtonClick) convertView.getTag(holder.talkButton.getId());// 重新获得监听对象
+		    imageClick = (OnImageClickListener)convertView.getTag(holder.avatorPic.getId());
+		
 		}
 		likeListener.setPosition(position);
 		collectListener.setPosition(position);
@@ -191,5 +201,21 @@ public class RoutesBookListAdapter extends BaseAdapter {
 		RelativeLayout collectButton;
 		RelativeLayout talkButton;
 	}
+	
+	class OnImageClickListener implements OnClickListener {
+
+        int position;
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent i = new Intent();
+            i.setClass(mContext, UserPageActivity.class);
+            mContext.startActivity(i);
+        }
+    }
 
 }

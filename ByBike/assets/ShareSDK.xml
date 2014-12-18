@@ -59,7 +59,7 @@
         SortId="1"
         AppKey="687764462"
         AppSecret="870704b1d8314ddd5307a99789f69c30"
-        RedirectUrl="http://bikegz.com/"
+        RedirectUrl="https://api.weibo.com/oauth2/default.html"
         ShareByAppClient="true"
         Enable="true" />
 
