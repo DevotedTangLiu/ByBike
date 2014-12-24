@@ -89,4 +89,21 @@ public class Constant {
      * 友好点列表
      */
 	public static final String getMarkerListUrl = "/bybike_ser/m/marker/list";
+	/**
+	 * 友好点详情
+	 */
+	public static final String markerDetailUrl = "/bybike_ser/m/marker/form";
+	/**
+	 * 活动列表
+	 */
+	public static final String exerciseListUrl = "/bybike_ser/m/activity/list";
+	/**
+	 * 活动详情
+	 */
+	public static final String exerciseDetailUrl = "/bybike/m/activity/form";
+	/**
+	 * 路书列表
+	 */
+	public static final String routeListUrl = "/bybike_ser/m/ridingBook/list";
+	
 }

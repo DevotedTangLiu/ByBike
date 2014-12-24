@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,14 +21,22 @@ import android.widget.Button;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
 
+import com.ab.http.AbHttpUtil;
+import com.ab.http.AbStringHttpResponseListener;
 import com.ab.view.listener.AbOnListViewListener;
 import com.ab.view.pullview.AbPullListView;
 import com.ab.view.titlebar.AbTitleBar;
 import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
 import com.example.bybike.adapter.RoutesBookListAdapter;
+import com.example.bybike.util.Constant;
+import com.example.bybike.util.NetUtil;
+import com.example.bybike.util.SharedPreferencesUtil;
 
 public class RoutesBookMainFragment extends Fragment {
+
+	// http请求帮助类
+	private AbHttpUtil mAbHttpUtil = null;
 
 	private NewMainActivity mActivity = null;
 	private List<Map<String, Object>> list = null;
@@ -44,6 +56,10 @@ public class RoutesBookMainFragment extends Fragment {
 		AbTitleBar mAbTitleBar = mActivity.getTitleBar();
 		mAbTitleBar.setVisibility(View.GONE);
 
+		// 获取Http工具类
+		mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
+		mAbHttpUtil.setDebug(false);
+
 		// 获取ListView对象
 		mAbPullListView = (AbPullListView) view.findViewById(R.id.mListView);
 
@@ -54,7 +70,7 @@ public class RoutesBookMainFragment extends Fragment {
 
 		// 打开关闭下拉刷新加载更多功能
 		mAbPullListView.setPullRefreshEnable(true);
-		mAbPullListView.setPullLoadEnable(true);
+		mAbPullListView.setPullLoadEnable(false);
 
 		// 设置进度条的样式
 		mAbPullListView.getHeaderView().setHeaderProgressBarDrawable(
@@ -64,15 +80,6 @@ public class RoutesBookMainFragment extends Fragment {
 
 		// ListView数据
 		list = new ArrayList<Map<String, Object>>();
-
-		for (int i = 0; i < 10; i++) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("avatorPic",
-					"http://t12.baidu.com/it/u=3697398959,3070188371&fm=56");
-			map.put("routePic",
-					"http://img2.imgtn.bdimg.com/it/u=3104192451,2031802851&fm=21&gp=0.jpg");
-			list.add(map);
-		}
 		// 使用自定义的Adapter
 		myListViewAdapter = new RoutesBookListAdapter(mActivity, list);
 		mAbPullListView.setAdapter(myListViewAdapter);
@@ -84,6 +91,7 @@ public class RoutesBookMainFragment extends Fragment {
 
 				Intent i = new Intent();
 				i.setClass(mActivity, RouteDetailActivity.class);
+				i.putExtra("id", (String)list.get(position-2).get("id"));
 				startActivity(i);
 				mActivity.overridePendingTransition(R.anim.fragment_in,
 						R.anim.fragment_out);
@@ -94,10 +102,14 @@ public class RoutesBookMainFragment extends Fragment {
 
 			@Override
 			public void onRefresh() {
+				refreshOrLoadMore = true;
+				queryRouteBookList();
 			}
 
 			@Override
 			public void onLoadMore() {
+				refreshOrLoadMore = false;
+				queryRouteBookList();
 			}
 
 		});
@@ -107,9 +119,98 @@ public class RoutesBookMainFragment extends Fragment {
 		orderByArea = (Button) view.findViewById(R.id.orderByArea);
 		orderByHot = (Button) view.findViewById(R.id.orderByHot);
 		orderByTime.setSelected(true);
+		
+		queryRouteBookList();
 		return view;
 	}
 
+	boolean refreshOrLoadMore = true;
+	private void queryRouteBookList(){
+	    if (!NetUtil.isConnnected(mActivity)) {
+	        mActivity.showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+            return;
+        }
+        String urlString = Constant.serverUrl + Constant.routeListUrl;
+        urlString += ";jsessionid=";
+        urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
+        // 绑定参数
+        mAbHttpUtil.get(urlString, new AbStringHttpResponseListener() {
+
+            // 获取数据成功会调用这里
+            @Override
+            public void onSuccess(int statusCode, String content) {
+                
+                processResult(content);
+            };
+
+            // 开始执行前
+            @Override
+            public void onStart() {
+                mActivity.showProgressDialog("正在查询，请稍后...");
+            }
+
+            // 失败，调用
+            @Override
+            public void onFailure(int statusCode, String content, Throwable error) {
+            }
+
+            // 完成后调用，失败，成功
+            @Override
+            public void onFinish() {
+                mActivity.removeProgressDialog();
+            };
+
+        });
+	}
+	
+	private void processResult(String resultString){
+	    try {
+            JSONObject resultObj = new JSONObject(resultString);
+            String code = resultObj.getString("code");
+            if("0".equals(code)){
+                
+                list.clear();
+                JSONArray dataArray = resultObj.getJSONArray("data");
+                for(int i = 0; i < dataArray.length(); i ++){
+                    JSONObject jo = dataArray.getJSONObject(i);
+                            
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("id", jo.getString("id"));
+                    map.put("routePic", Constant.serverUrl + jo.getString("routeImgUrl"));
+                    map.put("title", jo.getString("name"));
+                    map.put("routeAddress", jo.getString("wayLine"));
+//                    map.put("exerciseTime", jo.getString("activityDate"));
+                    map.put("lickCount", jo.getString("likeCount"));
+                    map.put("talkCount", jo.getString("commentCount"));
+                    map.put("collectCount", jo.getString("collectCount"));
+                    map.put("kilometers", jo.getString("kilometers"));
+                    
+                    JSONObject userObj = jo.getJSONObject("user");
+                    map.put("userId", userObj.getString("id"));
+                    map.put("userHeadPicUrl", Constant.serverUrl + userObj.getString("headUrl"));
+                    map.put("userName", userObj.getString("name"));
+                    
+                    list.add(map);
+                }
+                
+                myListViewAdapter.notifyDataSetChanged();
+                if(refreshOrLoadMore){
+                    mAbPullListView.stopRefresh();
+                }else{
+                    mAbPullListView.stopLoadMore();
+                }
+                
+            }else{
+                mActivity.showToast("查询失败，请稍后重试");
+            }
+            
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            mActivity.showToast("查询失败，请稍后重试");
+        }
+	}
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);

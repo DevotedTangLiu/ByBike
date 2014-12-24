@@ -79,7 +79,7 @@
                 android:layout_height="58dp"
                 android:layout_marginLeft="17dp"
                 android:layout_marginTop="25dp"
-                android:scaleType="matrix" />
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/markerIcon"
@@ -88,7 +88,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="17dp"
-                android:background="@drawable/marker_icon_bikestore_2" />
+                android:src="@drawable/marker_icon_bikestore_2" />
         </RelativeLayout>
 
         <TextView
@@ -164,6 +164,7 @@
                         android:textSize="9sp" />
 
                     <TextView
+                        android:id="@+id/creater"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Jermme_21"
@@ -186,6 +187,7 @@
                         android:textSize="9sp" />
 
                     <TextView
+                        android:id="@+id/createTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="2014.10.1"

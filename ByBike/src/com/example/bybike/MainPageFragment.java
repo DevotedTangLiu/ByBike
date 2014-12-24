@@ -110,6 +110,16 @@ public class MainPageFragment extends Fragment {
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
 		mAbHttpUtil.setDebug(false);
+		
+		bitMapDescriptorList.clear();
+		bitMapDescriptorList.add(marker_icon_bikestore);
+		bitMapDescriptorList.add(marker_icon_meals);
+		bitMapDescriptorList.add(marker_icon_others);
+		bitMapDescriptorList.add(marker_icon_parking);
+		bitMapDescriptorList.add(marker_icon_rentbike);
+		bitMapDescriptorList.add(marker_icon_repair);
+		bitMapDescriptorList.add(marker_icon_scenery);
+		bitMapDescriptorList.add(marker_icon_washroom);
 
 		if (mainView == null) {
 			mainView = inflater.inflate(R.layout.activity_main_baidu, null);
@@ -268,7 +278,26 @@ public class MainPageFragment extends Fragment {
 						R.layout.infowindow_interest_points, null);
 				
 				TextView name = (TextView)popView.findViewById(R.id.name);
+				ImageView badge = (ImageView)popView.findViewById(R.id.badge);
 				name.setText(marker.getExtraInfo().getString("name"));
+				String markerType = marker.getExtraInfo().getString("markerType");
+				if("RantCar".equalsIgnoreCase(markerType)){
+					badge.setImageResource(R.drawable.marker_icon_rentbike);
+				}else if("Repair".equalsIgnoreCase(markerType)){
+					badge.setImageResource(R.drawable.marker_icon_repair);
+				}else if("FeatureSpot".equalsIgnoreCase(markerType)){
+					badge.setImageResource(R.drawable.marker_icon_scenery);
+				}else if("Catering".equalsIgnoreCase(markerType)){
+					badge.setImageResource(R.drawable.marker_icon_meals);
+				}else if("Washroom".equalsIgnoreCase(markerType)){
+					badge.setImageResource(R.drawable.marker_icon_washroom);
+				}else if("Parking".equalsIgnoreCase(markerType)){
+					badge.setImageResource(R.drawable.marker_icon_parking);
+				}else if("Other".equalsIgnoreCase(markerType)){
+					badge.setImageResource(R.drawable.marker_icon_others);
+				}else{
+					badge.setImageResource(R.drawable.marker_icon_others);
+				}
 				popView.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -277,6 +306,8 @@ public class MainPageFragment extends Fragment {
 						mBaidumap.hideInfoWindow();
 						Intent i = new Intent();
 						i.setClass(mActivity, MarkerDetailActivity.class);
+//						i.putExtra("id", marker.getExtraInfo().getString("id"));
+						i.putExtra("detailInfo", marker.getExtraInfo().getString("detailInfo"));
 						startActivity(i);
 						mActivity.overridePendingTransition(R.anim.fragment_in,
 								0);
@@ -360,7 +391,7 @@ public class MainPageFragment extends Fragment {
 			@Override
 			public void onSuccess(int statusCode, String content) {
 
-				processMarkerListResult(content);
+ 				processMarkerListResult(content);
 			};
 
 			// 开始执行前
@@ -388,8 +419,14 @@ public class MainPageFragment extends Fragment {
 	 * 
 	 * @param resultString
 	 */
-	BitmapDescriptor bikestoreBitmap = BitmapDescriptorFactory
-			.fromResource(R.drawable.marker_icon_bikestore);
+	BitmapDescriptor marker_icon_bikestore = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_bikestore);
+	BitmapDescriptor marker_icon_meals = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_meals);
+	BitmapDescriptor marker_icon_others = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_others);
+	BitmapDescriptor marker_icon_parking = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_parking);
+	BitmapDescriptor marker_icon_rentbike = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_rentbike);
+	BitmapDescriptor marker_icon_repair = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_repair);
+	BitmapDescriptor marker_icon_scenery = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_scenery);
+	BitmapDescriptor marker_icon_washroom = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_washroom);
 	
 	List<MarkerBean>markerList = new ArrayList<MarkerBean>();
 	private void processMarkerListResult(String resultString) {
@@ -406,27 +443,58 @@ public class MainPageFragment extends Fragment {
 					double lat = jo.getDouble("lat");
 					double lng = jo.getDouble("lng");
 					LatLng llA = new LatLng(lat, lng);
-					OverlayOptions ooA = new MarkerOptions().position(llA)
-							.icon(bikestoreBitmap).zIndex(9).draggable(false);
+					
+					JSONObject markerTypeObj = jo.getJSONObject("markerTypeRelation");
+					String opertingType = markerTypeObj.getString("operatingType");
+					String markerType = markerTypeObj.getString("markerType");
+					OverlayOptions ooA = null;
+					if("RantCar".equalsIgnoreCase(markerType)){
+						ooA = new MarkerOptions().position(llA)
+								.icon(marker_icon_rentbike).zIndex(9).draggable(false);
+					}else if("Repair".equalsIgnoreCase(markerType)){
+						ooA = new MarkerOptions().position(llA)
+								.icon(marker_icon_repair).zIndex(9).draggable(false);
+					}else if("FeatureSpot".equalsIgnoreCase(markerType)){
+						ooA = new MarkerOptions().position(llA)
+								.icon(marker_icon_scenery).zIndex(9).draggable(false);
+					}else if("Catering".equalsIgnoreCase(markerType)){
+						ooA = new MarkerOptions().position(llA)
+								.icon(marker_icon_meals).zIndex(9).draggable(false);
+					}else if("Washroom".equalsIgnoreCase(markerType)){
+						ooA = new MarkerOptions().position(llA)
+								.icon(marker_icon_washroom).zIndex(9).draggable(false);
+					}else if("Parking".equalsIgnoreCase(markerType)){
+						ooA = new MarkerOptions().position(llA)
+								.icon(marker_icon_parking).zIndex(9).draggable(false);
+					}else if("Other".equalsIgnoreCase(markerType)){
+						ooA = new MarkerOptions().position(llA)
+								.icon(marker_icon_others).zIndex(9).draggable(false);
+					}else{
+						ooA = new MarkerOptions().position(llA)
+								.icon(marker_icon_others).zIndex(9).draggable(false);
+					}
 
 					Marker mMarkerA = (Marker) (mBaidumap.addOverlay(ooA));
 					Bundle b = new Bundle();
 					b.putString("name", jo.getString("name"));
 					b.putString("id", jo.getString("id"));
+					b.putString("opertingType", opertingType);
+					b.putString("markerType", markerType);
+					b.putString("detailInfo", jo.toString());
 					mMarkerA.setExtraInfo(b);
 					
-					MarkerBean mb = new MarkerBean();
-					mb.setMarkerId(jo.getString("id"));
-					mb.setLatitude(lat);
-					mb.setLongitude(lng);
-					mb.setMarkerName(jo.getString("name"));
-					mb.setImgurl1(jo.getString("imgUrl1"));
-					mb.setImgurl2(jo.getString("imgUrl2"));
-					mb.setImgurl3(jo.getString("imgUrl3"));
-					mb.setImgurl4(jo.getString("imgUrl4"));
-					mb.setImgurl5(jo.getString("imgUrl5"));
-					mb.setDescription(jo.getString("remarks"));
-					mb.setAddress(jo.getString("address"));
+//					MarkerBean mb = new MarkerBean();
+//					mb.setMarkerId(jo.getString("id"));
+//					mb.setLatitude(lat);
+//					mb.setLongitude(lng);
+//					mb.setMarkerName(jo.getString("name"));
+//					mb.setImgurl1(jo.getString("imgUrl1"));
+//					mb.setImgurl2(jo.getString("imgUrl2"));
+//					mb.setImgurl3(jo.getString("imgUrl3"));
+//					mb.setImgurl4(jo.getString("imgUrl4"));
+//					mb.setImgurl5(jo.getString("imgUrl5"));
+//					mb.setDescription(jo.getString("remarks"));
+//					mb.setAddress(jo.getString("address"));
 				}
 			}
 		} catch (Exception e) {

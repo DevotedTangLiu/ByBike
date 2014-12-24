@@ -156,7 +156,12 @@ public class ImageListAdapter extends BaseAdapter {
 		String imageUrl = (String) obj.get("exercisePic");
 		// 图片的下载
 		mAbImageDownloader.display(holder.exercisePic, imageUrl);
-
+		holder.collectCount.setText((String)obj.get("collectCount"));
+//		holder.likeCount.setText((String)obj.get("likeCount"));
+		holder.talkCount.setText((String)obj.get("talkCount"));
+		holder.exerciseAddress.setText((String)obj.get("exerciseAddress"));
+		holder.exerciseTitle.setText((String)obj.get("exerciseTitle"));
+//		holder.exerciseTime.setText((String)obj.get("exerciseTime"));
 		return convertView;
 	}
 

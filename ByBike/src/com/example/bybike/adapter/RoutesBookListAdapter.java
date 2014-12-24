@@ -3,6 +3,8 @@ package com.example.bybike.adapter;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.example.bybike.adapter.ImageListAdapter.OnCollectButtonClick;
 import com.example.bybike.adapter.ImageListAdapter.OnLikeButtonClick;
 import com.example.bybike.adapter.ImageListAdapter.OnTalkButtonClick;
 import com.example.bybike.user.UserPageActivity;
+import com.example.bybike.util.Constant;
 
 /**
  * 路数列表的Adapter
@@ -102,6 +105,13 @@ public class RoutesBookListAdapter extends BaseAdapter {
 					.findViewById(R.id.routePic));
 			holder.userNickName = (TextView) convertView
 					.findViewById(R.id.userNickName);
+			holder.routeTitle = (TextView)convertView.findViewById(R.id.routeTitle);
+			holder.routeAddress = (TextView)convertView.findViewById(R.id.routeAddress);
+			holder.routeDescription = (TextView)convertView.findViewById(R.id.routeDescription);
+			holder.routeTime = (TextView)convertView.findViewById(R.id.routeTime);
+			holder.collectCount = (TextView)convertView.findViewById(R.id.collectCount);
+			holder.talkCount = (TextView)convertView.findViewById(R.id.talkCount);
+			holder.likeCount = (TextView)convertView.findViewById(R.id.likeCount);
 			holder.likeButton = (RelativeLayout) convertView
 					.findViewById(R.id.likeButton);
 			holder.collectButton = (RelativeLayout) convertView
@@ -138,11 +148,17 @@ public class RoutesBookListAdapter extends BaseAdapter {
 		// 获取该行的数据
 		final Map<String, Object> obj = (Map<String, Object>) mData
 				.get(position);
-		String avatorUrl = (String) obj.get("avatorPic");
+		String avatorUrl = (String) obj.get("userHeadPicUrl");
 		String routeUrl = (String) obj.get("routePic");
 		// 图片的下载
 		avatorImageDownloader.display(holder.avatorPic, avatorUrl);
 		routeImageDownloader.display(holder.routePic, routeUrl);
+		holder.routeTitle.setText((String)obj.get("title"));
+		holder.likeCount.setText((String)obj.get("likeCount"));
+		holder.talkCount.setText((String)obj.get("commentCount"));
+		holder.collectCount.setText((String)obj.get("collectCount"));
+		holder.userNickName.setText((String)obj.get("userName"));
+		holder.routeAddress.setText((String)obj.get("kilometers") + "km "+ (String)obj.get("routeAddress"));
 		return convertView;
 	}
 
@@ -197,8 +213,15 @@ public class RoutesBookListAdapter extends BaseAdapter {
 		ImageView routePic;
 		ImageView avatorPic;
 		TextView userNickName;
+		TextView routeTitle;
+		TextView routeAddress;
+		TextView routeDescription;
+		TextView routeTime;
+		TextView likeCount;
 		RelativeLayout likeButton;
+		TextView collectCount;
 		RelativeLayout collectButton;
+		TextView talkCount;
 		RelativeLayout talkButton;
 	}
 	
