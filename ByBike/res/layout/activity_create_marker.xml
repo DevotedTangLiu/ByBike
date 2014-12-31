@@ -22,11 +22,11 @@
             android:orientation="vertical" >
 
             <Button
-                android:layout_width="17dp"
+                android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="18dp"
-                android:background="@drawable/back_button" />
+                android:background="@drawable/cancel_button2" />
         </RelativeLayout>
 
         <TextView
@@ -299,7 +299,7 @@
                     android:background="@drawable/login_input_background" >
 
                     <EditText
-                        android:id="@+id/loginAccount"
+                        android:id="@+id/markerName"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_marginLeft="8dp"
@@ -323,7 +323,7 @@
                     android:background="@drawable/login_input_background" >
 
                     <EditText
-                        android:id="@+id/loginAccount"
+                        android:id="@+id/markerAddress"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_marginLeft="8dp"

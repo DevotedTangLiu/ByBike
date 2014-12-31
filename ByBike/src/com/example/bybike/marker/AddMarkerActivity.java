@@ -1,7 +1,9 @@
 package com.example.bybike.marker;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ZoomControls;
@@ -24,9 +27,17 @@ import com.ab.global.AbConstant;
 import com.ab.util.AbFileUtil;
 import com.ab.util.AbStrUtil;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.R;
 import com.example.bybike.util.BitmapUtil;
 
@@ -35,7 +46,6 @@ public class AddMarkerActivity extends AbActivity {
 	// 基础地图相关
 	MapView mMapView = null;
 	BaiduMap mBaidumap = null;
-
 	private View mAvatarView = null;
 	/* 用来标识请求照相功能的activity */
 	private static final int CAMERA_WITH_DATA = 3023;
@@ -46,6 +56,7 @@ public class AddMarkerActivity extends AbActivity {
 	/* 拍照的照片存储位置 */
 	private File PHOTO_DIR = null;
 
+	private static final int GO_TO_LOCATION_MARKER = 1001;
 	// 照相机拍照得到的图片
 	private File mCurrentPhotoFile;
 	private String mFileName;
@@ -63,11 +74,44 @@ public class AddMarkerActivity extends AbActivity {
 			R.id.type2text, R.id.type3text, R.id.type4text, R.id.type5text,
 			R.id.type6text, R.id.type7text, R.id.type8text };
 
+	/**
+	 * 友好点
+	 */
+	private LatLng currentPt;
+	private Marker marker;
+	private String markerType = "RantCar";
+    BitmapDescriptor marker_icon_bikestore = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_bikestore);
+    BitmapDescriptor marker_icon_meals = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_meals);
+    BitmapDescriptor marker_icon_others = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_others);
+    BitmapDescriptor marker_icon_parking = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_parking);
+    BitmapDescriptor marker_icon_rentbike = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_rentbike);
+    BitmapDescriptor marker_icon_repair = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_repair);
+    BitmapDescriptor marker_icon_scenery = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_scenery);
+    BitmapDescriptor marker_icon_washroom = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon_washroom);
+    List<BitmapDescriptor> bitMapDescriptorList = new ArrayList<BitmapDescriptor>();
+	
+    /**
+     * 地址字符串
+     */
+    private String address;
+    private EditText addressText;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setAbContentView(R.layout.activity_create_marker);
 		getTitleBar().setVisibility(View.GONE);
+		
+		bitMapDescriptorList.clear();
+        bitMapDescriptorList.add(marker_icon_bikestore);
+        bitMapDescriptorList.add(marker_icon_meals);
+        bitMapDescriptorList.add(marker_icon_others);
+        bitMapDescriptorList.add(marker_icon_parking);
+        bitMapDescriptorList.add(marker_icon_rentbike);
+        bitMapDescriptorList.add(marker_icon_repair);
+        bitMapDescriptorList.add(marker_icon_scenery);
+        bitMapDescriptorList.add(marker_icon_washroom);
+        
 		// ===============初始化地图========================
 		// 获取地图控件引用
 		mMapView = (MapView) findViewById(R.id.bmapView);
@@ -88,6 +132,30 @@ public class AddMarkerActivity extends AbActivity {
 		zoom.setVisibility(View.GONE);
 		// 隐藏指南针
 		mBaidumap.getUiSettings().setCompassEnabled(false);
+		mBaidumap.setOnMapClickListener(new OnMapClickListener() {
+			
+			@Override
+			public boolean onMapPoiClick(MapPoi arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void onMapClick(LatLng arg0) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(AddMarkerActivity.this, LocationMarkerActivity.class);
+				i.putExtra("markerType", markerType);
+				i.putExtra("address", addressText.getText().toString());
+				if(currentPt != null){
+					double [] latlng = new double[2];
+					latlng[0] = currentPt.latitude;
+					latlng[1] = currentPt.longitude;
+					i.putExtra("latlng", latlng);
+				}
+				startActivityForResult(i, GO_TO_LOCATION_MARKER);
+				overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+			}
+		});
 		// ===============================================
 
 		// 初始化图片保存路径
@@ -145,6 +213,21 @@ public class AddMarkerActivity extends AbActivity {
 		 * 初始化友好点显示
 		 */
 		changeAlpher(1);
+		
+		Bundle b = getIntent().getExtras();
+		if(null != b){
+		    double latitude = b.getDouble("latitude");
+		    double longitude = b.getDouble("langitude");
+		    currentPt = new LatLng(latitude, longitude);
+		    OverlayOptions ooA = new MarkerOptions().position(currentPt).icon(marker_icon_rentbike)
+                    .zIndex(9).draggable(true);
+            marker = (Marker) (mBaidumap.addOverlay(ooA));
+            MapStatusUpdate ut = MapStatusUpdateFactory.newLatLng(currentPt);
+            mBaidumap.animateMapStatus(ut);
+		}
+		
+		addressText = (EditText)findViewById(R.id.markerAddress);
+		
 	}
 
 	/**
@@ -208,6 +291,35 @@ public class AddMarkerActivity extends AbActivity {
 	 */
 	private void changeAlpher(int target) {
 
+		switch (target) {
+		case 1:
+			markerType = "RantCar";
+			break;
+		case 2:
+			markerType = "RantCar";
+			break;
+		case 3:
+			markerType = "Parking";
+			break;
+		case 4:
+			markerType = "FeatureSpot";
+			break;
+		case 5:
+			markerType = "Repair";
+			break;
+		case 6:
+			markerType = "Catering";
+			break;
+		case 7:
+			markerType = "Washroom";
+			break;
+		case 8:
+			markerType = "Other";
+			break;
+		default:
+			break;
+		}
+		
 		for (int i = 1; i <= markerTypeIds.length; i++) {
 			Button b = (Button) findViewById(markerTypeIds[i - 1]);
 			TextView t = (TextView) findViewById(markerTypeTextIds[i - 1]);
@@ -219,6 +331,8 @@ public class AddMarkerActivity extends AbActivity {
 				t.setAlpha(1f);
 			}
 		}
+		
+		updateMarkerIcon();
 	}
 
 	/**
@@ -284,11 +398,55 @@ public class AddMarkerActivity extends AbActivity {
 		// String path = mIntent.getStringExtra("PATH");
 		// // if(D)Log.d(TAG, "裁剪后得到的图片的路径是 = " + path);
 		// break;
+		case GO_TO_LOCATION_MARKER:
+			
+			Bundle b = mIntent.getExtras();
+			if(b != null){
+				double[] latlngs = b.getDoubleArray("latlng");
+				if(latlngs != null){
+				    currentPt = new LatLng(latlngs[0], latlngs[1]);
+	                if(marker == null){
+	                    
+	                    OverlayOptions ooA = new MarkerOptions().position(currentPt).icon(marker_icon_rentbike)
+	                            .zIndex(9).draggable(true);
+	                    marker = (Marker) (mBaidumap.addOverlay(ooA));
+	                    
+	                }else{
+	                    marker.setPosition(currentPt);
+	                }
+	                
+	                updateMarkerIcon();
+	                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(currentPt);
+	                mBaidumap.animateMapStatus(u);
+				}
+			}
+			break;
 		default:
 			break;
 		}
 	}
-
+	
+	private void updateMarkerIcon(){
+		if(marker == null) return;
+		
+		if ("RantCar".equalsIgnoreCase(markerType)) {
+			marker.setIcon(marker_icon_rentbike);
+        } else if ("Repair".equalsIgnoreCase(markerType)) {
+        	marker.setIcon(marker_icon_repair);
+        } else if ("FeatureSpot".equalsIgnoreCase(markerType)) {
+        	marker.setIcon(marker_icon_scenery);
+        } else if ("Catering".equalsIgnoreCase(markerType)) {
+        	marker.setIcon(marker_icon_meals);
+        } else if ("Washroom".equalsIgnoreCase(markerType)) {
+        	marker.setIcon(marker_icon_washroom);
+        } else if ("Parking".equalsIgnoreCase(markerType)) {
+        	marker.setIcon(marker_icon_parking);
+        } else if ("Other".equalsIgnoreCase(markerType)) {
+        	marker.setIcon(marker_icon_others);
+        } else {
+        	marker.setIcon(marker_icon_others);
+        }
+	}
 	/**
 	 * 从相册得到的url转换为SD卡中图片路径
 	 */
@@ -343,6 +501,9 @@ public class AddMarkerActivity extends AbActivity {
 		super.onDestroy();
 		// 退出时销毁定位
 		mMapView.onDestroy();
+		for(BitmapDescriptor b : bitMapDescriptorList){
+			b.recycle();
+		}
 	}
 
 	@Override

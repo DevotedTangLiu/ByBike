@@ -88,15 +88,15 @@ public class Constant {
     /**
      * 友好点列表
      */
-	public static final String getMarkerListUrl = "/bybike_ser/m/marker/list";
+	public static final String getMarkerListUrl = "/bybike_ser/mc/marker/list";
 	/**
 	 * 友好点详情
 	 */
-	public static final String markerDetailUrl = "/bybike_ser/m/marker/form";
+	public static final String markerDetailUrl = "/bybike_ser/mc/marker/form";
 	/**
 	 * 活动列表
 	 */
-	public static final String exerciseListUrl = "/bybike_ser/m/activity/list";
+	public static final String exerciseListUrl = "/bybike_ser/mc/activity/list";
 	/**
 	 * 活动详情
 	 */
@@ -104,6 +104,10 @@ public class Constant {
 	/**
 	 * 路书列表
 	 */
-	public static final String routeListUrl = "/bybike_ser/m/ridingBook/list";
+	public static final String routeListUrl = "/bybike_ser/mc/ridingBook/list";
+	/**
+	 * 忘记密码
+	 */
+	public static final String forgetPasswrodUrl = "/bybike_ser/mc/forgetPwd";
 	
 }

@@ -295,7 +295,7 @@ public class OfflineMapActivity extends Activity implements MKOfflineMapListener
 		}
 
 		void initViewItem(View view, final MKOLUpdateElement e) {
-			Button display = (Button) view.findViewById(R.id.display);
+//			Button display = (Button) view.findViewById(R.id.display);
 			Button remove = (Button) view.findViewById(R.id.remove);
 			TextView title = (TextView) view.findViewById(R.id.title);
 			TextView update = (TextView) view.findViewById(R.id.update);
@@ -307,11 +307,11 @@ public class OfflineMapActivity extends Activity implements MKOfflineMapListener
 			} else {
 				update.setText("最新");
 			}
-			if (e.ratio != 100) {
-				display.setEnabled(false);
-			} else {
-				display.setEnabled(true);
-			}
+//			if (e.ratio != 100) {
+//				display.setEnabled(false);
+//			} else {
+//				display.setEnabled(true);
+//			}
 			remove.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -319,16 +319,16 @@ public class OfflineMapActivity extends Activity implements MKOfflineMapListener
 					updateView();
 				}
 			});
-			display.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
+//			display.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
 //					Intent intent = new Intent();
 //					intent.putExtra("x", e.geoPt.longitude);
 //					intent.putExtra("y", e.geoPt.latitude);
 //					intent.setClass(OfflineDemo.this, BaseMapDemo.class);
 //					startActivity(intent);
-				}
-			});
+//				}
+//			});
 		}
 
 	}

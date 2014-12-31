@@ -1,8 +1,5 @@
 package com.example.bybike;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,7 +11,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
@@ -27,9 +23,9 @@ import com.example.bybike.marker.AddMarkerActivity;
 import com.example.bybike.message.MessageListActivity;
 import com.example.bybike.riding.RidingActivity;
 import com.example.bybike.routes.RoutesBookMainFragment;
-import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.user.UserMainPageFragment;
+import com.example.bybike.util.AnimationController;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.SharedPreferencesUtil;
 
@@ -68,6 +64,7 @@ public class NewMainActivity extends AbActivity {
 		setAbContentView(R.layout.sliding_menu_content);
 		getTitleBar().setVisibility(View.GONE);
 
+		animationController = new AnimationController();
 		clickRideButtonPage = (RelativeLayout) findViewById(R.id.cover);
 		titleText = (TextView) findViewById(R.id.titleText);
 		titleIcon = (ImageView) findViewById(R.id.titleIcon);
@@ -327,14 +324,18 @@ public class NewMainActivity extends AbActivity {
 	/**
 	 * 点击骑行按钮，特殊处理 showRiding(这里用一句话描述这个方法的作用)
 	 */
+	private AnimationController animationController ;
 	private void showRiding() {
 
 		if (b.isSelected()) {
 			b.setSelected(false);
-			clickRideButtonPage.setVisibility(View.GONE);
+			animationController.fadeOut(clickRideButtonPage, 300, 0);
+//			clickRideButtonPage.setVisibility(View.GONE);
+			
 		} else {
 			b.setSelected(true);
-			clickRideButtonPage.setVisibility(View.VISIBLE);
+//			clickRideButtonPage.setVisibility(View.VISIBLE);
+			animationController.fadeIn(clickRideButtonPage, 300, 0);
 		}
 
 	}
