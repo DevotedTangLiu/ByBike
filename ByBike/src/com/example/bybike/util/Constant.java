@@ -100,7 +100,7 @@ public class Constant {
 	/**
 	 * 活动详情
 	 */
-	public static final String exerciseDetailUrl = "/bybike/m/activity/form";
+	public static final String exerciseDetailUrl = "/bybike_ser/mc/activity/form";
 	/**
 	 * 路书列表
 	 */
@@ -109,5 +109,27 @@ public class Constant {
 	 * 忘记密码
 	 */
 	public static final String forgetPasswrodUrl = "/bybike_ser/mc/forgetPwd";
+	
+	/**
+	 * 查询活动评论列表
+	 */
+	public static final String getCommentList = "/bybike_ser/mc/activity/getDiscusslist";
+	/**
+	 * 添加活动评论Url
+	 */
+    public static final String addActivityCommentUrl = "/bybike_ser/m/activity/discuss";
+	/**
+	 * 查询友好点评论列表
+	 */
+	public static final String getMarkerCommentList = "/bybike_ser/mc/marker/getDiscusslist";
+    /**
+     * 添加标记点评论	
+     */
+	public static final String commentMarkerUrl = "/bybike_ser/m/marker/discuss";
+
+	/**
+	 * 活动报名Url
+	 */
+	public static final String applyForActivityUrl = "/bybike_ser/m/activity/saveActivityUser";
 	
 }

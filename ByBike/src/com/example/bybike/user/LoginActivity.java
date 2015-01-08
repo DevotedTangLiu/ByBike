@@ -26,6 +26,7 @@ import com.example.bybike.util.BitmapUtil;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
+import com.example.bybike.util.Utils;
 
 public class LoginActivity extends AbActivity {
 
@@ -125,6 +126,8 @@ public class LoginActivity extends AbActivity {
 		AbRequestParams p = new AbRequestParams();
 		p.put("username", account);
 		p.put("password", password);
+		p.put("equipmentType", "0");
+		p.put("equipment", Utils.getDeviceId(LoginActivity.this));
 		// 绑定参数
 		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -177,6 +180,7 @@ public class LoginActivity extends AbActivity {
 				} catch (JSONException e) {
 					headPic = "";
 				}
+				String userId = dataObject.getString("id");
 
 				userDao = new UserBeanDao(LoginActivity.this);
 				// (1)获取数据库
@@ -193,6 +197,7 @@ public class LoginActivity extends AbActivity {
 					user.setSession(sessionId);
 					user.setUserNickName(nickname);
 					user.setPicUrl(headPic);
+					user.setUserId(userId);
 					userDao.update(user);
 
 				} else {
@@ -202,6 +207,7 @@ public class LoginActivity extends AbActivity {
 					user.setPassword(password);
 					user.setUserNickName(nickname);
 					user.setPicUrl(headPic);
+					user.setUserId(userId);
 					userDao.insert(user);
 				}
 
@@ -220,6 +226,7 @@ public class LoginActivity extends AbActivity {
 						Constant.USERAVATARURL, headPic);
 				SharedPreferencesUtil.saveSharedPreferences_b(this,
 						Constant.ISLOGINED, true);
+				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERID, userId);
 
 				Intent intent = getIntent();
 				setResult(RESULT_OK, intent);

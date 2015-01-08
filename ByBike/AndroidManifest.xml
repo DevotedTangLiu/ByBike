@@ -121,6 +121,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
+         <activity
+            android:name="com.example.bybike.exercise.AddActivityCommentActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
 
         <!-- 路书 -->
         <activity
@@ -176,6 +183,13 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
+        </activity>
+         <activity
+            android:name="com.example.bybike.marker.AddCommentActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name="com.example.bybike.marker.AddMarkerActivity"

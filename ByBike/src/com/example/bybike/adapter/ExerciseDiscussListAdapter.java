@@ -21,6 +21,7 @@ import com.ab.bitmap.AbImageDownloader;
 import com.example.bybike.R;
 import com.example.bybike.user.UserPageActivity;
 import com.example.bybike.util.CircleImageView;
+import com.example.bybike.util.Constant;
 
 /**
   * @author tangliu(mail) 2014-11-2
@@ -92,8 +93,13 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
         holder.userName.setText(v.getAsString("userName"));
         holder.discussContent.setText(v.getAsString("discussContent"));
         holder.discussTime.setText(v.getAsString("discussTime"));
-        mAbImageDownloader.display(holder.avater, v.getAsString("avater"));
-        
+        if(v.getAsString("avater").equals("")){
+        	holder.avater.setBackgroundResource(R.drawable.user_icon_pic);
+        }else if(v.getAsString("avater").startsWith("http")){
+        	 mAbImageDownloader.display(holder.avater, v.getAsString("avater"));
+        }else{
+        	mAbImageDownloader.display(holder.avater, Constant.serverUrl + v.getAsString("avater"));
+        }
         return convertView;
     }
 

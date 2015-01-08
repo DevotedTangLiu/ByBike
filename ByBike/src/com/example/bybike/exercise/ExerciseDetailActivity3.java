@@ -40,13 +40,19 @@ import com.ab.http.AbStringHttpResponseListener;
 import com.ab.view.sliding.AbSlidingPlayView;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
+import com.baidu.mapapi.map.GroundOverlayOptions;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
+import com.example.bybike.marker.AddCommentActivity;
+import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.riding.RidingActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
@@ -54,495 +60,633 @@ import com.example.bybike.util.SharedPreferencesUtil;
 
 public class ExerciseDetailActivity3 extends AbActivity {
 
-    // http请求帮助类
-    private AbHttpUtil mAbHttpUtil = null;
-    private String exerciseId = "";
+	// http请求帮助类
+	private AbHttpUtil mAbHttpUtil = null;
+	private String exerciseId = "";
+	private String activityNameString = "";
+	private String commentsString = "";
 
-    // 基础地图相关
-    MapView mMapView = null;
-    BaiduMap mBaidumap = null;
-    // 图片区域
-    RelativeLayout exercisePicArea = null;
-    AbSlidingPlayView mAbSlidingPlayView = null;
-    LinearLayout coverView;
-    // 评论列表
-    ListView discussList = null;
-    List<ContentValues> discussValueList = null;
-    ExerciseDiscussListAdapter discussAdapter = null;
-    // 图片下载类
-    private AbImageDownloader mAbImageDownloader = null;
+	// 基础地图相关
+	MapView mMapView = null;
+	BaiduMap mBaidumap = null;
+	// 图片区域
+	RelativeLayout exercisePicArea = null;
+	AbSlidingPlayView mAbSlidingPlayView = null;
+	LinearLayout coverView;
+	String[] imageUrls = new String[8];
+	// 评论列表
+	ListView discussList = null;
+	List<ContentValues> discussValueList = null;
+	ExerciseDiscussListAdapter discussAdapter = null;
+	// 图片下载类
+	private AbImageDownloader mAbImageDownloader = null;
 
-    View detailheader;
-    // 点赞、评论、分享区域
-    RelativeLayout likeButton;
-    TextView likeCount;
-    RelativeLayout collectButton;
-    TextView collectCount;
-    TextView distance;
-    TextView timeLong;
-    TextView publishTime;
-    TextView exerciseTitle;
-    TextView exerciseRouteAddress;
-    TextView exerciseTime;
-    TextView exerciseDetail;
-    TextView exercisePrice;
-    TextView deadline;
-    TextView applyUserCount;
-    TextView discussCount;
-    Button discussButton;
+	View detailheader;
+	// 点赞、评论、分享区域
+	RelativeLayout likeButton;
+	TextView likeCount;
+	RelativeLayout collectButton;
+	TextView collectCount;
+	TextView distance;
+	TextView timeLong;
+	TextView publishTime;
+	TextView exerciseTitle;
+	TextView exerciseRouteAddress;
+	TextView exerciseTime;
+	TextView exerciseDetail;
+	TextView exercisePrice;
+	TextView deadline;
+	TextView applyUserCount;
+	TextView discussCount;
+	Button discussButton;
 
-    Button shareButton;
+	Button shareButton;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exercise_detaill3);
-        getTitleBar().setVisibility(View.GONE);
+	private String activityData;
 
-        // 获取Http工具类
-        mAbHttpUtil = AbHttpUtil.getInstance(this);
-        mAbHttpUtil.setDebug(false);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_exercise_detaill3);
+		getTitleBar().setVisibility(View.GONE);
 
-        exerciseId = getIntent().getStringExtra("id");
+		// 获取Http工具类
+		mAbHttpUtil = AbHttpUtil.getInstance(this);
+		mAbHttpUtil.setDebug(false);
 
-        // 评论列表
-        discussList = (ListView) findViewById(R.id.discussList);
-        // 添加header
-        detailheader = mInflater.inflate(R.layout.header_exercise_detail, null);
+		exerciseId = getIntent().getStringExtra("id");
 
-        exercisePicArea = (RelativeLayout) detailheader.findViewById(R.id.exercisePicArea);
-        mAbSlidingPlayView = (AbSlidingPlayView) detailheader.findViewById(R.id.mAbSlidingPlayView);
-        coverView = (LinearLayout) detailheader.findViewById(R.id.coverView);
+		// 评论列表
+		discussList = (ListView) findViewById(R.id.discussList);
+		// 添加header
+		detailheader = mInflater.inflate(R.layout.header_exercise_detail, null);
 
-        likeButton = (RelativeLayout) detailheader.findViewById(R.id.likeButton);
-        likeCount = (TextView) detailheader.findViewById(R.id.likeCount);
-        collectButton = (RelativeLayout) detailheader.findViewById(R.id.collectButton);
-        collectCount = (TextView) detailheader.findViewById(R.id.collectCount);
-        discussCount = (TextView) detailheader.findViewById(R.id.discussCount);
-        discussButton = (Button) detailheader.findViewById(R.id.discussButton);
+		exercisePicArea = (RelativeLayout) detailheader
+				.findViewById(R.id.exercisePicArea);
+		mAbSlidingPlayView = (AbSlidingPlayView) detailheader
+				.findViewById(R.id.mAbSlidingPlayView);
+		coverView = (LinearLayout) detailheader.findViewById(R.id.coverView);
 
-        distance = (TextView) detailheader.findViewById(R.id.distance);
-        timeLong = (TextView) detailheader.findViewById(R.id.timeLong);
-        publishTime = (TextView) detailheader.findViewById(R.id.publishTime);
-        exerciseTitle = (TextView) detailheader.findViewById(R.id.exerciseTitle);
-        exerciseRouteAddress = (TextView) detailheader.findViewById(R.id.exerciseRouteAddress);
-        exerciseTime = (TextView) detailheader.findViewById(R.id.exerciseTime);
-        exerciseDetail = (TextView) detailheader.findViewById(R.id.exerciseDetail);
-        exercisePrice = (TextView) detailheader.findViewById(R.id.exercisePrice);
-        deadline = (TextView) detailheader.findViewById(R.id.deadline);
-        applyUserCount = (TextView) detailheader.findViewById(R.id.applyUserCount);
+		likeButton = (RelativeLayout) detailheader
+				.findViewById(R.id.likeButton);
+		likeCount = (TextView) detailheader.findViewById(R.id.likeCount);
+		collectButton = (RelativeLayout) detailheader
+				.findViewById(R.id.collectButton);
+		collectCount = (TextView) detailheader.findViewById(R.id.collectCount);
+		discussCount = (TextView) detailheader.findViewById(R.id.discussCount);
+		discussButton = (Button) detailheader.findViewById(R.id.discussButton);
 
-        discussList.addHeaderView(detailheader);
-        discussValueList = new ArrayList<ContentValues>();
-        discussAdapter = new ExerciseDiscussListAdapter(ExerciseDetailActivity3.this, discussValueList);
-        discussList.setAdapter(discussAdapter);
+		distance = (TextView) detailheader.findViewById(R.id.distance);
+		timeLong = (TextView) detailheader.findViewById(R.id.timeLong);
+		publishTime = (TextView) detailheader.findViewById(R.id.publishTime);
+		exerciseTitle = (TextView) detailheader
+				.findViewById(R.id.exerciseTitle);
+		exerciseRouteAddress = (TextView) detailheader
+				.findViewById(R.id.exerciseRouteAddress);
+		exerciseTime = (TextView) detailheader.findViewById(R.id.exerciseTime);
+		exerciseDetail = (TextView) detailheader
+				.findViewById(R.id.exerciseDetail);
+		exercisePrice = (TextView) detailheader
+				.findViewById(R.id.exercisePrice);
+		deadline = (TextView) detailheader.findViewById(R.id.deadline);
+		applyUserCount = (TextView) detailheader
+				.findViewById(R.id.applyUserCount);
 
-        // 获取地图控件引用
-        mMapView = (MapView) findViewById(R.id.bmapView);
-        mBaidumap = mMapView.getMap();
+		discussList.addHeaderView(detailheader);
+		discussValueList = new ArrayList<ContentValues>();
+		discussAdapter = new ExerciseDiscussListAdapter(
+				ExerciseDetailActivity3.this, discussValueList);
+		discussList.setAdapter(discussAdapter);
 
-        initActivity();
-    }
+		// 获取地图控件引用
+		mMapView = (MapView) findViewById(R.id.bmapView);
+		mBaidumap = mMapView.getMap();
 
-    /**
-     * 初始化点击事件等
-     */
-    private void initActivity() {
+		initActivity();
+	}
 
-        /**
-         * 点击喜欢按钮触发事件
-         */
-        likeButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                if (v.isSelected()) {
-                    v.setSelected(false);
-                    int count = Integer.valueOf(likeCount.getText().toString());
-                    count--;
-                    likeCount.setText(String.valueOf(count));
-                } else {
-                    v.setSelected(true);
-                    int count = Integer.valueOf(likeCount.getText().toString());
-                    count++;
-                    likeCount.setText(String.valueOf(count));
-                }
-            }
-        });
-        /**
-         * 点击收藏按钮触发事件
-         */
-        collectButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                if (v.isSelected()) {
-                    v.setSelected(false);
-                    int count = Integer.valueOf(collectCount.getText().toString());
-                    count--;
-                    collectCount.setText(String.valueOf(count));
-                } else {
-                    v.setSelected(true);
-                    int count = Integer.valueOf(collectCount.getText().toString());
-                    count++;
-                    collectCount.setText(String.valueOf(count));
-                }
-            }
-        });
+	/**
+	 * 初始化点击事件等
+	 */
+	private void initActivity() {
 
-        /**
-         * 定义discussList的触摸事件和滚动事件
-         */
-        discussList.setOnScrollListener(new OnScrollListener() {
+		/**
+		 * 点击喜欢按钮触发事件
+		 */
+		likeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (v.isSelected()) {
+					v.setSelected(false);
+					int count = Integer.valueOf(likeCount.getText().toString());
+					count--;
+					likeCount.setText(String.valueOf(count));
+				} else {
+					v.setSelected(true);
+					int count = Integer.valueOf(likeCount.getText().toString());
+					count++;
+					likeCount.setText(String.valueOf(count));
+				}
+			}
+		});
+		/**
+		 * 点击收藏按钮触发事件
+		 */
+		collectButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (v.isSelected()) {
+					v.setSelected(false);
+					int count = Integer.valueOf(collectCount.getText()
+							.toString());
+					count--;
+					collectCount.setText(String.valueOf(count));
+				} else {
+					v.setSelected(true);
+					int count = Integer.valueOf(collectCount.getText()
+							.toString());
+					count++;
+					collectCount.setText(String.valueOf(count));
+				}
+			}
+		});
 
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // TODO Auto-generated method stub
-                switch (scrollState) {
-                case OnScrollListener.SCROLL_STATE_IDLE:
-                    if (detailheader.getTop() >= 0) {
-                        coverView.setVisibility(View.GONE);
-                    }
-                    break;
-                default:
-                    break;
-                }
-            }
+		/**
+		 * 定义discussList的触摸事件和滚动事件
+		 */
+		discussList.setOnScrollListener(new OnScrollListener() {
 
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				switch (scrollState) {
+				case OnScrollListener.SCROLL_STATE_IDLE:
+					if (detailheader.getTop() >= 0) {
+						coverView.setVisibility(View.GONE);
+					}
+					break;
+				default:
+					break;
+				}
+			}
 
-                // TODO Auto-generated method stub
-                if (detailheader.getTop() < 0) {
-                    int tmp = (int) (Math.abs(detailheader.getTop()) * 255 / 500);
-                    if (tmp > 255)
-                        tmp = 255;
-                    int color = Color.argb(tmp, 0, 0, 0);
-                    coverView.setVisibility(View.VISIBLE);
-                    coverView.setBackgroundColor(color);
-                } else {
-                    coverView.setVisibility(View.GONE);
-                }
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
 
-            }
-        });
+				// TODO Auto-generated method stub
+				if (detailheader.getTop() < 0) {
+					int tmp = (int) (Math.abs(detailheader.getTop()) * 255 / 500);
+					if (tmp > 255)
+						tmp = 255;
+					int color = Color.argb(tmp, 0, 0, 0);
+					coverView.setVisibility(View.VISIBLE);
+					coverView.setBackgroundColor(color);
+				} else {
+					coverView.setVisibility(View.GONE);
+				}
 
-        // ===============初始化地图========================
-        // 默认初始地图放大级别为17级
-        MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(17f);
-        mBaidumap.animateMapStatus(u);
-        // 隐藏自带的地图缩放控件
-        int childCount = mMapView.getChildCount();
-        View zoom = null;
-        for (int i = 0; i < childCount; i++) {
-            View child = mMapView.getChildAt(i);
-            if (child instanceof ZoomControls) {
-                zoom = child;
-                break;
-            }
-        }
-        zoom.setVisibility(View.GONE);
-        // 隐藏指南针
-        mBaidumap.getUiSettings().setCompassEnabled(false);
-        mBaidumap.setOnMapClickListener(new OnMapClickListener() {
-            public void onMapClick(LatLng point) {
+			}
+		});
 
-                Intent i = new Intent();
-                i.setClass(ExerciseDetailActivity3.this, RidingActivity.class);
-                startActivity(i);
-                overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-            }
+		// ===============初始化地图========================
+		// 默认初始地图放大级别为17级
+		MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(17f);
+		mBaidumap.animateMapStatus(u);
+		// 隐藏自带的地图缩放控件
+		int childCount = mMapView.getChildCount();
+		View zoom = null;
+		for (int i = 0; i < childCount; i++) {
+			View child = mMapView.getChildAt(i);
+			if (child instanceof ZoomControls) {
+				zoom = child;
+				break;
+			}
+		}
+		zoom.setVisibility(View.GONE);
 
-            public boolean onMapPoiClick(MapPoi poi) {
-                return false;
-            }
-        });
-        // ===============================================
+		// 隐藏指南针
+		mBaidumap.getUiSettings().setCompassEnabled(false);
+		// 点击地图进入骑行页面
+		mBaidumap.setOnMapClickListener(new OnMapClickListener() {
+			public void onMapClick(LatLng point) {
 
-    }
+				Intent i = new Intent();
+				i.setClass(ExerciseDetailActivity3.this, RidingActivity.class);
+				startActivity(i);
+				overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
+			}
 
-    /**
-     * 初始化视图
-     */
-    private void loadData() {
-        
-        queryDetail();
+			public boolean onMapPoiClick(MapPoi poi) {
+				return false;
+			}
+		});
+		// ===============================================
 
-        // 在地图上显示数据
+		loadData();
 
-        // 下载和显示图片
-        mAbImageDownloader = new AbImageDownloader(this);
-        mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
-        mAbImageDownloader.setNoImage(R.drawable.image_no);
-        mAbImageDownloader.setErrorImage(R.drawable.image_error);
+	}
 
-        for (int i = 0; i < 3; i++) {
+	/**
+	 * 初始化视图
+	 */
+	private void loadData() {
+		/**
+		 * 查询活动详情
+		 */
+		queryDetail();
+		/**
+		 * 查询评论列表
+		 */
+		queryComments();
+	}
 
-            final View mPlayView = mInflater.inflate(R.layout.play_view_item, null);
-            ImageView mPlayImage = (ImageView) mPlayView.findViewById(R.id.mPlayImage);
-            mAbSlidingPlayView.setPageLineHorizontalGravity(Gravity.CENTER);
-            mAbSlidingPlayView.addView(mPlayView);
+	private void queryComments() {
 
-            mAbImageDownloader.display(mPlayImage, "http://img0.imgtn.bdimg.com/it/u=1196327338,3394668792&fm=21&gp=0.jpg");
-        }
+		if (!NetUtil.isConnnected(this)) {
+			showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+			return;
+		}
+		String urlString = Constant.serverUrl + Constant.getCommentList;
+		urlString += ";jsessionid=";
+		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
+				Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		p.put("activityId", exerciseId);
+		p.put("pageNo", "1");
+		p.put("pageSize", "100");
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
-        // 填充详细数据
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
 
-        // 填充评论列表
-        for (int i = 0; i < 2; i++) {
-            ContentValues v1 = new ContentValues();
-            v1.put("userName", "ChaolotteYam");
-            v1.put("discussContent", "有爱。");
-            v1.put("avater", "http://t11.baidu.com/it/u=1610160448,1299213022&fm=56");
-            v1.put("discussTime", "10.28 14:30");
-            discussValueList.add(v1);
-            ContentValues v2 = new ContentValues();
-            v2.put("userName", "Jeronmme_1221");
-            v2.put("discussContent", "今天倍儿爽！");
-            v2.put("avater", "http://t11.baidu.com/it/u=1620038746,1252150868&fm=56");
-            v2.put("discussTime", "10.28 14:48");
-            discussValueList.add(v2);
-        }
-        discussAdapter.notifyDataSetChanged();
-    }
+				processCommentResult(content);
+			};
 
-    private void queryDetail() {
-        if (!NetUtil.isConnnected(this)) {
-            showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
-            return;
-        }
-        String urlString = Constant.serverUrl + Constant.exerciseDetailUrl;
-        urlString += ";jsessionid=";
-        urlString += SharedPreferencesUtil.getSharedPreferences_s(this, Constant.SESSION);
-        AbRequestParams p = new AbRequestParams();
-        p.put("id", exerciseId);
-        // 绑定参数
-        mAbHttpUtil.get(urlString, p, new AbStringHttpResponseListener() {
+			// 开始执行前
+			@Override
+			public void onStart() {
+				showProgressDialog("请稍后...");
+			}
 
-            // 获取数据成功会调用这里
-            @Override
-            public void onSuccess(int statusCode, String content) {
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
 
-                processResult(content);
-            };
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+				removeProgressDialog();
+			};
 
-            // 开始执行前
-            @Override
-            public void onStart() {
-                showProgressDialog("请稍后...");
-            }
+		});
 
-            // 失败，调用
-            @Override
-            public void onFailure(int statusCode, String content, Throwable error) {
-            }
+	}
 
-            // 完成后调用，失败，成功
-            @Override
-            public void onFinish() {
-                removeProgressDialog();
-            };
+	protected void processCommentResult(String resultString) {
+		// TODO Auto-generated method stub
+		try {
+			JSONObject resultObj = new JSONObject(resultString);
+			String code = resultObj.getString("code");
+			if ("0".equals(code)) {
 
-        });
-    }
+				JSONArray dataArray = resultObj.getJSONArray("data");
+				commentsString = dataArray.toString();
+				discussValueList.clear();
+				for (int i = 0; i < dataArray.length(); i++) {
 
-    private void processResult(String resultString) {
-        try {
-            JSONObject resultObj = new JSONObject(resultString);
-            String code = resultObj.getString("code");
-            if ("0".equals(code)) {
+					JSONObject jo = dataArray.getJSONObject(i);
+					ContentValues v1 = new ContentValues();
+					v1.put("senderId", jo.getString("senderId"));
+					v1.put("userName", jo.getString("senderName"));
+					v1.put("discussContent", jo.getString("content"));
+					if (!"null".equals(jo.getString("senderHeadUrl"))) {
+						v1.put("avater",
+								Constant.serverUrl
+										+ jo.getString("senderHeadUrl"));
+					} else {
+						v1.put("avater", "");
+					}
+					v1.put("discussTime", jo.getString("discussTime"));
+					discussValueList.add(v1);
+				}
+				discussAdapter.notifyDataSetChanged();
 
-                JSONObject dataObj = resultObj.getJSONObject("data");
-                TextView titleView = (TextView) findViewById(R.id.title);
-                titleView.setText(dataObj.getString("title"));
-                exerciseTitle.setText(dataObj.getString("title"));
-                distance.setText(dataObj.getString("wayLength"));
-                timeLong.setText("约" + dataObj.getString("wasteTime") + "小时");
-                // 发布时间
-                exerciseRouteAddress.setText("约" + dataObj.getString("wayLength") + "km  " + dataObj.getString("wayLine"));
-                exerciseTime.setText(dataObj.getString("activityDate"));
-                exerciseDetail.setText(dataObj.getString("introduction"));
-                exercisePrice.setText(dataObj.getString("entryFee") + " 元");
-                deadline.setText(dataObj.getString("endBookDate"));
-                applyUserCount.setText(dataObj.getString("limitNumber"));
-                collectCount.setText(dataObj.getString("collectCount"));
-                discussCount.setText("评论 (" + dataObj.getString("commentCount") + ")");
-            } else {
-                showToast("查询失败，请稍后重试");
-                ExerciseDetailActivity3.this.finish();
-            }
+			} else {
+				showToast(resultObj.getString("message"));
+			}
 
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            showToast("查询失败，请稍后重试");
-            ExerciseDetailActivity3.this.finish();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			// showToast("评论列表加载失败，请稍后重试");
+		}
 
-        }
+	}
 
-    }
+	private void queryDetail() {
+		if (!NetUtil.isConnnected(this)) {
+			showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+			return;
+		}
+		String urlString = Constant.serverUrl + Constant.exerciseDetailUrl;
+		urlString += ";jsessionid=";
+		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
+				Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		p.put("id", exerciseId);
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
-    /**
-     * 接受页面button调用
-     * 
-     * @param source
-     */
-    public void clickHandler(View source) {
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
 
-        switch (source.getId()) {
-        case R.id.goBack:
-            goBack();
-            break;
+				processResult(content);
+			};
 
-        case R.id.mapOrPic:
-            if (mMapView.getVisibility() == View.VISIBLE) {
-                mAbSlidingPlayView.setVisibility(View.VISIBLE);
-                mMapView.setVisibility(View.GONE);
-            } else {
-                mMapView.setVisibility(View.VISIBLE);
-                mAbSlidingPlayView.setVisibility(View.GONE);
-            }
-            break;
-//        case R.id.hasBike:
-//            if (hasBike.isSelected()) {
-//                hasBike.setSelected(false);
-//            } else {
-//                hasBike.setSelected(true);
-//            }
-//            break;
-//        case R.id.hasHelmet:
-//            if (hasHelmet.isSelected()) {
-//                hasHelmet.setSelected(false);
-//            } else {
-//                hasHelmet.setSelected(true);
-//            }
-//            break;
+			// 开始执行前
+			@Override
+			public void onStart() {
+				showProgressDialog("请稍后...");
+			}
 
-        case R.id.shareButton: // 点击分享按钮
-            showShare();
-            break;
-        case R.id.applyArea: // 点击报名事件
-            applyClick();
-            break;
-        default:
-            break;
-        }
-    }
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
 
-    /**
-     * 退出页面
-     */
-    private void goBack() {
-        ExerciseDetailActivity3.this.finish();
-        overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-    }
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+				removeProgressDialog();
+			};
 
-    /**
-     * 显示报名页面
-     */
-//    Dialog dialog;
-//    Button hasBike;
-//    Button hasHelmet;
+		});
+	}
 
-    /**
-     * 显示报名的对话框
-     */
-    private void applyClick() {
-        
-        Intent i = new Intent(ExerciseDetailActivity3.this, ApplyAcitivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
-//        dialog = new Dialog(this, R.style.Theme_dialog);
-//        LayoutInflater l = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View view = l.inflate(R.layout.apply_for_exercise_layout, null);
-//
-//        final EditText realNameText = (EditText) view.findViewById(R.id.realName);
-//        final EditText phoneNumberText = (EditText) view.findViewById(R.id.phoneNumber);
-//        final EditText cardNumberText = (EditText) view.findViewById(R.id.cardNumber);
-//        TextView commentText = (TextView) view.findViewById(R.id.comment);
-//        hasBike = (Button) view.findViewById(R.id.hasBike);
-//        hasHelmet = (Button) view.findViewById(R.id.hasHelmet);
-//        Button cancelButton = (Button) view.findViewById(R.id.cancelButton);
-//        Button submitButton = (Button) view.findViewById(R.id.submitButton);
-//        cancelButton.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                dialog.dismiss();
-//            }
-//        });
-//        submitButton.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                // 获取数据
-//                String realName = realNameText.getText().toString().trim();
-//                String phoneNumber = phoneNumberText.getText().toString().trim();
-//                String cardNumber = cardNumberText.getText().toString().trim();
-//                if (realName.equals("")) {
-//                    showDialog("温馨提示", "请输入真实姓名");
-//                } else if (phoneNumber.equals("")) {
-//                    showDialog("温馨提示", "请输入电话号码");
-//                } else if (cardNumber.equals("")) {
-//                    showDialog("温馨提示", "请输入身份证号");
-//                } else {
-//                    dialog.dismiss();
-//                }
-//            }
-//        });
-//        dialog.setContentView(view);
-//        dialog.show();
-    }
+	private void processResult(String resultString) {
+		try {
+			JSONObject resultObj = new JSONObject(resultString);
+			String code = resultObj.getString("code");
+			if ("0".equals(code)) {
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 退出时销毁定位
-        mMapView.onDestroy();
-    }
+				JSONObject dataObj = resultObj.getJSONObject("data");
+				JSONObject activityObj = dataObj.getJSONObject("activity");
+				activityData = activityObj.toString();
+				TextView titleView = (TextView) findViewById(R.id.title);
+				titleView.setText(activityObj.getString("title"));
+				exerciseTitle.setText(activityObj.getString("title"));
+				activityNameString = activityObj.getString("title");
+				distance.setText(activityObj.getString("wayLength"));
+				timeLong.setText("约" + activityObj.getString("wasteTime")
+						+ "小时");
+				// 发布时间
+				publishTime.setText(activityObj.getString("publishDate")
+						.substring(0, 11));
+				exerciseRouteAddress.setText("约"
+						+ activityObj.getString("wayLength") + "km  "
+						+ activityObj.getString("wayLine"));
+				exerciseTime.setText(activityObj.getString("activityStartDate")
+						+ "-" + activityObj.getString("activityEndDate"));
+				exerciseDetail.setText(activityObj.getString("introduction"));
+				exercisePrice.setText(activityObj.getString("entryFee") + " 元");
+				deadline.setText(activityObj.getString("endBookDate"));
+				applyUserCount.setText(activityObj
+						.getString("relityActivityNumber"));
+				collectCount.setText(activityObj.getString("collectCount"));
+				likeCount.setText(activityObj.getString("likeCount"));
+				discussCount.setText("评论 ("
+						+ activityObj.getString("commentCount") + ")");
 
-    @Override
-    public void onStart() {
+				// 下载和显示图片
+				for (int i = 1; i <= 8; i++) {
+					if (i == 1) {
+						imageUrls[i - 1] = activityObj
+								.getString("activityImgUrl");
+					} else {
+						String index = "img" + String.valueOf(i) + "Url";
+						imageUrls[i - 1] = activityObj.getString(index);
+					}
 
-        super.onStart();
-        loadData();
-    }
+				}
+				mAbImageDownloader = new AbImageDownloader(this);
+				mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
+				mAbImageDownloader.setNoImage(R.drawable.image_no);
+				mAbImageDownloader.setErrorImage(R.drawable.image_error);
+				for (int i = 0; i < 8; i++) {
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // 在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
-        mMapView.onResume();
-        removeProgressDialog();
-    }
+					if (imageUrls[i] != null && !"".equals(imageUrls[i])) {
+						final View mPlayView = mInflater.inflate(
+								R.layout.play_view_item, null);
+						ImageView mPlayImage = (ImageView) mPlayView
+								.findViewById(R.id.mPlayImage);
+						mAbSlidingPlayView
+								.setPageLineHorizontalGravity(Gravity.CENTER);
+						mAbSlidingPlayView.addView(mPlayView);
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        // 在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
-        mMapView.onPause();
-    }
+						mAbImageDownloader.display(mPlayImage,
+								Constant.serverUrl + imageUrls[i]);
+					}
+				}
 
-    private void showShare() {
+				// 在地图上显示路线图
+				try {
+					JSONArray pointsArray = dataObj.getJSONArray("points");
+					List<LatLng> points = new ArrayList<LatLng>();
+					for (int i = 0; i < pointsArray.length(); i++) {
+						JSONObject point = pointsArray.getJSONObject(i);
+						LatLng ll = new LatLng(point.getDouble("lat"),
+								point.getDouble("lng"));
+						points.add(ll);
+					}
+					OverlayOptions ooPolyline = new PolylineOptions().width(10)
+							.color(0xAAFF0000).points(points);
+					mBaidumap.addOverlay(ooPolyline);
 
-        ShareSDK.initSDK(this);
-        OnekeyShare oks = new OnekeyShare();
-        oks.setSilent(true);  // 隐藏编辑页面
-        // 关闭sso授权
-        oks.disableSSOWhenAuthorize();
-        // 分享时Notification的图标和文字
-        oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
-        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-        oks.setTitle(getString(R.string.share));
-        // text是分享文本，所有平台都需要这个字段
-        oks.setText(exerciseDetail.getText().toString());
-        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-        oks.setImagePath("");// 确保SDcard下面存在此张图片
-        // url仅在微信（包括好友和朋友圈）中使用
-        oks.setUrl("http://sharesdk.cn");
-        // 启动分享GUI
-        oks.show(this);
-    }
+					LatLngBounds bounds = new LatLngBounds.Builder()
+							.include(points.get(0))
+							.include(points.get(points.size() - 1)).build();
+					MapStatusUpdate u = MapStatusUpdateFactory
+							.newLatLngBounds(bounds);
+					mBaidumap.animateMapStatus(u, 500);
+
+				} catch (Exception e) {
+
+				}
+
+			} else {
+				showToast("查询失败，请稍后重试");
+				ExerciseDetailActivity3.this.finish();
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			showToast("查询失败，请稍后重试");
+			ExerciseDetailActivity3.this.finish();
+
+		}
+
+	}
+
+	/**
+	 * 接受页面button调用
+	 * 
+	 * @param source
+	 */
+	public void clickHandler(View source) {
+
+		switch (source.getId()) {
+		case R.id.goBack:
+			goBack();
+			break;
+
+		case R.id.mapOrPic:
+			if (mMapView.getVisibility() == View.VISIBLE) {
+				mAbSlidingPlayView.setVisibility(View.VISIBLE);
+				mMapView.setVisibility(View.GONE);
+			} else {
+				mMapView.setVisibility(View.VISIBLE);
+				mAbSlidingPlayView.setVisibility(View.GONE);
+			}
+			break;
+		case R.id.shareButton: // 点击分享按钮
+			showShare();
+			break;
+		case R.id.applyArea: // 点击报名事件
+			applyClick();
+			break;
+		case R.id.discussButton:
+			Intent i = new Intent(ExerciseDetailActivity3.this,
+					AddActivityCommentActivity.class);
+			i.putExtra("id", exerciseId);
+			i.putExtra("comments", commentsString);
+			i.putExtra("name", activityNameString);
+			startActivityForResult(i, 0);
+			overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * 退出页面
+	 */
+	private void goBack() {
+		ExerciseDetailActivity3.this.finish();
+		overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+	}
+
+	/**
+	 * 显示报名的对话框
+	 */
+	private void applyClick() {
+
+		Intent i = new Intent(ExerciseDetailActivity3.this,
+				ApplyAcitivity.class);
+		i.putExtra("activityData", activityData);
+		startActivity(i);
+		overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		// 退出时销毁定位
+		mMapView.onDestroy();
+	}
+
+	@Override
+	public void onStart() {
+
+		super.onStart();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		// 在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
+		mMapView.onResume();
+		removeProgressDialog();
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		// 在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
+		mMapView.onPause();
+	}
+
+	private void showShare() {
+
+		ShareSDK.initSDK(this);
+		OnekeyShare oks = new OnekeyShare();
+		oks.setSilent(true); // 隐藏编辑页面
+		// 关闭sso授权
+		oks.disableSSOWhenAuthorize();
+		// 分享时Notification的图标和文字
+		oks.setNotification(R.drawable.ic_launcher,
+				getString(R.string.app_name));
+		// title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+		oks.setTitle(getString(R.string.share));
+		// text是分享文本，所有平台都需要这个字段
+		oks.setText(exerciseDetail.getText().toString());
+		// imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+		oks.setImagePath("");// 确保SDcard下面存在此张图片
+		// url仅在微信（包括好友和朋友圈）中使用
+		oks.setUrl("http://sharesdk.cn");
+		// 启动分享GUI
+		oks.show(this);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (resultCode == RESULT_OK) {
+
+			switch (requestCode) {
+			case 0:
+				String discussList = data.getStringExtra("discussList");
+				try {
+					JSONArray dataArray = new JSONArray(discussList);
+					commentsString = dataArray.toString();
+					if (dataArray.length() > discussValueList.size()) {
+						for (int i = discussValueList.size(); i < dataArray
+								.length(); i++) {
+
+							JSONObject jo = dataArray.getJSONObject(i);
+							ContentValues v1 = new ContentValues();
+							v1.put("senderId", jo.getString("senderId"));
+							v1.put("userName", jo.getString("senderName"));
+							v1.put("discussContent", jo.getString("content"));
+							v1.put("avater", jo.getString("senderHeadUrl"));
+							v1.put("discussTime", jo.getString("discussTime")
+									.substring(0, 19));
+							discussValueList.add(v1);
+						}
+						discussAdapter.notifyDataSetChanged();
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+
+			default:
+				break;
+			}
+
+		}
+
+	}
 }

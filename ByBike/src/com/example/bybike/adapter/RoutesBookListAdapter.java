@@ -159,6 +159,7 @@ public class RoutesBookListAdapter extends BaseAdapter {
 		holder.collectCount.setText((String)obj.get("collectCount"));
 		holder.userNickName.setText((String)obj.get("userName"));
 		holder.routeAddress.setText((String)obj.get("kilometers") + "km "+ (String)obj.get("routeAddress"));
+		holder.routeDescription.setText((String)obj.get("roadContent"));
 		return convertView;
 	}
 
@@ -172,8 +173,23 @@ public class RoutesBookListAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(TAG, String.valueOf(position));
-			v.setSelected(true);
+		    
+		    final Map<String, Object> obj = (Map<String, Object>) mData
+                    .get(position);
+            int likeCount = Integer.valueOf((String)obj.get("likeCount"));
+            if(v.isSelected()){
+                v.setSelected(false);
+                likeCount --;
+                if(likeCount < 0)
+                    likeCount = 0;
+                
+            }else{
+                likeCount ++;
+                v.setSelected(true);
+            }
+            obj.put("likeCount", String.valueOf(likeCount));
+            TextView likeCountText = (TextView)v.findViewById(R.id.likeCount);
+            likeCountText.setText(String.valueOf(likeCount));
 		}
 	}
 
@@ -187,8 +203,22 @@ public class RoutesBookListAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(TAG, String.valueOf(position));
-			v.setSelected(true);
+		    final Map<String, Object> obj = (Map<String, Object>) mData
+                    .get(position);
+            int collectCount = Integer.valueOf((String)obj.get("collectCount"));
+            if(v.isSelected()){
+                v.setSelected(false);
+                collectCount --;
+                if(collectCount < 0)
+                    collectCount = 0;
+                
+            }else{
+                collectCount ++;
+                v.setSelected(true);
+            }
+            obj.put("collectCount", String.valueOf(collectCount));
+            TextView collectCountText = (TextView)v.findViewById(R.id.collectCount);
+            collectCountText.setText(String.valueOf(collectCount));
 		}
 	}
 

@@ -22,6 +22,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
 
 import com.ab.http.AbHttpUtil;
+import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
 import com.ab.view.listener.AbOnListViewListener;
 import com.ab.view.pullview.AbPullListView;
@@ -35,111 +36,114 @@ import com.example.bybike.util.SharedPreferencesUtil;
 
 public class RoutesBookMainFragment extends Fragment {
 
-	// http请求帮助类
-	private AbHttpUtil mAbHttpUtil = null;
+    // http请求帮助类
+    private AbHttpUtil mAbHttpUtil = null;
 
-	private NewMainActivity mActivity = null;
-	private List<Map<String, Object>> list = null;
-	private List<Map<String, Object>> newList = null;
-	private AbPullListView mAbPullListView = null;
-	private RoutesBookListAdapter myListViewAdapter = null;
+    private NewMainActivity mActivity = null;
+    private List<Map<String, Object>> list = null;
+    private List<Map<String, Object>> newList = null;
+    private AbPullListView mAbPullListView = null;
+    private RoutesBookListAdapter myListViewAdapter = null;
 
-	Button orderByTime;
-	Button orderByDistance;
-	Button orderByArea;
-	Button orderByHot;
+    Button orderByTime;
+    Button orderByDistance;
+    Button orderByArea;
+    Button orderByHot;
 
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_routes_list, null);
+    private int pageNo = 1;
+    private int pageSize = 10;
 
-		AbTitleBar mAbTitleBar = mActivity.getTitleBar();
-		mAbTitleBar.setVisibility(View.GONE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_routes_list, null);
 
-		// 获取Http工具类
-		mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
-		mAbHttpUtil.setDebug(false);
+        AbTitleBar mAbTitleBar = mActivity.getTitleBar();
+        mAbTitleBar.setVisibility(View.GONE);
 
-		// 获取ListView对象
-		mAbPullListView = (AbPullListView) view.findViewById(R.id.mListView);
+        // 获取Http工具类
+        mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
+        mAbHttpUtil.setDebug(false);
 
-		// 添加header
-		View header = mActivity.mInflater.inflate(R.layout.route_list_header,
-				null);
-		mAbPullListView.addHeaderView(header);
+        // 获取ListView对象
+        mAbPullListView = (AbPullListView) view.findViewById(R.id.mListView);
 
-		// 打开关闭下拉刷新加载更多功能
-		mAbPullListView.setPullRefreshEnable(true);
-		mAbPullListView.setPullLoadEnable(false);
+        // 添加header
+        View header = mActivity.mInflater.inflate(R.layout.route_list_header, null);
+        mAbPullListView.addHeaderView(header);
 
-		// 设置进度条的样式
-		mAbPullListView.getHeaderView().setHeaderProgressBarDrawable(
-				this.getResources().getDrawable(R.drawable.progress_circular));
-		mAbPullListView.getFooterView().setFooterProgressBarDrawable(
-				this.getResources().getDrawable(R.drawable.progress_circular));
+        // 打开关闭下拉刷新加载更多功能
+        mAbPullListView.setPullRefreshEnable(true);
+        mAbPullListView.setPullLoadEnable(true);
 
-		// ListView数据
-		list = new ArrayList<Map<String, Object>>();
-		// 使用自定义的Adapter
-		myListViewAdapter = new RoutesBookListAdapter(mActivity, list);
-		mAbPullListView.setAdapter(myListViewAdapter);
-		// item被点击事件
-		mAbPullListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+        // 设置进度条的样式
+        mAbPullListView.getHeaderView().setHeaderProgressBarDrawable(this.getResources().getDrawable(R.drawable.progress_circular));
+        mAbPullListView.getFooterView().setFooterProgressBarDrawable(this.getResources().getDrawable(R.drawable.progress_circular));
 
-				Intent i = new Intent();
-				i.setClass(mActivity, RouteDetailActivity.class);
-				i.putExtra("id", (String)list.get(position-2).get("id"));
-				startActivity(i);
-				mActivity.overridePendingTransition(R.anim.fragment_in,
-						R.anim.fragment_out);
-			}
-		});
+        // ListView数据
+        list = new ArrayList<Map<String, Object>>();
+        // 使用自定义的Adapter
+        myListViewAdapter = new RoutesBookListAdapter(mActivity, list);
+        mAbPullListView.setAdapter(myListViewAdapter);
+        // item被点击事件
+        mAbPullListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-		mAbPullListView.setAbOnListViewListener(new AbOnListViewListener() {
+                Intent i = new Intent();
+                i.setClass(mActivity, RouteDetailActivity.class);
+                i.putExtra("id", (String) list.get(position - 2).get("id"));
+                startActivity(i);
+                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+            }
+        });
 
-			@Override
-			public void onRefresh() {
-				refreshOrLoadMore = true;
-				queryRouteBookList();
-			}
+        mAbPullListView.setAbOnListViewListener(new AbOnListViewListener() {
 
-			@Override
-			public void onLoadMore() {
-				refreshOrLoadMore = false;
-				queryRouteBookList();
-			}
+            @Override
+            public void onRefresh() {
+                pageNo = 1;
+                refreshOrLoadMore = true;
+                queryRouteBookList();
+            }
 
-		});
+            @Override
+            public void onLoadMore() {
+                pageNo ++;
+                refreshOrLoadMore = false;
+                queryRouteBookList();
+            }
 
-		orderByTime = (Button) view.findViewById(R.id.orderByTime);
-		orderByDistance = (Button) view.findViewById(R.id.orderByDistance);
-		orderByArea = (Button) view.findViewById(R.id.orderByArea);
-		orderByHot = (Button) view.findViewById(R.id.orderByHot);
-		orderByTime.setSelected(true);
-		
-		queryRouteBookList();
-		return view;
-	}
+        });
 
-	boolean refreshOrLoadMore = true;
-	private void queryRouteBookList(){
-	    if (!NetUtil.isConnnected(mActivity)) {
-	        mActivity.showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+        orderByTime = (Button) view.findViewById(R.id.orderByTime);
+        orderByDistance = (Button) view.findViewById(R.id.orderByDistance);
+        orderByArea = (Button) view.findViewById(R.id.orderByArea);
+        orderByHot = (Button) view.findViewById(R.id.orderByHot);
+        orderByTime.setSelected(true);
+
+        queryRouteBookList();
+        return view;
+    }
+
+    boolean refreshOrLoadMore = true;
+
+    private void queryRouteBookList() {
+        if (!NetUtil.isConnnected(mActivity)) {
+            mActivity.showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
             return;
         }
         String urlString = Constant.serverUrl + Constant.routeListUrl;
         urlString += ";jsessionid=";
         urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
+        AbRequestParams p = new AbRequestParams();
+        p.put("pageNo", String.valueOf(pageNo));
+        p.put("pageSize", String.valueOf(pageSize));
         // 绑定参数
-        mAbHttpUtil.get(urlString, new AbStringHttpResponseListener() {
+        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
             // 获取数据成功会调用这里
             @Override
             public void onSuccess(int statusCode, String content) {
-                
+
                 processResult(content);
             };
 
@@ -161,67 +165,82 @@ public class RoutesBookMainFragment extends Fragment {
             };
 
         });
-	}
-	
-	private void processResult(String resultString){
-	    try {
+    }
+
+    private void processResult(String resultString) {
+        try {
             JSONObject resultObj = new JSONObject(resultString);
             String code = resultObj.getString("code");
-            if("0".equals(code)){
-                
-                list.clear();
+            if ("0".equals(code)) {
+
+                newList = new ArrayList<Map<String, Object>>();
                 JSONArray dataArray = resultObj.getJSONArray("data");
-                for(int i = 0; i < dataArray.length(); i ++){
+                for (int i = 0; i < dataArray.length(); i++) {
                     JSONObject jo = dataArray.getJSONObject(i);
-                            
+
                     Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("id", jo.getString("id"));
-                    map.put("routePic", Constant.serverUrl + jo.getString("routeImgUrl"));
-                    map.put("title", jo.getString("name"));
-                    map.put("routeAddress", jo.getString("wayLine"));
-//                    map.put("exerciseTime", jo.getString("activityDate"));
-                    map.put("lickCount", jo.getString("likeCount"));
-                    map.put("talkCount", jo.getString("commentCount"));
+                    map.put("id", jo.getString("roadId"));
+                    map.put("routePic", "http://img3.imgtn.bdimg.com/it/u=3823186829,2727347960&fm=21&gp=0.jpg");
+                    for(int index = 1; index <= 8; index ++){
+                        String tmpIndex = "roadContentImg" + String.valueOf(index);
+                        String imgUrl = jo.getString(tmpIndex);
+                        if(null!=imgUrl && !"".equals(imgUrl)){
+                            map.put("routePic", Constant.serverUrl + jo.getString("roadContentImg1"));
+                            break;
+                        }
+                    }
+                    map.put("title", jo.getString("roadTitle"));
+                    map.put("routeAddress", jo.getString("roadPlace"));
+                    map.put("exerciseTime", jo.getString("roadStartTime"));
+                    map.put("likeCount", jo.getString("likeCount"));
+                    map.put("commentCount", jo.getString("commentCount"));
                     map.put("collectCount", jo.getString("collectCount"));
-                    map.put("kilometers", jo.getString("kilometers"));
-                    
-                    JSONObject userObj = jo.getJSONObject("user");
-                    map.put("userId", userObj.getString("id"));
-                    map.put("userHeadPicUrl", Constant.serverUrl + userObj.getString("headUrl"));
-                    map.put("userName", userObj.getString("name"));
-                    
-                    list.add(map);
+                    map.put("kilometers", jo.getString("totalDistance"));
+                    map.put("roadContent", jo.getString("roadContent"));
+
+//                    map.put("userId", userObj.getString("id"));
+                    map.put("userHeadPicUrl", Constant.serverUrl + jo.getString("roadCreatorImg"));
+                    map.put("userName", jo.getString("roadCreatorName"));
+
+                    newList.add(map);
                 }
-                
-                myListViewAdapter.notifyDataSetChanged();
+
+                if(refreshOrLoadMore){
+                    list.clear();
+                }
+                if(newList != null && newList.size() > 0){
+                    list.addAll(newList);
+                }
                 if(refreshOrLoadMore){
                     mAbPullListView.stopRefresh();
                 }else{
                     mAbPullListView.stopLoadMore();
                 }
-                
-            }else{
+                newList.clear();
+                myListViewAdapter.notifyDataSetChanged();
+
+            } else {
                 mActivity.showToast("查询失败，请稍后重试");
             }
-            
+
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             mActivity.showToast("查询失败，请稍后重试");
         }
-	}
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		mActivity = (NewMainActivity) activity;
-	}
+    }
 
-	public void showTitleBar() {
-		// TODO Auto-generated method stub
-		if (mActivity != null) {
-			// mActivity.getTitleBar().setVisibility(View.GONE);
-		}
-	}
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = (NewMainActivity) activity;
+    }
+
+    public void showTitleBar() {
+        // TODO Auto-generated method stub
+        if (mActivity != null) {
+            // mActivity.getTitleBar().setVisibility(View.GONE);
+        }
+    }
 
 }

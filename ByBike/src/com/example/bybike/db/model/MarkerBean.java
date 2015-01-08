@@ -171,6 +171,17 @@ public class MarkerBean {
 	@Column(name = "marker_type")
 	private String markerType;
 
+	@Column(name = "operating_type")
+	private String operatingType;
+	
+	public String getOperatingType() {
+		return operatingType;
+	}
+
+	public void setOperatingType(String operatingType) {
+		this.operatingType = operatingType;
+	}
+
 	@Column(name = "longitude")
 	private double longitude;
 

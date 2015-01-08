@@ -418,6 +418,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
+            android:onClick="clickHandler"
             android:background="@drawable/discuss_button" />
     </RelativeLayout>
 

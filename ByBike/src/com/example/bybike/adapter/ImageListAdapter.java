@@ -157,11 +157,11 @@ public class ImageListAdapter extends BaseAdapter {
 		// 图片的下载
 		mAbImageDownloader.display(holder.exercisePic, imageUrl);
 		holder.collectCount.setText((String)obj.get("collectCount"));
-//		holder.likeCount.setText((String)obj.get("likeCount"));
+		holder.likeCount.setText((String)obj.get("likeCount"));
 		holder.talkCount.setText((String)obj.get("talkCount"));
 		holder.exerciseAddress.setText((String)obj.get("exerciseAddress"));
 		holder.exerciseTitle.setText((String)obj.get("exerciseTitle"));
-//		holder.exerciseTime.setText((String)obj.get("exerciseTime"));
+		holder.exerciseTime.setText((String)obj.get("exerciseTime"));
 		return convertView;
 	}
 
@@ -175,11 +175,23 @@ public class ImageListAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
+			
+			final Map<String, Object> obj = (Map<String, Object>) mData
+					.get(position);
+			int likeCount = Integer.valueOf((String)obj.get("likeCount"));
 		    if(v.isSelected()){
                 v.setSelected(false);
+                likeCount --;
+                if(likeCount < 0)
+                	likeCount = 0;
+                
             }else{
+            	likeCount ++;
                 v.setSelected(true);
             }
+		    obj.put("likeCount", String.valueOf(likeCount));
+		    TextView likeCountText = (TextView)v.findViewById(R.id.likeCount);
+		    likeCountText.setText(String.valueOf(likeCount));
 		}
 	}
 
@@ -193,11 +205,22 @@ public class ImageListAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-		    if(v.isSelected()){
-		        v.setSelected(false);
-		    }else{
-		        v.setSelected(true);
-		    }
+		    final Map<String, Object> obj = (Map<String, Object>) mData
+                    .get(position);
+            int collectCount = Integer.valueOf((String)obj.get("collectCount"));
+            if(v.isSelected()){
+                v.setSelected(false);
+                collectCount --;
+                if(collectCount < 0)
+                    collectCount = 0;
+                
+            }else{
+                collectCount ++;
+                v.setSelected(true);
+            }
+            obj.put("collectCount", String.valueOf(collectCount));
+            TextView collectCountText = (TextView)v.findViewById(R.id.collectCount);
+            collectCountText.setText(String.valueOf(collectCount));
 		}
 	}
 

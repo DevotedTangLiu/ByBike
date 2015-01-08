@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#E6E6E6"
+    android:orientation="vertical" >
+
+    <!-- 标题栏区域 -->
+    <RelativeLayout
+        android:id="@+id/titleBar"
+        android:layout_width="fill_parent"
+        android:layout_height="51dp"
+        android:background="@drawable/title_bar" >
+
+        <RelativeLayout
+            android:id="@+id/goBack"
+            android:layout_width="80dp"
+            android:layout_height="fill_parent"
+            android:onClick="clickHandler"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_width="17dp"
+                android:layout_height="23dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:background="@drawable/back_button" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="#4A4A4A"
+            android:textSize="20sp"
+            android:textStyle="bold" >
+        </TextView>
+        
+    </RelativeLayout>
+
+    <!-- 评论区域 -->
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#C5C5C5" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="43dp"
+        android:background="#F5F5F5" >
+
+        <TextView
+            android:id="@+id/discussCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17dp"
+            android:text="评论 (0)"
+            android:textColor="#BBBBBB"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/discussButton"
+            android:layout_width="75dp"
+            android:layout_height="28dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/discuss_button" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/devider" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/white" />
+
+    <ListView
+        android:id="@+id/discussList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="50dp"
+        android:background="#F5F5F5"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none" >
+    </ListView>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="54dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="-54dp"
+        android:background="@drawable/input_backgournd">
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginRight="75dp"
+            android:background="@drawable/input_background_3">
+            <EditText
+                android:id="@+id/comment"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:background="@null"
+                android:hint="说点什么..."
+                android:textColor="#DCDCDC"
+                android:textColorHint="#DCDCDC"
+                />
+        </LinearLayout>
+        
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="65dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="-72dp"
+            android:onClick="clickHandler"
+            android:background="@drawable/send_button_selector">
+        </Button>
+        
+    </LinearLayout>
+
+</LinearLayout>

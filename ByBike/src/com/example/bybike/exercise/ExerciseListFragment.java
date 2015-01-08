@@ -48,6 +48,9 @@ public class ExerciseListFragment extends Fragment {
 	Button orderByCollectCounts;
 	Button orderByDistance;
 	
+	private int pageNo = 1;
+	private int pageSize = 10;
+	
 	 // http请求帮助类
     private AbHttpUtil mAbHttpUtil = null;
 
@@ -69,7 +72,7 @@ public class ExerciseListFragment extends Fragment {
 
 		// 打开关闭下拉刷新加载更多功能
 		mAbPullListView.setPullRefreshEnable(true);
-		mAbPullListView.setPullLoadEnable(false);
+		mAbPullListView.setPullLoadEnable(true);
 
 		// 设置进度条的样式
 		mAbPullListView.getHeaderView().setHeaderProgressBarDrawable(
@@ -107,12 +110,14 @@ public class ExerciseListFragment extends Fragment {
 
 			@Override
 			public void onRefresh() {
+				pageNo = 1;
 			    queryExerciseList();
 			    refreshOrLoadMore = true;
 			}
 
 			@Override
 			public void onLoadMore() {
+				pageNo ++ ;
 			    queryExerciseList();
 			    refreshOrLoadMore = false;
 			}
@@ -162,8 +167,11 @@ public class ExerciseListFragment extends Fragment {
         String urlString = Constant.serverUrl + Constant.exerciseListUrl;
         urlString += ";jsessionid=";
         urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
+        AbRequestParams p = new AbRequestParams();
+		p.put("pageNo", String.valueOf(pageNo));
+		p.put("pageSize", String.valueOf(pageSize));
         // 绑定参数
-        mAbHttpUtil.get(urlString, new AbStringHttpResponseListener() {
+        mAbHttpUtil.get(urlString, p, new AbStringHttpResponseListener() {
 
             // 获取数据成功会调用这里
             @Override
@@ -198,31 +206,41 @@ public class ExerciseListFragment extends Fragment {
             String code = resultObj.getString("code");
             if("0".equals(code)){
                 
-                list.clear();
+            	newList = new ArrayList<Map<String, Object>>();
                 JSONArray dataArray = resultObj.getJSONArray("data");
                 for(int i = 0; i < dataArray.length(); i ++){
                     JSONObject jo = dataArray.getJSONObject(i);
-                    JSONObject ridingBookObj = jo.getJSONObject("ridingBook");
-                            
                     Map<String, Object> map = new HashMap<String, Object>();
+                    
                     map.put("id", jo.getString("id"));
-                    map.put("exercisePic", Constant.serverUrl + jo.getString("img1Url"));
+                    map.put("exercisePic", "http://img3.imgtn.bdimg.com/it/u=3823186829,2727347960&fm=21&gp=0.jpg");
+                    String imgUrl = jo.getString("activityImgUrl");
+                    if(null != imgUrl && !"".equals(imgUrl.trim())){
+                        map.put("exercisePic", Constant.serverUrl + imgUrl);
+                    }
                     map.put("exerciseTitle", jo.getString("title"));
                     map.put("exerciseAddress", jo.getString("wayLine"));
-//                    map.put("exerciseTime", jo.getString("activityDate"));
-//                    map.put("lickCount", ridingBookObj.getString("likeCount"));
+                    map.put("exerciseTime", jo.getString("activityStartDate") + "-" + jo.getString("activityEndDate"));
+                    map.put("likeCount", jo.getString("likeCount"));
                     map.put("talkCount", jo.getString("commentCount"));
                     map.put("collectCount", jo.getString("collectCount"));
                     
-                    list.add(map);
+                    newList.add(map);
                 }
                 
-                myListViewAdapter.notifyDataSetChanged();
+                if(refreshOrLoadMore){
+                	list.clear();
+                }
+                if(newList != null && newList.size() > 0){
+                	list.addAll(newList);
+                }
                 if(refreshOrLoadMore){
                     mAbPullListView.stopRefresh();
                 }else{
                     mAbPullListView.stopLoadMore();
                 }
+                newList.clear();
+                myListViewAdapter.notifyDataSetChanged();
                 
             }else{
                 mActivity.showToast("查询失败，请稍后重试");
