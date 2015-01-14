@@ -34,7 +34,7 @@
                 android:layout_marginRight="40dp"
                 android:layout_gravity="center_vertical"
                 android:background="@null"
-                android:hint="标记、活动、路书、骑友"
+                android:hint=""
                 android:textColor="#BBBBBB"
                 android:textColorHint="#BBBBBB"
                 android:textSize="13sp" 

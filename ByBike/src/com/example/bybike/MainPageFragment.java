@@ -97,6 +97,7 @@ public class MainPageFragment extends Fragment {
 
 	private boolean firstLocated = true;
 	private boolean showAllMarker = true;
+	private boolean showPublicMarker = true;
 	/**
 	 * 筛选按钮
 	 */
@@ -224,7 +225,16 @@ public class MainPageFragment extends Fragment {
 						publicItemBackground
 								.setBackgroundResource(R.drawable.slide_button_bak_nor);
 					}
-					
+					if(showPublicMarker){
+						
+						collectItemsButton1.setVisibility(View.INVISIBLE);
+						collectItemsButton2.setVisibility(View.VISIBLE);
+						collectItemBackground.setBackgroundResource(R.drawable.slide_button_bak_sel);
+					}else{
+						collectItemsButton1.setVisibility(View.VISIBLE);
+						collectItemsButton2.setVisibility(View.INVISIBLE);
+						collectItemBackground.setBackgroundResource(R.drawable.slide_button_bak_nor);
+					}
 					
 					chooseDialog.setContentView(view);
 					chooseDialog.show();
@@ -385,12 +395,7 @@ public class MainPageFragment extends Fragment {
 				publicItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_nor);
 				for (Marker m : markerList) {
-					if ("public".equalsIgnoreCase(m.getExtraInfo().getString(
-							"opertingType"))) {
-						m.setVisible(true);
-					} else {
-						m.setVisible(false);
-					}
+					m.setVisible(false);
 				}
 				showAllMarker = false;
 				break;
@@ -399,12 +404,27 @@ public class MainPageFragment extends Fragment {
 				collectItemsButton2.setVisibility(View.VISIBLE);
 				collectItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_sel);
+				
+				for (Marker m : markerList) {
+					if ("public".equalsIgnoreCase(m.getExtraInfo().getString(
+							"opertingType"))) {
+						m.setVisible(true);
+					}
+				}
+				showPublicMarker = true;
 				break;
 			case R.id.collectItemsButton2:
 				collectItemsButton2.setVisibility(View.INVISIBLE);
 				collectItemsButton1.setVisibility(View.VISIBLE);
 				collectItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_nor);
+				for (Marker m : markerList) {
+					if ("public".equalsIgnoreCase(m.getExtraInfo().getString(
+							"opertingType"))) {
+						m.setVisible(false);
+					}
+				}
+				showPublicMarker = false;
 				break;
 			default:
 				break;

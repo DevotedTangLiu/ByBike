@@ -231,6 +231,17 @@ public class MarkerBean {
 	@Column(name = "collect_count")
 	private String collectCount;
 	
+	@Column(name = "comment_count")
+	private String commentCount;
+	
+	public String getCommentCount() {
+		return commentCount;
+	}
+
+	public void setCommentCount(String commentCount) {
+		this.commentCount = commentCount;
+	}
+
 	@Column(name = "description")
 	private String description;
 

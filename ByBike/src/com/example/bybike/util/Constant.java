@@ -130,6 +130,10 @@ public class Constant {
 	/**
 	 * 活动报名Url
 	 */
-	public static final String applyForActivityUrl = "/bybike_ser/m/activity/saveActivityUser";
+	public static final String applyForActivityUrl = "/bybike_ser/m/activity/joinTheActivity";
+	/**
+	 * 添加友好点
+	 */
+	public static final String addMarkerUrl = "/bybike_ser/m/marker/save";
 	
 }

@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ public class MarkerDetailActivity extends AbActivity {
 
 	ImageView markerPic;
 	ImageView markerIcon;
+	ImageView publicIcon;
 	TextView markerName;
 	TextView phoneNumber;
 	TextView markerAddress;
@@ -52,8 +54,11 @@ public class MarkerDetailActivity extends AbActivity {
 	TextView likeCount;
 	TextView collectCount;
 	TextView discussCount;
+	TextView markerPicCount;
 
-	private String[] markerPics = new String[5];
+	
+//	private String[] markerPics = new String[5];
+	private ArrayList<String>markerPics = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,7 @@ public class MarkerDetailActivity extends AbActivity {
 
 		markerPic = (ImageView) findViewById(R.id.markerPic);
 		markerIcon = (ImageView) findViewById(R.id.markerIcon);
+		publicIcon = (ImageView) findViewById(R.id.publicIcon);
 		markerName = (TextView) findViewById(R.id.markerName);
 		phoneNumber = (TextView) findViewById(R.id.phoneNumber);
 		markerAddress = (TextView) findViewById(R.id.markerAddress);
@@ -76,7 +82,8 @@ public class MarkerDetailActivity extends AbActivity {
 		likeCount = (TextView) findViewById(R.id.likeCount);
 		collectCount = (TextView) findViewById(R.id.collectCount);
 		discussCount = (TextView) findViewById(R.id.discussCount);
-
+		markerPicCount = (TextView) findViewById(R.id.markerPicCount);
+		
 		markerId = getIntent().getStringExtra("id");
 
 		discussList = (ListView) findViewById(R.id.discussList);
@@ -84,6 +91,18 @@ public class MarkerDetailActivity extends AbActivity {
 		discussAdapter = new ExerciseDiscussListAdapter(
 				MarkerDetailActivity.this, discussValueList);
 		discussList.setAdapter(discussAdapter);
+		
+		markerPic.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(MarkerDetailActivity.this, ViewPicturesActivity.class);
+				i.putStringArrayListExtra("pictureUrls", markerPics);
+				startActivity(i);
+				overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+			}
+		});
 
 		queryDetail();
 		queryComments();
@@ -267,20 +286,26 @@ public class MarkerDetailActivity extends AbActivity {
 							.setImageResource(R.drawable.marker_icon_others_2);
 				}
 
+				markerPics.clear();
 				for (int i = 1; i <= 5; i++) {
 					String index = "markerContentImg" + String.valueOf(i)
 							+ "Url";
 					String url = markerObj.getString(index);
-					if (null != url) {
-						markerPics[i - 1] = url;
+					if (null != url && !"".equals(url)) {
+						markerPics.add(url);
 					}
 				}
-				for (String url : markerPics) {
-					if (!"".equals(url)) {
-						mAbImageDownloader.display(markerPic,
-								Constant.serverUrl + url);
-						break;
-					}
+				if(markerPics.size() > 0){
+					mAbImageDownloader.display(markerPic,
+							Constant.serverUrl + markerPics.get(0));
+				}
+				markerPicCount.setText(String.valueOf(markerPics.size()));
+				
+				String operatingType = markerTypeObj.getString("operatingType");
+				if("Public".equalsIgnoreCase(operatingType)){
+					publicIcon.setVisibility(View.VISIBLE);
+				}else{
+					publicIcon.setVisibility(View.INVISIBLE);
 				}
 
 			} else {

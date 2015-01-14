@@ -37,7 +37,7 @@
             android:textSize="20sp"
             android:textStyle="bold" >
         </TextView>
-        
+
         <Button
             android:id="@+id/goToMap"
             android:layout_width="37dp"
@@ -46,7 +46,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="17dp"
             android:background="@drawable/go_to_may_button"
-            android:onClick="clickHandler"/>
+            android:onClick="clickHandler" />
     </RelativeLayout>
 
     <!-- 详情区域 -->
@@ -72,7 +72,6 @@
                 android:background="@drawable/marker_detail_pics_background"
                 android:scaleType="matrix" />
 
-
             <ImageView
                 android:id="@+id/markerPic"
                 android:layout_width="92dp"
@@ -80,6 +79,23 @@
                 android:layout_marginLeft="17dp"
                 android:layout_marginTop="25dp"
                 android:scaleType="centerCrop" />
+            
+            <RelativeLayout
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/marker_pic_count"
+                android:layout_marginLeft="97dp"
+                android:layout_marginTop="20dp">
+                
+                <TextView
+                    android:id="@+id/markerPicCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:text="0"/>
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/markerIcon"
@@ -91,21 +107,35 @@
                 android:src="@drawable/marker_icon_bikestore_2" />
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/markerName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="17dp"
-            android:layout_marginTop="19dp"
-            android:textColor="#4A4A4A"
-            android:textSize="18sp" />
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/markerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="17dp"
+                android:layout_marginTop="19dp"
+                android:textColor="#4A4A4A"
+                android:textSize="18sp" />
+            
+            <ImageView
+                android:id="@+id/publicIcon"
+                android:layout_height="14dp"
+                android:layout_width="50dp"
+                android:layout_marginLeft="5dp"
+                 android:layout_marginTop="23dp"
+                android:background="@drawable/marker_public_icon"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/phoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="17dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:textColor="#646464"
             android:textSize="12sp" />
 
@@ -114,7 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="17dp"
-            android:layout_marginTop="11dp"
+            android:layout_marginTop="10dp"
             android:singleLine="true"
             android:textColor="#646464"
             android:textSize="12sp" />
@@ -275,8 +305,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:onClick="clickHandler"
-            android:background="@drawable/discuss_button" />
+            android:background="@drawable/discuss_button"
+            android:onClick="clickHandler" />
     </RelativeLayout>
 
     <View

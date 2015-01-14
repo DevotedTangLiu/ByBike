@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -30,7 +27,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.ab.bitmap.AbImageDownloader;
@@ -42,6 +38,7 @@ import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseListAdapter2;
 import com.example.bybike.adapter.MarkerListAdapter;
 import com.example.bybike.adapter.RoutesBookListAdapter2;
+import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.exercise.ExerciseDetailActivity2;
 import com.example.bybike.friends.FriendsActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
@@ -78,7 +75,7 @@ public class UserMainPageFragment extends Fragment {
 	private RoutesBookListAdapter2 myRouteBookListAdapter = null;
 	private AbPullListView myRouteBookListView = null;
 
-	private List<Map<String, Object>> myMarkerListData = null;
+	private List<MarkerBean> myMarkerListData = null;
 	private MarkerListAdapter myMarkerListAdapter = null;
 	private AbPullListView myMarkerListView = null;
 
@@ -224,10 +221,10 @@ public class UserMainPageFragment extends Fragment {
 		View markerHeader = mInflater.inflate(R.layout.listview_header_markers,
 				null);
 		myMarkerListView.addHeaderView(markerHeader);
-		myMarkerListData = new ArrayList<Map<String, Object>>();
+		myMarkerListData = new ArrayList<MarkerBean>();
 		for (int i = 0; i < 10; i++) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			myMarkerListData.add(map);
+			MarkerBean mb = new MarkerBean();
+			myMarkerListData.add(mb);
 		}
 		myMarkerListAdapter = new MarkerListAdapter(mActivity, myMarkerListData);
 		myMarkerListView.setAdapter(myMarkerListAdapter);

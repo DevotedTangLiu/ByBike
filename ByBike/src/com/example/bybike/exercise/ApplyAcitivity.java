@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +22,7 @@ import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
 import com.example.bybike.R;
+import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -129,6 +131,15 @@ public class ApplyAcitivity extends AbActivity {
             needRealName = activityObj.getString("needRealName");
             needIdentification = activityObj.getString("needIdentification");
             
+            if("true".equalsIgnoreCase(needRealName)){
+            	realNameText.setHint("真实姓名（必填）");
+            }
+            if("true".equalsIgnoreCase(needPhone)){
+            	phoneNumberText.setHint("联系电话（必填）");
+            }
+            if("true".equals(needIdentification)){
+            	cardNumberText.setHint("身份证号（必填）");
+            }
             activityId = activityObj.getString("id");
         
         } catch (JSONException e) {
@@ -222,6 +233,21 @@ public class ApplyAcitivity extends AbActivity {
                         
                     }
                 });
+            }else if("3".equals(code)){
+            	
+            	showDialog("温馨提示","报名失败：\n" + resultObject.getString("message"), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						Intent i = new Intent(ApplyAcitivity.this, LoginActivity.class);
+						startActivity(i);
+						overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+						
+						dialog.dismiss();
+					}
+				});
+            	
             }else{
                 showDialog("温馨提示", "报名失败：\n" + resultObject.getString("message") + "\n请稍后重试");
             }

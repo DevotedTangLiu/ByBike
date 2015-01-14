@@ -7,18 +7,15 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ab.bitmap.AbImageDownloader;
 import com.example.bybike.R;
-import com.example.bybike.adapter.ImageListAdapter.OnCollectButtonClick;
-import com.example.bybike.adapter.ImageListAdapter.OnLikeButtonClick;
-import com.example.bybike.adapter.ImageListAdapter.OnTalkButtonClick;
+import com.example.bybike.db.model.MarkerBean;
 
 /**
  * 路数列表的Adapter
@@ -35,7 +32,7 @@ public class MarkerListAdapter extends BaseAdapter {
 	// xml转View对象
 	private LayoutInflater mInflater;
 	// 列表展现的数据
-	private List mData;
+	private List<MarkerBean> mData;
 
 	/**
 	 * 构造方法
@@ -43,7 +40,7 @@ public class MarkerListAdapter extends BaseAdapter {
 	 * @param context
 	 * @param list
 	 */
-	public MarkerListAdapter(Context context, List list) {
+	public MarkerListAdapter(Context context, List<MarkerBean> list) {
 
 		this.mContext = context;
 		this.mData = list;
@@ -94,6 +91,12 @@ public class MarkerListAdapter extends BaseAdapter {
 					.findViewById(R.id.collectButton);
 			holder.talkButton = (RelativeLayout) convertView
 					.findViewById(R.id.talkButton);
+			holder.likeCount = (TextView) convertView
+					.findViewById(R.id.likeCount);
+			holder.talkCount = (TextView) convertView
+					.findViewById(R.id.talkCount);
+			holder.collectCount = (TextView) convertView
+					.findViewById(R.id.collectCount);
 
 			likeListener = new OnLikeButtonClick();
 			holder.likeButton.setOnClickListener(likeListener);
@@ -116,9 +119,50 @@ public class MarkerListAdapter extends BaseAdapter {
 		collectListener.setPosition(position);
 		talkListener.setPosition(position);
 		// 获取该行的数据
-		final Map<String, Object> obj = (Map<String, Object>) mData
-				.get(position);
-		// 图片的下载
+		MarkerBean mb = mData.get(position);
+		holder.collectCount.setText(mb.getCollectCount());
+		holder.likeCount.setText(mb.getLikeCount());
+		holder.talkCount.setText(mb.getCommentCount());
+		holder.markerName.setText(mb.getMarkerName());
+		holder.markerAddress.setText(mb.getAddress());
+		String markerType = mb.getMarkerType();
+		if ("RantCar".equalsIgnoreCase(markerType)) {
+			holder.markerIconPic
+					.setImageResource(R.drawable.marker_icon_rentbike);
+			holder.markerType.setText("租车");
+		} else if ("Repair".equalsIgnoreCase(markerType)) {
+			holder.markerIconPic
+					.setImageResource(R.drawable.marker_icon_repair);
+			holder.markerType.setText("维修");
+		} else if ("FeatureSpot".equalsIgnoreCase(markerType)) {
+			holder.markerIconPic
+					.setImageResource(R.drawable.marker_icon_scenery);
+			holder.markerType.setText("景点");
+		} else if ("Catering".equalsIgnoreCase(markerType)) {
+			holder.markerIconPic.setImageResource(R.drawable.marker_icon_meals);
+			holder.markerType.setText("餐饮");
+		} else if ("Washroom".equalsIgnoreCase(markerType)) {
+			holder.markerIconPic
+					.setImageResource(R.drawable.marker_icon_washroom);
+			holder.markerType.setText("卫生间");
+		} else if ("Parking".equalsIgnoreCase(markerType)) {
+			holder.markerIconPic
+					.setImageResource(R.drawable.marker_icon_parking);
+			holder.markerType.setText("停车");
+		} else if ("Other".equalsIgnoreCase(markerType)) {
+			holder.markerIconPic
+					.setImageResource(R.drawable.marker_icon_others);
+			holder.markerType.setText("其他");
+		} else if ("CarShop".equalsIgnoreCase(markerType)) {
+			holder.markerIconPic
+					.setImageResource(R.drawable.marker_icon_bikestore);
+			holder.markerType.setText("车店");
+		} else {
+			holder.markerIconPic
+					.setImageResource(R.drawable.marker_icon_others);
+			holder.markerType.setText("其他");
+		}
+		
 		return convertView;
 	}
 
@@ -177,6 +221,9 @@ public class MarkerListAdapter extends BaseAdapter {
 		RelativeLayout likeButton;
 		RelativeLayout collectButton;
 		RelativeLayout talkButton;
+		TextView likeCount;
+		TextView talkCount;
+		TextView collectCount;
 	}
 
 }

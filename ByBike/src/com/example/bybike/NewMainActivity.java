@@ -282,6 +282,7 @@ public class NewMainActivity extends AbActivity {
 		case R.id.search:
 			Intent i = new Intent();
 			i.setClass(NewMainActivity.this, SearchActivity.class);
+			i.putExtra("currentPage", currentItem);
 			startActivity(i);
 			// overridePendingTransition(R.anim.fragment_in, 0);
 			break;

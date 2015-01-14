@@ -32,6 +32,7 @@ import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseListAdapter2;
 import com.example.bybike.adapter.MarkerListAdapter;
 import com.example.bybike.adapter.RoutesBookListAdapter2;
+import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.exercise.ExerciseDetailActivity2;
 import com.example.bybike.friends.FriendsActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
@@ -65,7 +66,7 @@ public class UserPageActivity extends AbActivity {
     private RoutesBookListAdapter2 myRouteBookListAdapter = null;
     private AbPullListView myRouteBookListView = null;
 
-    private List<Map<String, Object>> myMarkerListData = null;
+    private List<MarkerBean> myMarkerListData = null;
     private MarkerListAdapter myMarkerListAdapter = null;
     private AbPullListView myMarkerListView = null;
 
@@ -205,10 +206,10 @@ public class UserPageActivity extends AbActivity {
         View markerHeader = mInflater.inflate(R.layout.listview_header_markers,
                 null);
         myMarkerListView.addHeaderView(markerHeader);
-        myMarkerListData = new ArrayList<Map<String, Object>>();
+        myMarkerListData = new ArrayList<MarkerBean>();
         for (int i = 0; i < 10; i++) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            myMarkerListData.add(map);
+            MarkerBean mb = new MarkerBean();
+            myMarkerListData.add(mb);
         }
         myMarkerListAdapter = new MarkerListAdapter(UserPageActivity.this, myMarkerListData);
         myMarkerListView.setAdapter(myMarkerListAdapter);
