@@ -374,6 +374,11 @@ public class RidingActivity extends AbActivity {
         case R.id.chooseIcon:
             showChooseMarkerDialog();
             break;
+        case R.id.stopButton:
+        	Intent intent = new Intent(RidingActivity.this, AddRouteBookActivity.class);
+        	startActivity(intent);
+        	overridePendingTransition(R.anim.fragment_up, R.anim.fragment_down);
+        	break;
         default:
             break;
         }

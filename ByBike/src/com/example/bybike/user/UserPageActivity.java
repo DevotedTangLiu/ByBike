@@ -31,6 +31,7 @@ import com.ab.view.pullview.AbPullListView;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseListAdapter2;
 import com.example.bybike.adapter.MarkerListAdapter;
+import com.example.bybike.adapter.MarkerListAdapter2;
 import com.example.bybike.adapter.RoutesBookListAdapter2;
 import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.exercise.ExerciseDetailActivity2;
@@ -67,7 +68,7 @@ public class UserPageActivity extends AbActivity {
     private AbPullListView myRouteBookListView = null;
 
     private List<MarkerBean> myMarkerListData = null;
-    private MarkerListAdapter myMarkerListAdapter = null;
+    private MarkerListAdapter2 myMarkerListAdapter = null;
     private AbPullListView myMarkerListView = null;
 
     private ViewPager mPager;// 页卡内容
@@ -211,7 +212,7 @@ public class UserPageActivity extends AbActivity {
             MarkerBean mb = new MarkerBean();
             myMarkerListData.add(mb);
         }
-        myMarkerListAdapter = new MarkerListAdapter(UserPageActivity.this, myMarkerListData);
+        myMarkerListAdapter = new MarkerListAdapter2(UserPageActivity.this, myMarkerListData);
         myMarkerListView.setAdapter(myMarkerListAdapter);
         myMarkerListView.setOnItemClickListener(new OnItemClickListener() {
             @Override

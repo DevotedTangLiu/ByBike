@@ -223,6 +223,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.example.bybike.riding.AddRouteBookActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        
         <!-- 消息列表 -->
         <activity
             android:name="com.example.bybike.message.MessageListActivity"

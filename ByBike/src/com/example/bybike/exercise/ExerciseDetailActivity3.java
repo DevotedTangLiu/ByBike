@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -54,6 +55,7 @@ import com.example.bybike.adapter.ExerciseDiscussListAdapter;
 import com.example.bybike.marker.AddCommentActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.riding.RidingActivity;
+import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -177,6 +179,28 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				if (!SharedPreferencesUtil.getSharedPreferences_b(
+						ExerciseDetailActivity3.this, Constant.ISLOGINED)) {
+
+					showDialog("温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// TODO Auto-generated method stub
+									Intent i = new Intent(
+											ExerciseDetailActivity3.this,
+											LoginActivity.class);
+									startActivity(i);
+									overridePendingTransition(
+											R.anim.fragment_in,
+											R.anim.fragment_out);
+									dialog.dismiss();
+								}
+							});
+					return;
+				}
 				if (v.isSelected()) {
 					v.setSelected(false);
 					int count = Integer.valueOf(likeCount.getText().toString());
@@ -188,6 +212,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 					count++;
 					likeCount.setText(String.valueOf(count));
 				}
+				
+				likeButtonClicked();
 			}
 		});
 		/**
@@ -197,6 +223,29 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				if (!SharedPreferencesUtil.getSharedPreferences_b(
+						ExerciseDetailActivity3.this, Constant.ISLOGINED)) {
+
+					showDialog("温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// TODO Auto-generated method stub
+									Intent i = new Intent(
+											ExerciseDetailActivity3.this,
+											LoginActivity.class);
+									startActivity(i);
+									overridePendingTransition(
+											R.anim.fragment_in,
+											R.anim.fragment_out);
+									dialog.dismiss();
+								}
+							});
+					return;
+				}
+				
 				if (v.isSelected()) {
 					v.setSelected(false);
 					int count = Integer.valueOf(collectCount.getText()
@@ -210,6 +259,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 					count++;
 					collectCount.setText(String.valueOf(count));
 				}
+				 collectButtonClicked();
 			}
 		});
 
@@ -554,9 +604,11 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			if (mMapView.getVisibility() == View.VISIBLE) {
 				mAbSlidingPlayView.setVisibility(View.VISIBLE);
 				mMapView.setVisibility(View.GONE);
+				source.setBackgroundResource(R.drawable.button_map_or_pic_2);
 			} else {
 				mMapView.setVisibility(View.VISIBLE);
 				mAbSlidingPlayView.setVisibility(View.GONE);
+				source.setBackgroundResource(R.drawable.button_map_or_pic);
 			}
 			break;
 		case R.id.shareButton: // 点击分享按钮
@@ -689,4 +741,81 @@ public class ExerciseDetailActivity3 extends AbActivity {
 		}
 
 	}
+	
+	
+	 /**
+     * 点赞/取消点赞
+      * queryDetail(这里用一句话描述这个方法的作用)
+     */
+    private void likeButtonClicked() {
+
+        String urlString = Constant.serverUrl + Constant.exerciseLikeClicked;
+        urlString += ";jsessionid=";
+        urlString += SharedPreferencesUtil.getSharedPreferences_s(this, Constant.SESSION);
+        AbRequestParams p = new AbRequestParams();
+        p.put("id", exerciseId);
+        // 绑定参数
+        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+            // 获取数据成功会调用这里
+            @Override
+            public void onSuccess(int statusCode, String content) {
+
+            };
+
+            // 开始执行前
+            @Override
+            public void onStart() {
+            }
+
+            // 失败，调用
+            @Override
+            public void onFailure(int statusCode, String content, Throwable error) {
+            }
+
+            // 完成后调用，失败，成功
+            @Override
+            public void onFinish() {
+            };
+
+        });
+    }
+    
+    /**
+     * 收藏/取消收藏
+      * queryDetail(这里用一句话描述这个方法的作用)
+     */
+    private void collectButtonClicked() {
+
+        String urlString = Constant.serverUrl + Constant.exerciseCollectClicked;
+        urlString += ";jsessionid=";
+        urlString += SharedPreferencesUtil.getSharedPreferences_s(this, Constant.SESSION);
+        AbRequestParams p = new AbRequestParams();
+        p.put("id", exerciseId);
+        // 绑定参数
+        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+            // 获取数据成功会调用这里
+            @Override
+            public void onSuccess(int statusCode, String content) {
+
+            };
+
+            // 开始执行前
+            @Override
+            public void onStart() {
+            }
+
+            // 失败，调用
+            @Override
+            public void onFailure(int statusCode, String content, Throwable error) {
+            }
+
+            // 完成后调用，失败，成功
+            @Override
+            public void onFinish() {
+            };
+
+        });
+    }
 }

@@ -94,6 +94,14 @@ public class Constant {
 	 */
 	public static final String markerDetailUrl = "/bybike_ser/mc/marker/form";
 	/**
+	 *友好点点赞
+	 */
+	public static final String markerLikeClicked = "/bybike_ser/m/marker/updateLikeStatus";
+	/**
+	 * 友好点收藏
+	 */
+	public static final String markerCollectClicked = "/bybike_ser/m/marker/updateCollectStatus";
+	/**
 	 * 活动列表
 	 */
 	public static final String exerciseListUrl = "/bybike_ser/mc/activity/list";
@@ -101,6 +109,15 @@ public class Constant {
 	 * 活动详情
 	 */
 	public static final String exerciseDetailUrl = "/bybike_ser/mc/activity/form";
+	/**
+	 * 活动点赞、取消点赞
+	 */
+	public static final String exerciseLikeClicked = "/bybike_ser/m/activity/updateLikeStatus";
+	/**
+	 * 活动收藏、取消收藏
+	 */
+    public static final String exerciseCollectClicked = "/bybike_ser/m/activity/updateCollectStatus";
+	
 	/**
 	 * 路书列表
 	 */

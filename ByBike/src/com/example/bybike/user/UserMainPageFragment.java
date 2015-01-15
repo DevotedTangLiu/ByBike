@@ -37,6 +37,7 @@ import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseListAdapter2;
 import com.example.bybike.adapter.MarkerListAdapter;
+import com.example.bybike.adapter.MarkerListAdapter2;
 import com.example.bybike.adapter.RoutesBookListAdapter2;
 import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.exercise.ExerciseDetailActivity2;
@@ -76,7 +77,7 @@ public class UserMainPageFragment extends Fragment {
 	private AbPullListView myRouteBookListView = null;
 
 	private List<MarkerBean> myMarkerListData = null;
-	private MarkerListAdapter myMarkerListAdapter = null;
+	private MarkerListAdapter2 myMarkerListAdapter = null;
 	private AbPullListView myMarkerListView = null;
 
 	private ViewPager mPager;// 页卡内容
@@ -226,7 +227,7 @@ public class UserMainPageFragment extends Fragment {
 			MarkerBean mb = new MarkerBean();
 			myMarkerListData.add(mb);
 		}
-		myMarkerListAdapter = new MarkerListAdapter(mActivity, myMarkerListData);
+		myMarkerListAdapter = new MarkerListAdapter2(mActivity, myMarkerListData);
 		myMarkerListView.setAdapter(myMarkerListAdapter);
 		myMarkerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
