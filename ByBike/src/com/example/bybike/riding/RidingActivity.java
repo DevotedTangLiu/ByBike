@@ -265,9 +265,9 @@ public class RidingActivity extends AbActivity {
 				} else {
 					Intent i = new Intent();
 					i.setClass(RidingActivity.this, MarkerDetailActivity.class);
-					// i.putExtra("id", marker.getExtraInfo().getString("id"));
-					i.putExtra("detailInfo",
-							marker.getExtraInfo().getString("detailInfo"));
+					// i.putExtra("detailInfo",
+					// marker.getExtraInfo().getString("detailInfo"));
+					i.putExtra("id", marker.getExtraInfo().getString("id"));
 					startActivity(i);
 					overridePendingTransition(R.anim.fragment_in, 0);
 				}
