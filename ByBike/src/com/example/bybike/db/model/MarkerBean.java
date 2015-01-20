@@ -1,12 +1,16 @@
 package com.example.bybike.db.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+
 import com.ab.db.orm.annotation.Column;
 import com.ab.db.orm.annotation.Id;
 import com.ab.db.orm.annotation.Relations;
 import com.ab.db.orm.annotation.Table;
 
 @Table(name = "marker_info")
-public class MarkerBean {
+public class MarkerBean{
 
 	// ID @Id主键,int类型,数据库建表时此字段会设为自增长
 	@Id

@@ -102,7 +102,7 @@
                         android:id="@+id/speed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0.4"
+                        android:text=""
                         android:textColor="#4A4A4A"
                         android:textSize="31sp" />
 
@@ -146,7 +146,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="-4dp"
                         android:layout_marginLeft="5dp"
-                        android:text="0.2"
+                        android:text=""
                         android:textColor="#4A4A4A"
                         android:textSize="18sp" />
 
@@ -178,7 +178,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="-4dp"
                         android:layout_marginLeft="5dp"
-                        android:text="00:32:16"
+                        android:text=""
                         android:textColor="#4A4A4A"
                         android:textSize="18sp" />
                 </LinearLayout>
@@ -219,9 +219,9 @@
 
                 <ImageView
                     android:layout_width="18dp"
-                    android:layout_height="5dp"
+                    android:layout_height="18dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/zoom_down" />
+                    android:background="@drawable/zoom_up" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -233,9 +233,9 @@
 
                 <ImageView
                     android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_height="5dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/zoom_up" />
+                    android:background="@drawable/zoom_down" />
             </RelativeLayout>
         </LinearLayout>
 

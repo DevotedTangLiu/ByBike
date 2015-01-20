@@ -123,6 +123,10 @@ public class Constant {
 	 */
 	public static final String routeListUrl = "/bybike_ser/mc/ridingBook/list";
 	/**
+	 * 添加路书
+	 */
+	public static final String addRouteBookUrl = "/bybike_ser/m/ridingBook/save";
+	/**
 	 * 忘记密码
 	 */
 	public static final String forgetPasswrodUrl = "/bybike_ser/mc/forgetPwd";
