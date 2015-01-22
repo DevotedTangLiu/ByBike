@@ -136,6 +136,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
+         <activity
+            android:name="com.example.bybike.routes.AddRouteCommentActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateVisible|adjustResize">
+        </activity>
         <!-- 搜索 -->
         <activity
             android:name="com.example.bybike.SearchActivity"
@@ -287,7 +294,7 @@
         <!-- 百度地图 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="QqQknAqPWcF168bmyLZskdc6" />
+            android:value="c3r3ItD7MmGGi1aRb2GRinlS" />
         <!-- 定位服务 -->
         <service
             android:name="com.baidu.location.f"

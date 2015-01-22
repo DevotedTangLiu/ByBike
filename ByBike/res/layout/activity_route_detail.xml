@@ -27,6 +27,7 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -94,7 +95,7 @@
                                 android:id="@+id/distanceText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="103"
+                                android:text=""
                                 android:textColor="#4A4A4A"
                                 android:textSize="27sp"
                                 android:textStyle="bold" />
@@ -137,7 +138,7 @@
                                 android:id="@+id/speedText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0.2"
+                                android:text=""
                                 android:textColor="#4A4A4A"
                                 android:textSize="27sp"
                                 android:textStyle="bold" />
@@ -177,10 +178,11 @@
                                 android:textSize="14sp" />
 
                             <TextView
+                                android:id="@+id/carbonReduceText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
-                                android:text="0.2"
+                                android:text=""
                                 android:textColor="#4A4A4A"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -211,7 +213,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
-                                android:text="00"
+                                android:text=""
                                 android:textColor="#4A4A4A"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -229,7 +231,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="3dp"
-                                android:text="32"
+                                android:text=""
                                 android:textColor="#4A4A4A"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -247,7 +249,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="3dp"
-                                android:text="16"
+                                android:text=""
                                 android:textColor="#4A4A4A"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -265,6 +267,7 @@
                 <!-- 头像 -->
 
                 <com.example.bybike.util.CircleImageView
+                    android:id="@+id/userHeadPic"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_margin="15dp"
@@ -280,6 +283,7 @@
                     <!-- 用户名 -->
 
                     <TextView
+                        android:id="@+id/userName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Icy_x"
@@ -289,6 +293,7 @@
                     <!-- 路书详情 -->
 
                     <TextView
+                        android:id="@+id/routeDetail"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="40dp"
@@ -425,6 +430,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
+                    android:onClick="clickHandler"
                     android:background="@drawable/discuss_button" />
             </RelativeLayout>
 

@@ -41,10 +41,12 @@
                 android:singleLine="true"/>
             
             <Button
+                android:id="@+id/clear"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginLeft="-30dp"
                 android:layout_gravity="center_vertical"
+                android:onClick="onclick"
                 android:background="@drawable/search_clear_button" />
         </LinearLayout>
     </RelativeLayout>

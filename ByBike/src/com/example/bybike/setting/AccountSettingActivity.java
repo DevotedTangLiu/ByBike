@@ -342,28 +342,18 @@ public class AccountSettingActivity extends AbActivity {
         }
 
         /**
-         * 如果修改了头像或者修改了昵称
+         * 如果修改了修改了昵称
          */
         final String newNickName = userNickNameText.getText().toString().trim();
-        if (headBitMap != null
-                || !newNickName.endsWith(SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.USERNICKNAME))) {
+        if (!newNickName.endsWith(SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.USERNICKNAME))) {
            
             changed = true;
             counts ++;
-            String picFileName;
-            if(headBitMap != null){
-                picFileName = System.currentTimeMillis() + ".jpg";
-                headPicFile = new File(PHOTO_DIR, picFileName);
-                // 压缩图片
-                BitmapUtil.compressBmpToFile(headBitMap, headPicFile);
-            }
-            
             String urlString = Constant.serverUrl + Constant.updateUserInfoUrl;
             urlString += ";jsessionid=";
             urlString += SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION);
             AbRequestParams p = new AbRequestParams();
             p.put("name", newNickName, "multipart/form-data");
-            p.put("img", headPicFile,"multipart/form-data");
             // 绑定参数
             mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -401,6 +391,63 @@ public class AccountSettingActivity extends AbActivity {
             });
             
         }
+        /**
+         * 如果修改了头像
+         */
+        if(headBitMap != null){
+        	
+        	changed = true;
+        	counts ++;
+        	String picFileName;
+            if(headBitMap != null){
+                picFileName = System.currentTimeMillis() + ".jpg";
+                headPicFile = new File(PHOTO_DIR, picFileName);
+                // 压缩图片
+                BitmapUtil.compressBmpToFile(headBitMap, headPicFile);
+            }
+            
+            String urlString = Constant.serverUrl + Constant.updateUserHeadPicUrl;
+            urlString += ";jsessionid=";
+            urlString += SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION);
+            AbRequestParams p = new AbRequestParams();
+            p.put("headImg", headPicFile,"multipart/form-data");
+            // 绑定参数
+            mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+                // 获取数据成功会调用这里
+                @Override
+                public void onSuccess(int statusCode, String content) {
+
+                	processUpdateHeadPicResult(content);
+                };
+
+                // 开始执行前
+                @Override
+                public void onStart() {
+                    
+                    if(counts > 0){
+                        showProgressDialog("正在保存，请稍后...");
+                    }
+                }
+
+                // 失败，调用
+                @Override
+                public void onFailure(int statusCode, String content, Throwable error) {
+                }
+
+                // 完成后调用，失败，成功
+                @Override
+                public void onFinish() {
+                    
+                    counts --;
+                    if(counts <= 0){
+                        removeProgressDialog();
+                    }
+                };
+
+            });
+        	
+        }
         if(!changed){
             showToast("没有修改的内容");
         }
@@ -408,7 +455,7 @@ public class AccountSettingActivity extends AbActivity {
     }
 
     
-    /** 处理修改用户头像、昵称的返回结果
+    /** 处理修改用户昵称的返回结果
       * processUpdateInfoResult(这里用一句话描述这个方法的作用)
       * @param content
       * @param newNickName
@@ -422,15 +469,10 @@ public class AccountSettingActivity extends AbActivity {
 
                 JSONObject dataObject = responseObj.getJSONObject("data");
                 String nickname = dataObject.getString("name");
-                String headUrl = dataObject.getString("headUrl");
                 
-                String sessionId = responseObj.getString("jsessionid");
                 Button b = (Button) findViewById(R.id.saveButton);
                 b.setBackgroundResource(R.drawable.accountsetting_save_button_success);
-
-//                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERNICKNAME, nickname);
-                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERAVATARURL, headUrl);
                 
                 showToast("保存成功");
 
@@ -445,6 +487,37 @@ public class AccountSettingActivity extends AbActivity {
         }
         
     }
+    
+    /** 处理修改用户头像的返回结果
+     * processUpdateInfoResult(这里用一句话描述这个方法的作用)
+     * @param content
+     * @param newNickName
+     */
+   protected void processUpdateHeadPicResult(String content) {
+       // TODO Auto-generated method stub
+       try {
+           JSONObject responseObj = new JSONObject(content);
+           String code = responseObj.getString("code");
+           if ("0".equals(code)) {
+
+               JSONObject dataObject = responseObj.getJSONObject("data");
+               String headUrl = dataObject.getString("headUrl");
+
+               Button b = (Button) findViewById(R.id.saveButton);
+               b.setBackgroundResource(R.drawable.accountsetting_save_button_success);
+               SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERAVATARURL, headUrl);
+               showToast("修改成功");
+           } else {
+
+               showDialog("温馨提示", responseObj.getString("message"));
+           }
+       } catch (JSONException e) {
+           // TODO Auto-generated catch block
+           e.printStackTrace();
+           showDialog("温馨提示", "保存失败，请稍后重试");
+       }
+       
+   }
 
     /** 处理修改密码结果
       * processUpdatePsdResult(这里用一句话描述这个方法的作用)
@@ -457,14 +530,10 @@ public class AccountSettingActivity extends AbActivity {
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
 
-                String sessionId = responseObj.getString("jsessionid");
                 Button b = (Button) findViewById(R.id.saveButton);
                 b.setBackgroundResource(R.drawable.accountsetting_save_button_success);
-
-//                SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_s(AccountSettingActivity.this, Constant.USERPASSWORD, newPassword.getText().toString()
                         .trim());
-                
                 showToast("密码修改成功");
 
             } else {

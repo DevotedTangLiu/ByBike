@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
+import com.ab.global.AbConstant;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
@@ -26,6 +29,8 @@ public class SearchActivity extends AbActivity {
 	// http请求帮助类
 	private AbHttpUtil mAbHttpUtil = null;
 	EditText searchContent;
+
+	ProgressDialog mProgressDialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,11 @@ public class SearchActivity extends AbActivity {
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
 		mAbHttpUtil.setDebug(false);
+		
+		mProgressDialog = new ProgressDialog(SearchActivity.this, 5);
+		// 设置点击屏幕Dialog不消失
+		mProgressDialog.setCanceledOnTouchOutside(false);
+		mProgressDialog.setMessage("正在搜索，请稍后...");
 
 		searchContent = (EditText) findViewById(R.id.searchContent);
 		searchContent.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
@@ -77,23 +87,39 @@ public class SearchActivity extends AbActivity {
 
 	}
 
-    /**
-     * 搜索标记点
-     */
-	private void searchMarkers(){
-		
+	/**
+	 * 搜索标记点
+	 */
+	private void searchMarkers() {
+
 		if (!NetUtil.isConnnected(this)) {
-			showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(this,
+					5);
+			builder.setMessage("网络不可用，请设置您的网络后重试");
+			builder.setTitle("温馨提示");
+			builder.create();
+			AlertDialog mAlertDialog = builder.create();
+			mAlertDialog.setCancelable(true);
+			mAlertDialog.setCanceledOnTouchOutside(true);
+			mAlertDialog.show();
+			return;
+		}
+		
+		String name = searchContent.getText().toString().trim();
+		if("".equals(name)){
+			showToast("请输入搜索内容");
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.getMarkerListUrl;
 		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(SearchActivity.this, Constant.SESSION);
+		urlString += SharedPreferencesUtil.getSharedPreferences_s(
+				SearchActivity.this, Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("pageNo", "1");
 		p.put("pageSize", "100");
 		p.put("name", searchContent.getText().toString().trim());
-	
+
 		// 绑定参数
 		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -107,7 +133,8 @@ public class SearchActivity extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-				showProgressDialog("正在搜索，请稍后...");
+
+				mProgressDialog.show();
 			}
 
 			// 失败，调用
@@ -119,34 +146,58 @@ public class SearchActivity extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				removeProgressDialog();
+				if(mProgressDialog != null){
+					mProgressDialog.dismiss();
+				}
 			};
 
 		});
-		
-		
+
 	}
+
 	protected void processResult(String content) {
 		// TODO Auto-generated method stub
-		
+
 		try {
 			JSONObject resultObj = new JSONObject(content);
 			String code = resultObj.getString("code");
-			if("0".equals(code)){
+			if ("0".equals(code)) {
 				JSONArray dataArray = resultObj.getJSONArray("data");
-				Intent i = new Intent(SearchActivity.this, MarkerListActivity.class);
-				i.putExtra("markerList", dataArray.toString());
-				startActivity(i);
-				overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-				
-			}else{
-				showDialog("温馨提示","没有搜到相关结果，请重新输入后再试");
+				if (dataArray.length() > 0) {
+					Intent i = new Intent(SearchActivity.this,
+							MarkerListActivity.class);
+					i.putExtra("markerList", dataArray.toString());
+					startActivity(i);
+					overridePendingTransition(R.anim.fragment_in,
+							R.anim.fragment_out);
+				} else {
+					AlertDialog.Builder builder = new AlertDialog.Builder(this,
+							5);
+					builder.setMessage("没有搜到相关结果，请重新输入后再试");
+					builder.setTitle("温馨提示");
+					builder.create();
+					AlertDialog mAlertDialog = builder.create();
+					mAlertDialog.setCancelable(true);
+					mAlertDialog.setCanceledOnTouchOutside(true);
+					mAlertDialog.show();
+
+				}
+
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this, 5);
+				builder.setMessage("没有搜到相关结果，请重新输入后再试");
+				builder.setTitle("温馨提示");
+				builder.create();
+				AlertDialog mAlertDialog = builder.create();
+				mAlertDialog.setCancelable(true);
+				mAlertDialog.setCanceledOnTouchOutside(true);
+				mAlertDialog.show();
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void onclick(View view) {
@@ -155,7 +206,9 @@ public class SearchActivity extends AbActivity {
 		case R.id.spaceArea:
 			SearchActivity.this.finish();
 			break;
-
+		case R.id.clear:
+			searchContent.setText("");
+			break;
 		default:
 			break;
 		}

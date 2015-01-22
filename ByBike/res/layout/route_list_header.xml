@@ -10,8 +10,8 @@
         android:layout_height="60dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false" >
+        android:baselineAligned="false"
+        android:orientation="horizontal" >
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -75,5 +75,102 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:background="@color/white" />
+
+    <!-- 公里数筛选 -->
+
+    <LinearLayout
+        android:id="@+id/distanceArea"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <RelativeLayout
+                android:id="@+id/a010km"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/sellect_button_selector" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="0-10km"
+                    android:textColor="@color/text_color" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <RelativeLayout
+                android:id="@+id/a1020km"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/sellect_button_selector" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="10-20km"
+                    android:textColor="@color/text_color" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <RelativeLayout
+                android:id="@+id/a2030km"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/sellect_button_selector" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="20-30km"
+                    android:textColor="@color/text_color" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <RelativeLayout
+                android:id="@+id/a30km"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/sellect_button_selector" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text=">30km"
+                    android:textColor="@color/text_color" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

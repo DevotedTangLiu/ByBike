@@ -13,7 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -46,14 +45,12 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.R;
-import com.example.bybike.exercise.ApplyAcitivity;
+import com.example.bybike.marker.RadioGroup.OnCheckedChangeListener;
 import com.example.bybike.user.LoginActivity;
-import com.example.bybike.user.RegisterActivity;
 import com.example.bybike.util.BitmapUtil;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
-import com.example.bybike.util.Utils;
 
 public class AddMarkerActivity extends AbActivity {
 
@@ -78,7 +75,6 @@ public class AddMarkerActivity extends AbActivity {
 
 	private int currentPhotoId;
 	private File[] photoFiles = new File[4];
-	private HashMap<Integer, Bitmap> photoIdAndBitMap = new HashMap<Integer, Bitmap>();
 	private int[] photosIds = new int[] { R.id.photo1, R.id.photo2,
 			R.id.photo3, R.id.photo4 };
 	private int[] markerTypeIds = new int[] { R.id.type1, R.id.type2,
@@ -123,6 +119,11 @@ public class AddMarkerActivity extends AbActivity {
 	private EditText markerName;
 	private EditText description;
 
+	com.example.bybike.marker.RadioGroup bikeType;
+	RadioGroup operatingTypeGoup;
+	private String operatingType = "Public";
+	private String motorcycleType = "Race";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -142,6 +143,61 @@ public class AddMarkerActivity extends AbActivity {
 		bitMapDescriptorList.add(marker_icon_repair);
 		bitMapDescriptorList.add(marker_icon_scenery);
 		bitMapDescriptorList.add(marker_icon_washroom);
+
+		bikeType = (com.example.bybike.marker.RadioGroup) findViewById(R.id.bikeType);
+		operatingTypeGoup = (RadioGroup) findViewById(R.id.operatingType);
+		operatingTypeGoup
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(
+							com.example.bybike.marker.RadioGroup group,
+							int checkedId) {
+						// TODO Auto-generated method stub
+						switch (checkedId) {
+						case R.id.publicType:
+							operatingType = "Public";
+							break;
+						case R.id.bikeStoreType:
+							operatingType = "BicycleShop";
+							break;
+						case R.id.privateType:
+							operatingType = "Private";
+							break;
+						default:
+							break;
+						}
+
+					}
+				});
+		bikeType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(
+					com.example.bybike.marker.RadioGroup group, int checkedId) {
+				// TODO Auto-generated method stub
+				switch (checkedId) {
+				case R.id.gongluche:
+					motorcycleType = "Race";
+					break;
+				case R.id.shandiche:
+					motorcycleType = "Mtb";
+					break;
+				case R.id.xiaozhe:
+					motorcycleType = "Xz";
+					break;
+				case R.id.sifei:
+					motorcycleType = "Df";
+					break;
+				case R.id.shuangren:
+					motorcycleType = "Db";
+					break;
+				default:
+					break;
+				}
+
+			}
+		});
 
 		// ===============初始化地图========================
 		// 获取地图控件引用
@@ -383,9 +439,9 @@ public class AddMarkerActivity extends AbActivity {
 		p.put("address", address);
 		p.put("name", markerNameString);
 		// p.put("takeCare", "");
-		// p.put("operatingType", "");
+		p.put("operatingType", operatingType);
 		// p.put("phone", "");
-		// p.put("motorcycleType", "");
+		p.put("motorcycleType", motorcycleType);
 		// p.put("allowPark", "");
 		// p.put("price", "");
 		// p.put("allowEnter", "");
@@ -451,13 +507,14 @@ public class AddMarkerActivity extends AbActivity {
 								// TODO Auto-generated method stub
 								Intent intent = getIntent();
 								intent.putExtra("lat", currentPt.latitude);
-				                intent.putExtra("lng", currentPt.longitude);
-				                intent.putExtra("markerId", markerId);
-				                intent.putExtra("markerType", markerType);
-				                intent.putExtra("markerName", markerName.getText().toString().trim());
+								intent.putExtra("lng", currentPt.longitude);
+								intent.putExtra("markerId", markerId);
+								intent.putExtra("markerType", markerType);
+								intent.putExtra("markerName", markerName
+										.getText().toString().trim());
 
-				                setResult(RESULT_OK, intent);
-				                AddMarkerActivity.this.finish();
+								setResult(RESULT_OK, intent);
+								AddMarkerActivity.this.finish();
 							}
 						});
 
@@ -687,8 +744,8 @@ public class AddMarkerActivity extends AbActivity {
 	 * 退出页面
 	 */
 	private void goBack() {
-		
-		if(!saveSucceed){
+
+		if (!saveSucceed) {
 			showDialog("温馨提示", "确认取消并退出本页面吗？退出后本友好点信息将不再保存。",
 					new DialogInterface.OnClickListener() {
 
@@ -699,21 +756,21 @@ public class AddMarkerActivity extends AbActivity {
 							AddMarkerActivity.this.finish();
 						}
 					});
-		}else{
-			
+		} else {
+
 			Intent intent = getIntent();
 			intent.putExtra("lat", currentPt.latitude);
-            intent.putExtra("lng", currentPt.longitude);
-            intent.putExtra("markerId", markerId);
-            intent.putExtra("markerType", markerType);
-            intent.putExtra("markerName", markerName.getText().toString().trim());
+			intent.putExtra("lng", currentPt.longitude);
+			intent.putExtra("markerId", markerId);
+			intent.putExtra("markerType", markerType);
+			intent.putExtra("markerName", markerName.getText().toString()
+					.trim());
 
-            setResult(RESULT_OK, intent);
-            AddMarkerActivity.this.finish();
-			
+			setResult(RESULT_OK, intent);
+			AddMarkerActivity.this.finish();
+
 		}
-		
-		
+
 	}
 
 	@Override
@@ -739,5 +796,4 @@ public class AddMarkerActivity extends AbActivity {
 		// 在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
 		mMapView.onPause();
 	}
-
 }

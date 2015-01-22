@@ -70,9 +70,13 @@ public class Constant {
      */
     public static final String updatePasswordUrl = "/bybike_ser/m/modifyPwd";
     /**
-     * 更新用户资料接口
+     * 更新用户昵称接口
      */
     public static final String updateUserInfoUrl = "/bybike_ser/m/editUser";
+    /**
+     * 更新用户头像接口
+     */
+    public static final String updateUserHeadPicUrl = "/bybike_ser/m/editHeadImg";
     /**
      * 通过session判断是否在线的url
      */
@@ -123,9 +127,21 @@ public class Constant {
 	 */
 	public static final String routeListUrl = "/bybike_ser/mc/ridingBook/list";
 	/**
+	 * 路书详情
+	 */
+	public static final String routeDetailUrl = "/bybike_ser/mc/ridingBook/form";
+	/**
 	 * 添加路书
 	 */
 	public static final String addRouteBookUrl = "/bybike_ser/m/ridingBook/save";
+	/**
+	 * 路书评论列表
+	 */
+	public static final String routeCommentUrl = "/bybike_ser/mc/ridingBook/getDiscusslist";
+	/**
+	 * 添加路书评论
+	 */
+	public static final String addRouteCommentUrl = "/bybike_ser/m/ridingBook/discuss";
 	/**
 	 * 忘记密码
 	 */

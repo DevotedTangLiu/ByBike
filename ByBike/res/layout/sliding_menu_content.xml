@@ -49,12 +49,14 @@
         </RelativeLayout>
 
         <Button
+            android:id="@+id/ifHasNewMessage"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
             android:layout_marginTop="13dp"
-            android:background="@drawable/message_redpin" >
+            android:background="@drawable/message_redpin"
+            android:visibility="invisible" >
         </Button>
     </RelativeLayout>
 

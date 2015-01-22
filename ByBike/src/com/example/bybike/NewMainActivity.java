@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,11 +43,8 @@ public class NewMainActivity extends AbActivity {
 	private AbTaskQueue mAbTaskQueue = null;
 	private boolean exit = false;
 	AbTaskItem item1 = null;
-
 	RelativeLayout clickRideButtonPage = null;
-
 	RelativeLayout titleBar;
-
 	public LatLng currentLatLng;
 	/**
 	 * 标题
@@ -57,6 +55,8 @@ public class NewMainActivity extends AbActivity {
 
 	private final int GO_TO_LOGIN_ACTIVITY = 10001;
 	private final int GO_TO_SETTING_MAIN_ACTIVITY = 10005;
+	
+	Button ifHasNewMessage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,8 @@ public class NewMainActivity extends AbActivity {
 		titleIcon = (ImageView) findViewById(R.id.titleIcon);
 		titleBar = (RelativeLayout) findViewById(R.id.titleBar);
 		b = (ImageView) findViewById(R.id.rideButton);
+		ifHasNewMessage = (Button)findViewById(R.id.ifHasNewMessage);
+		
 		// 主视图的Fragment添加
 		fragmentManager = getSupportFragmentManager();
 		initSteps();

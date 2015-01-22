@@ -151,7 +151,11 @@ public class RoutesBookListAdapter extends BaseAdapter {
 		String avatorUrl = (String) obj.get("userHeadPicUrl");
 		String routeUrl = (String) obj.get("routePic");
 		// 图片的下载
-		avatorImageDownloader.display(holder.avatorPic, avatorUrl);
+		if(!"".equals(avatorUrl)){
+			avatorImageDownloader.display(holder.avatorPic, Constant.serverUrl + avatorUrl);
+		}else{
+			holder.avatorPic.setImageResource(R.drawable.user_icon_pic);
+		}
 		routeImageDownloader.display(holder.routePic, routeUrl);
 		holder.routeTitle.setText((String)obj.get("title"));
 		holder.likeCount.setText((String)obj.get("likeCount"));
