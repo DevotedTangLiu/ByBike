@@ -24,7 +24,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/publicItemsPic"
-            android:text="所有单车友好点"
+            android:text="看我的友好点"
             android:textColor="#646464"
             android:textSize="12sp" />
 
@@ -75,7 +75,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/collectItemsPic"
-            android:text="认证单车友好点"
+            android:text="看认证的友好点"
             android:textColor="#646464"
             android:textSize="12sp" />
 

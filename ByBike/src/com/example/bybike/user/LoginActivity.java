@@ -19,6 +19,7 @@ import com.ab.activity.AbActivity;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.util.AbDialogUtil;
 import com.example.bybike.R;
 import com.example.bybike.db.dao.UserBeanDao;
 import com.example.bybike.db.model.UserBean;
@@ -105,7 +106,6 @@ public class LoginActivity extends AbActivity {
 
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
-		mAbHttpUtil.setDebug(false);
 
 	}
 
@@ -115,7 +115,7 @@ public class LoginActivity extends AbActivity {
 	private void login() {
 
 		if (!NetUtil.isConnnected(this)) {
-			showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+		    AbDialogUtil.showAlertDialog(LoginActivity.this, 0, "温馨提示", "网络不可用，请设置您的网络后重试", null);
 			return;
 		}
 
@@ -141,7 +141,7 @@ public class LoginActivity extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-				showProgressDialog("正在登录，请稍后...");
+			    AbDialogUtil.showProgressDialog(LoginActivity.this, 0, "正在登录，请稍后...");
 			}
 
 			// 失败，调用
@@ -153,7 +153,7 @@ public class LoginActivity extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				removeProgressDialog();
+			    AbDialogUtil.removeDialog(LoginActivity.this);
 			};
 
 		});
@@ -212,7 +212,7 @@ public class LoginActivity extends AbActivity {
 				}
 
 				// (3)关闭数据库
-				userDao.closeDatabase(false);
+				userDao.closeDatabase();
 
 				SharedPreferencesUtil.saveSharedPreferences_s(
 						LoginActivity.this, Constant.SESSION, sessionId);
@@ -233,13 +233,12 @@ public class LoginActivity extends AbActivity {
 				LoginActivity.this.finish();
 
 			} else {
-
-				showDialog("温馨提示", responseObj.getString("message"));
+			    AbDialogUtil.showAlertDialog(LoginActivity.this, 0, "温馨提示", responseObj.getString("message"), null);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			showDialog("温馨提示", "登陆失败，请稍后重试");
+            AbDialogUtil.showAlertDialog(LoginActivity.this, 0, "温馨提示", "登陆失败，请稍后重试", null);
 		}
 
 	}

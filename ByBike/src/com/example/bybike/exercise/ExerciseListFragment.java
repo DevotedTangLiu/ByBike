@@ -18,66 +18,72 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
-import com.ab.view.listener.AbOnListViewListener;
-import com.ab.view.pullview.AbPullListView;
+import com.ab.util.AbDialogUtil;
+import com.ab.util.AbToastUtil;
+import com.ab.view.pullview.AbPullToRefreshView;
+import com.ab.view.pullview.AbPullToRefreshView.OnFooterLoadListener;
+import com.ab.view.pullview.AbPullToRefreshView.OnHeaderRefreshListener;
 import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ImageListAdapter;
-import com.example.bybike.db.model.ExerciseBean;
-import com.example.bybike.setting.AccountSettingActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
 
-public class ExerciseListFragment extends Fragment {
+public class ExerciseListFragment extends Fragment implements
+		OnHeaderRefreshListener, OnFooterLoadListener {
 
 	private NewMainActivity mActivity = null;
 	private List<Map<String, Object>> list = null;
 	private List<Map<String, Object>> newList = null;
-	private AbPullListView mAbPullListView = null;
+	private AbPullToRefreshView mAbPullToRefreshView = null;
+	private ListView mListView = null;
 	private ImageListAdapter myListViewAdapter = null;
 
 	Button orderByTime;
 	Button orderByLikeCounts;
 	Button orderByCollectCounts;
 	Button orderByDistance;
-	
+
 	private int pageNo = 1;
 	private int pageSize = 10;
-	
-	 // http请求帮助类
-    private AbHttpUtil mAbHttpUtil = null;
+
+	// http请求帮助类
+	private AbHttpUtil mAbHttpUtil = null;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_exercise_list, null);
 		mActivity.getTitleBar().setVisibility(View.GONE);
-		
-		 // 获取Http工具类
-        mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
-        mAbHttpUtil.setDebug(false);
+
+		// 获取Http工具类
+		mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
 
 		// 获取ListView对象
-		mAbPullListView = (AbPullListView) view.findViewById(R.id.mListView);
-		
-		// 添加header
-		View header = mActivity.mInflater.inflate(R.layout.exercise_list_header, null);
-		mAbPullListView.addHeaderView(header);
+		mAbPullToRefreshView = (AbPullToRefreshView) view
+				.findViewById(R.id.mPullRefreshView);
+		mListView = (ListView) view.findViewById(R.id.mListView);
 
-		// 打开关闭下拉刷新加载更多功能
-		mAbPullListView.setPullRefreshEnable(true);
-		mAbPullListView.setPullLoadEnable(true);
+		// 添加header
+		View header = mActivity.mInflater.inflate(
+				R.layout.exercise_list_header, null);
+		mListView.addHeaderView(header);
+
+		// 设置监听器
+		mAbPullToRefreshView.setOnHeaderRefreshListener(this);
+		mAbPullToRefreshView.setOnFooterLoadListener(this);
 
 		// 设置进度条的样式
-		mAbPullListView.getHeaderView().setHeaderProgressBarDrawable(
+		mAbPullToRefreshView.getHeaderView().setHeaderProgressBarDrawable(
 				this.getResources().getDrawable(R.drawable.progress_circular));
-		mAbPullListView.getFooterView().setFooterProgressBarDrawable(
+		mAbPullToRefreshView.getFooterView().setFooterProgressBarDrawable(
 				this.getResources().getDrawable(R.drawable.progress_circular));
 
 		// ListView数据
@@ -91,37 +97,20 @@ public class ExerciseListFragment extends Fragment {
 						R.id.exerciseTitle, R.id.exerciseRouteAddress,
 						R.id.exerciseTime, R.id.userCount, R.id.likeCount,
 						R.id.talkCount, R.id.collectCount });
-		mAbPullListView.setAdapter(myListViewAdapter);
+		mListView.setAdapter(myListViewAdapter);
 		// item被点击事件
-		mAbPullListView.setOnItemClickListener(new OnItemClickListener() {
+		mListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
 				Intent i = new Intent();
 				i.setClass(mActivity, ExerciseDetailActivity3.class);
-				i.putExtra("id", (String)list.get(position - 2).get("id"));
+				i.putExtra("id", (String) list.get(position - 1).get("id"));
 				startActivity(i);
-				mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+				mActivity.overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
 			}
-		});
-
-		mAbPullListView.setAbOnListViewListener(new AbOnListViewListener() {
-
-			@Override
-			public void onRefresh() {
-				pageNo = 1;
-			    queryExerciseList();
-			    refreshOrLoadMore = true;
-			}
-
-			@Override
-			public void onLoadMore() {
-				pageNo ++ ;
-			    queryExerciseList();
-			    refreshOrLoadMore = false;
-			}
-
 		});
 
 		orderByTime = (Button) view.findViewById(R.id.orderByTime);
@@ -130,15 +119,17 @@ public class ExerciseListFragment extends Fragment {
 				.findViewById(R.id.orderByCollectCounts);
 		orderByDistance = (Button) view.findViewById(R.id.orderByDistance);
 		orderByTime.setSelected(true);
-		
+
+		AbDialogUtil.showProgressDialog(mActivity, 0, "正在查询，请稍后...");
 		queryExerciseList();
 		return view;
 	}
 
 	@Override
-	public void onStart(){
-	    super.onStart();
+	public void onStart() {
+		super.onStart();
 	}
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -156,101 +147,124 @@ public class ExerciseListFragment extends Fragment {
 		}
 
 	}
-	
-	
+
 	boolean refreshOrLoadMore = true;
-	private void queryExerciseList(){
-	    if (!NetUtil.isConnnected(mActivity)) {
-	        mActivity.showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
-            return;
-        }
-        String urlString = Constant.serverUrl + Constant.exerciseListUrl;
-        urlString += ";jsessionid=";
-        urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
-        AbRequestParams p = new AbRequestParams();
+
+	private void queryExerciseList() {
+		if (!NetUtil.isConnnected(mActivity)) {
+			AbDialogUtil.showAlertDialog(mActivity, 0, "温馨提示",
+					"网络不可用，请设置您的网络后重试", null);
+			return;
+		}
+		String urlString = Constant.serverUrl + Constant.exerciseListUrl;
+		urlString += ";jsessionid=";
+		urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity,
+				Constant.SESSION);
+		
+		AbRequestParams p = new AbRequestParams();
 		p.put("pageNo", String.valueOf(pageNo));
 		p.put("pageSize", String.valueOf(pageSize));
-        // 绑定参数
-        mAbHttpUtil.get(urlString, p, new AbStringHttpResponseListener() {
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
-            // 获取数据成功会调用这里
-            @Override
-            public void onSuccess(int statusCode, String content) {
-                
-                processResult(content);
-            };
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
 
-            // 开始执行前
-            @Override
-            public void onStart() {
-                mActivity.showProgressDialog("正在查询，请稍后...");
-            }
+				processResult(content);
+			};
 
-            // 失败，调用
-            @Override
-            public void onFailure(int statusCode, String content, Throwable error) {
-            }
+			// 开始执行前
+			@Override
+			public void onStart() {
+			}
 
-            // 完成后调用，失败，成功
-            @Override
-            public void onFinish() {
-                mActivity.removeProgressDialog();
-            };
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
 
-        });
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+				
+			};
+
+		});
 	}
-	
-	private void processResult(String resultString){
-	    try {
-            JSONObject resultObj = new JSONObject(resultString);
-            String code = resultObj.getString("code");
-            if("0".equals(code)){
-                
-            	newList = new ArrayList<Map<String, Object>>();
-                JSONArray dataArray = resultObj.getJSONArray("data");
-                for(int i = 0; i < dataArray.length(); i ++){
-                    JSONObject jo = dataArray.getJSONObject(i);
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    
-                    map.put("id", jo.getString("id"));
-                    map.put("exercisePic", "http://img3.imgtn.bdimg.com/it/u=3823186829,2727347960&fm=21&gp=0.jpg");
-                    String imgUrl = jo.getString("activityImgUrl");
-                    if(null != imgUrl && !"".equals(imgUrl.trim())){
-                        map.put("exercisePic", Constant.serverUrl + imgUrl);
-                    }
-                    map.put("exerciseTitle", jo.getString("title"));
-                    map.put("exerciseAddress", jo.getString("wayLine"));
-                    map.put("exerciseTime", jo.getString("activityStartDate") + "-" + jo.getString("activityEndDate"));
-                    map.put("likeCount", jo.getString("likeCount"));
-                    map.put("talkCount", jo.getString("commentCount"));
-                    map.put("collectCount", jo.getString("collectCount"));
-                    
-                    newList.add(map);
-                }
-                
-                if(refreshOrLoadMore){
-                	list.clear();
-                }
-                if(newList != null && newList.size() > 0){
-                	list.addAll(newList);
-                }
-                if(refreshOrLoadMore){
-                    mAbPullListView.stopRefresh();
-                }else{
-                    mAbPullListView.stopLoadMore();
-                }
-                newList.clear();
-                myListViewAdapter.notifyDataSetChanged();
-                
-            }else{
-                mActivity.showToast("查询失败，请稍后重试");
-            }
-            
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            mActivity.showToast("查询失败，请稍后重试");
-        }
+
+	private void processResult(String resultString) {
+	    
+	    AbDialogUtil.removeDialog(mActivity);
+		try {
+			JSONObject resultObj = new JSONObject(resultString);
+			String code = resultObj.getString("code");
+			if ("0".equals(code)) {
+
+				newList = new ArrayList<Map<String, Object>>();
+				JSONArray dataArray = resultObj.getJSONArray("data");
+				for (int i = 0; i < dataArray.length(); i++) {
+					JSONObject jo = dataArray.getJSONObject(i);
+					Map<String, Object> map = new HashMap<String, Object>();
+
+					map.put("id", jo.getString("id"));
+					map.put("exercisePic",
+							"http://img3.imgtn.bdimg.com/it/u=3823186829,2727347960&fm=21&gp=0.jpg");
+					String imgUrl = jo.getString("activityImgUrl");
+					if (null != imgUrl && !"".equals(imgUrl.trim())) {
+						map.put("exercisePic", Constant.serverUrl + imgUrl);
+					}
+					map.put("exerciseTitle", jo.getString("title"));
+					map.put("exerciseAddress", jo.getString("wayLine"));
+					map.put("exerciseTime", jo.getString("activityStartDate")
+							+ "-" + jo.getString("activityEndDate"));
+					map.put("likeCount", jo.getString("likeCount"));
+					map.put("talkCount", jo.getString("commentCount"));
+					map.put("collectCount", jo.getString("collectCount"));
+
+					newList.add(map);
+				}
+
+				if (refreshOrLoadMore) {
+					list.clear();
+				}
+				if (newList != null && newList.size() > 0) {
+					list.addAll(newList);
+				}
+				if (refreshOrLoadMore) {
+					mAbPullToRefreshView.onHeaderRefreshFinish();
+				} else {
+					mAbPullToRefreshView.onFooterLoadFinish();
+				}
+				newList.clear();
+				myListViewAdapter.notifyDataSetChanged();
+
+			} else {
+				AbToastUtil.showToast(mActivity, "查询失败，请稍后重试");
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			AbToastUtil.showToast(mActivity, "查询失败，请稍后重试");
+		}
+	}
+
+	@Override
+	public void onFooterLoad(AbPullToRefreshView view) {
+		// TODO Auto-generated method stub
+		 pageNo++;
+		 queryExerciseList();
+		 refreshOrLoadMore = false;
+	}
+
+	@Override
+	public void onHeaderRefresh(AbPullToRefreshView view) {
+		// TODO Auto-generated method stub
+		 pageNo = 1;
+		 queryExerciseList();
+		 refreshOrLoadMore = true;
 	}
 
 }

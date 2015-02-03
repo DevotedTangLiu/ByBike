@@ -2,14 +2,12 @@ package com.example.bybike.marker;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -17,21 +15,25 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.ZoomControls;
 
 import com.ab.activity.AbActivity;
-import com.ab.global.AbConstant;
-import com.ab.http.AbHttpUtil;
-import com.ab.http.AbRequestParams;
-import com.ab.http.AbStringHttpResponseListener;
+import com.ab.fragment.AbAlertDialogFragment;
+import com.ab.util.AbDialogUtil;
 import com.ab.util.AbFileUtil;
 import com.ab.util.AbStrUtil;
+import com.ab.util.AbToastUtil;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -45,17 +47,18 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.R;
-import com.example.bybike.marker.RadioGroup.OnCheckedChangeListener;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.BitmapUtil;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
 
 public class AddMarkerActivity extends AbActivity {
-
-	// http请求帮助类
-	private AbHttpUtil mAbHttpUtil = null;
 
 	// 基础地图相关
 	MapView mMapView = null;
@@ -119,20 +122,36 @@ public class AddMarkerActivity extends AbActivity {
 	private EditText markerName;
 	private EditText description;
 
-	com.example.bybike.marker.RadioGroup bikeType;
+	LinearLayout rentBikeArea, bikeStroeArea, parkArea, sceneryArea,
+			repairArea, mealArea, washroomArea;
+
+	RadioGroup bikeType;
 	RadioGroup operatingTypeGoup;
+	// 租车：经营点类型、车型、价格、电话
 	private String operatingType = "Public";
-	private String motorcycleType = "Race";
+	private String motorcycleTypeString;
+	private int[] motorcycleType = new int[] { R.id.gongluche, R.id.shandiche,
+			R.id.xiaozhe, R.id.shuangren, R.id.sifei };
+	// 维修： 经营点类型（固定、临时） 电话
+	// 固定：FixedPoint, 临时：TemporaryPepairing
+	// 景点：可否进入、是否方便停车、电话
+	private String allowEnter = "true";
+	private String allowPark = "true";
+	// 餐饮：是否方便停车、电话
+
+	// 洗手间：是否方便停车
+
+	// 停车：是否有人保管、室内/室外
+	// 室内：Indoor 室外：Outdoor
+	private String takeCare = "true";
+
+	// 车店：电话
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setAbContentView(R.layout.activity_create_marker);
 		getTitleBar().setVisibility(View.GONE);
-
-		// 获取Http工具类
-		mAbHttpUtil = AbHttpUtil.getInstance(this);
-		mAbHttpUtil.setDebug(false);
 
 		bitMapDescriptorList.clear();
 		bitMapDescriptorList.add(marker_icon_bikestore);
@@ -144,60 +163,13 @@ public class AddMarkerActivity extends AbActivity {
 		bitMapDescriptorList.add(marker_icon_scenery);
 		bitMapDescriptorList.add(marker_icon_washroom);
 
-		bikeType = (com.example.bybike.marker.RadioGroup) findViewById(R.id.bikeType);
-		operatingTypeGoup = (RadioGroup) findViewById(R.id.operatingType);
-		operatingTypeGoup
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-					@Override
-					public void onCheckedChanged(
-							com.example.bybike.marker.RadioGroup group,
-							int checkedId) {
-						// TODO Auto-generated method stub
-						switch (checkedId) {
-						case R.id.publicType:
-							operatingType = "Public";
-							break;
-						case R.id.bikeStoreType:
-							operatingType = "BicycleShop";
-							break;
-						case R.id.privateType:
-							operatingType = "Private";
-							break;
-						default:
-							break;
-						}
-
-					}
-				});
-		bikeType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(
-					com.example.bybike.marker.RadioGroup group, int checkedId) {
-				// TODO Auto-generated method stub
-				switch (checkedId) {
-				case R.id.gongluche:
-					motorcycleType = "Race";
-					break;
-				case R.id.shandiche:
-					motorcycleType = "Mtb";
-					break;
-				case R.id.xiaozhe:
-					motorcycleType = "Xz";
-					break;
-				case R.id.sifei:
-					motorcycleType = "Df";
-					break;
-				case R.id.shuangren:
-					motorcycleType = "Db";
-					break;
-				default:
-					break;
-				}
-
-			}
-		});
+		rentBikeArea = (LinearLayout) findViewById(R.id.rentBikeArea);
+		bikeStroeArea = (LinearLayout) findViewById(R.id.bikeStroeArea);
+		parkArea = (LinearLayout) findViewById(R.id.parkArea);
+		sceneryArea = (LinearLayout) findViewById(R.id.sceneryArea);
+		repairArea = (LinearLayout) findViewById(R.id.repairArea);
+		mealArea = (LinearLayout) findViewById(R.id.mealArea);
+		washroomArea = (LinearLayout) findViewById(R.id.washroomArea);
 
 		// ===============初始化地图========================
 		// 获取地图控件引用
@@ -248,55 +220,12 @@ public class AddMarkerActivity extends AbActivity {
 		// ===============================================
 
 		// 初始化图片保存路径
-		String photo_dir = AbFileUtil.getFullImageDownPathDir();
+		String photo_dir = AbFileUtil.getImageDownloadDir(this);
 		if (AbStrUtil.isEmpty(photo_dir)) {
-			showToast("存储卡不存在");
+			AbToastUtil.showToast(AddMarkerActivity.this, "存储卡不存在");
 		} else {
 			PHOTO_DIR = new File(photo_dir);
 		}
-
-		mAvatarView = mInflater.inflate(R.layout.choose_avatar, null);
-		Button albumButton = (Button) mAvatarView
-				.findViewById(R.id.choose_album);
-		Button camButton = (Button) mAvatarView.findViewById(R.id.choose_cam);
-		Button cancelButton = (Button) mAvatarView
-				.findViewById(R.id.choose_cancel);
-
-		albumButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				removeDialog(AbConstant.DIALOGBOTTOM);
-				// 从相册中去获取
-				try {
-					Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
-					intent.setType("image/*");
-					startActivityForResult(intent, PHOTO_PICKED_WITH_DATA);
-				} catch (ActivityNotFoundException e) {
-					showToast("没有找到照片");
-				}
-			}
-
-		});
-
-		camButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				removeDialog(AbConstant.DIALOGBOTTOM);
-				doPickPhotoAction();
-			}
-
-		});
-
-		cancelButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				removeDialog(AbConstant.DIALOGBOTTOM);
-			}
-
-		});
 
 		/**
 		 * 初始化友好点显示
@@ -334,19 +263,23 @@ public class AddMarkerActivity extends AbActivity {
 			break;
 		case R.id.photo1:
 			currentPhotoId = 1;
-			showDialog(1, mAvatarView);
+			test();
+			AbDialogUtil.showDialog(mAvatarView, Gravity.BOTTOM);
 			break;
 		case R.id.photo2:
 			currentPhotoId = 2;
-			showDialog(1, mAvatarView);
+			test();
+			AbDialogUtil.showDialog(mAvatarView, Gravity.BOTTOM);
 			break;
 		case R.id.photo3:
 			currentPhotoId = 3;
-			showDialog(1, mAvatarView);
+			test();
+			AbDialogUtil.showDialog(mAvatarView, Gravity.BOTTOM);
 			break;
 		case R.id.photo4:
 			currentPhotoId = 4;
-			showDialog(1, mAvatarView);
+			test();
+			AbDialogUtil.showDialog(mAvatarView, Gravity.BOTTOM);
 			break;
 		case R.id.type1:
 			changeAlpher(1);
@@ -376,53 +309,110 @@ public class AddMarkerActivity extends AbActivity {
 			goBack();
 			break;
 		case R.id.submit:
-			addMarker();
+			addMarkerTest();
 			break;
 		default:
 			break;
 		}
 	}
 
-	private void addMarker() {
+	private void test() {
+		mAvatarView = mInflater.inflate(R.layout.choose_avatar, null);
+		Button albumButton = (Button) mAvatarView
+				.findViewById(R.id.choose_album);
+		Button camButton = (Button) mAvatarView.findViewById(R.id.choose_cam);
+		Button cancelButton = (Button) mAvatarView
+				.findViewById(R.id.choose_cancel);
+		albumButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				AbDialogUtil.removeDialog(AddMarkerActivity.this);
+				// 从相册中去获取
+				try {
+					Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+					intent.setType("image/*");
+					startActivityForResult(intent, PHOTO_PICKED_WITH_DATA);
+				} catch (ActivityNotFoundException e) {
+					AbToastUtil.showToast(AddMarkerActivity.this, "没有找到照片");
+				}
+			}
+
+		});
+
+		camButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				AbDialogUtil.removeDialog(AddMarkerActivity.this);
+				doPickPhotoAction();
+			}
+
+		});
+
+		cancelButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				AbDialogUtil.removeDialog(AddMarkerActivity.this);
+			}
+
+		});
+	}
+
+	private void addMarkerTest() {
 
 		if (!NetUtil.isConnnected(this)) {
-			showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+
+			AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+					"网络不可用，请设置您的网络后重试", null);
 			return;
 		}
 		String markerNameString = markerName.getText().toString().trim();
 		if ("".equals(markerNameString)) {
-			showDialog("温馨提示", "友好点名称不能为空，请重新输入");
+			AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+					"友好点名称不能为空，请重新输入", null);
 			return;
 		}
 		address = addressText.getText().toString().trim();
 		if ("".equals(address)) {
-			showDialog("温馨提示", "地址不能为空，请重新输入");
+			AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+					"地址不能为空，请重新输入", null);
 			return;
 		}
 		if (marker == null) {
-			showDialog("温馨提示", "请在地图上选择友好点位置");
+			AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+					"请在地图上选择友好点位置", null);
 			return;
 		}
 		String remarks = description.getText().toString().trim();
 		if ("".equals(remarks)) {
-			showDialog("温馨提示", "请简单描述一下该友好点再重新保存");
+			AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+					"请简单描述一下该友好点再重新保存", null);
 			return;
 		}
 		if (!SharedPreferencesUtil.getSharedPreferences_b(
 				AddMarkerActivity.this, Constant.ISLOGINED)) {
 
-			showDialog("温馨提示", "您还未登录或者登录已过期，请重新登录后再试",
-					new DialogInterface.OnClickListener() {
+			AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+					"您还未登陆，或登陆状态过期，请重新登录再试",
+					new AbAlertDialogFragment.AbDialogOnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onPositiveClick() {
 							// TODO Auto-generated method stub
 							Intent i = new Intent(AddMarkerActivity.this,
 									LoginActivity.class);
 							startActivity(i);
 							overridePendingTransition(R.anim.fragment_in,
 									R.anim.fragment_out);
-							dialog.dismiss();
+							AbDialogUtil.removeDialog(AddMarkerActivity.this);
+						}
+
+						@Override
+						public void onNegativeClick() {
+							// TODO Auto-generated method stub
+							AbDialogUtil.removeDialog(AddMarkerActivity.this);
 						}
 					});
 			return;
@@ -431,56 +421,140 @@ public class AddMarkerActivity extends AbActivity {
 		urlString += ";jsessionid=";
 		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
 				Constant.SESSION);
-		AbRequestParams p = new AbRequestParams();
-		p.put("markerType", markerType, "multipart/form-data");
-		p.put("lat", String.valueOf(marker.getPosition().latitude));
-		p.put("lng", String.valueOf(marker.getPosition().longitude));
-		p.put("remarks", remarks);
-		p.put("address", address);
-		p.put("name", markerNameString);
-		// p.put("takeCare", "");
-		p.put("operatingType", operatingType);
-		// p.put("phone", "");
-		p.put("motorcycleType", motorcycleType);
-		// p.put("allowPark", "");
-		// p.put("price", "");
-		// p.put("allowEnter", "");
+
+		RequestParams params = new RequestParams();
+		params.setTANGLIU(true);
+		params.addBodyParameter("markerType", markerType);
+		params.addBodyParameter("lat",
+				String.valueOf(marker.getPosition().latitude));
+		params.addBodyParameter("lng",
+				String.valueOf(marker.getPosition().longitude));
+		params.addBodyParameter("remarks", remarks);
+		params.addBodyParameter("address", address);
+		params.addBodyParameter("name", markerNameString);
+
+		if ("RantCar".equalsIgnoreCase(markerType)) {
+
+			params.addBodyParameter("operatingType", operatingType);
+			EditText phoneNumberRentBike = (EditText) findViewById(R.id.phoneNumberRentBike);
+			params.addBodyParameter("phone", phoneNumberRentBike.getText()
+					.toString().trim());
+			EditText priceRentBike = (EditText) findViewById(R.id.priceRentBike);
+			params.addBodyParameter("price", priceRentBike.getText().toString()
+					.trim());
+
+			motorcycleTypeString = "";
+			for (int i = 0; i < 5; i++) {
+				CheckBox cb = (CheckBox) findViewById(motorcycleType[i]);
+				if (cb.isChecked()) {
+					switch (i) {
+					case 0:
+						motorcycleTypeString += "Race,";
+						break;
+					case 1:
+						motorcycleTypeString += "Mtb,";
+						break;
+					case 2:
+						motorcycleTypeString += "Xz,";
+						break;
+					case 3:
+						motorcycleTypeString += "Df,";
+						break;
+					case 4:
+						motorcycleTypeString += "Db,";
+						break;
+					default:
+						break;
+					}
+				}
+			}
+			if (motorcycleTypeString.endsWith(",")) {
+				motorcycleTypeString = motorcycleTypeString.substring(0,
+						motorcycleTypeString.length() - 1);
+			}
+			params.addBodyParameter("motorcycleType", motorcycleTypeString);
+
+		} else if ("CarShop".equalsIgnoreCase(markerType)) {
+
+			EditText phoneNumberBikeStore = (EditText) findViewById(R.id.phoneNumberBikeStore);
+			params.addBodyParameter("phone", phoneNumberBikeStore.getText()
+					.toString().trim());
+
+		} else if ("Parking".equalsIgnoreCase(markerType)) {
+
+			params.addBodyParameter("operatingType", operatingType);
+			params.addBodyParameter("takeCare", takeCare);
+
+		} else if ("FeatureSpot".equalsIgnoreCase(markerType)) {
+
+			EditText phoneNumberScenery = (EditText) findViewById(R.id.phoneNumberScenery);
+			params.addBodyParameter("phone", phoneNumberScenery.getText()
+					.toString().trim());
+			params.addBodyParameter("allowEnter", allowEnter);
+			params.addBodyParameter("allowPark", allowPark);
+
+		} else if ("Repair".equalsIgnoreCase(markerType)) {
+
+			params.addBodyParameter("operatingType", operatingType);
+			EditText phoneNumberRepair = (EditText) findViewById(R.id.phoneNumberRepair);
+			params.addBodyParameter("phone", phoneNumberRepair.getText()
+					.toString().trim());
+
+		} else if ("Catering".equalsIgnoreCase(markerType)) {
+
+			EditText phoneNumberMeal = (EditText) findViewById(R.id.phoneNumberMeal);
+			params.addBodyParameter("phone", phoneNumberMeal.getText()
+					.toString().trim());
+			params.addBodyParameter("allowPark", allowPark);
+
+		} else if ("Washroom".equalsIgnoreCase(markerType)) {
+
+			params.addBodyParameter("allowPark", allowPark);
+
+		}
+		// params.addBodyParameter("motorcycleType", motorcycleType);
 		for (int i = 0; i < 4; i++) {
 			if (photoFiles[i] != null) {
 				String tmp = "img" + String.valueOf(i + 1);
-				p.put(tmp, photoFiles[i], "multipart/form-data");
+				params.addBodyParameter(tmp, photoFiles[i]);
 			}
 		}
-		// 绑定参数
-		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
-			// 获取数据成功会调用这里
-			@Override
-			public void onSuccess(int statusCode, String content) {
+		HttpUtils http = new HttpUtils();
+		http.send(HttpRequest.HttpMethod.POST, urlString, params,
+				new RequestCallBack<String>() {
 
-				processResult(content);
-			};
+					@Override
+					public void onStart() {
+						AbDialogUtil.showProgressDialog(AddMarkerActivity.this,
+								0, "正在上传...");
+					}
 
-			// 开始执行前
-			@Override
-			public void onStart() {
-				showProgressDialog("正在保存，请稍后...");
-			}
+					@Override
+					public void onLoading(long total, long current,
+							boolean isUploading) {
+						if (isUploading) {
+						} else {
+						}
+					}
 
-			// 失败，调用
-			@Override
-			public void onFailure(int statusCode, String content,
-					Throwable error) {
-				showToast("上传失败，请稍后重试...");
-			}
+					@Override
+					public void onSuccess(ResponseInfo<String> responseInfo) {
+						AbDialogUtil.removeDialog(AddMarkerActivity.this);
+						processResult(responseInfo.result);
+					}
 
-			// 完成后调用，失败，成功
-			@Override
-			public void onFinish() {
-				removeProgressDialog();
-			};
+					@Override
+					public void onFailure(
+							com.lidroid.xutils.exception.HttpException error,
+							String msg) {
+						// TODO Auto-generated method stub
+						AbDialogUtil.removeDialog(AddMarkerActivity.this);
+						AbToastUtil.showToast(AddMarkerActivity.this,
+								"保存失败，请稍后重试...");
+					}
+				});
 
-		});
 	}
 
 	/**
@@ -498,12 +572,13 @@ public class AddMarkerActivity extends AbActivity {
 				saveSucceed = true;
 				JSONObject dataObj = resultObject.getJSONObject("data");
 				markerId = dataObj.getString("id");
-				showDialog("温馨提示", "保存成功",
-						new DialogInterface.OnClickListener() {
+
+				AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+						"保存成功",
+						new AbAlertDialogFragment.AbDialogOnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onPositiveClick() {
 								// TODO Auto-generated method stub
 								Intent intent = getIntent();
 								intent.putExtra("lat", currentPt.latitude);
@@ -516,17 +591,23 @@ public class AddMarkerActivity extends AbActivity {
 								setResult(RESULT_OK, intent);
 								AddMarkerActivity.this.finish();
 							}
+
+							@Override
+							public void onNegativeClick() {
+								// TODO Auto-generated method stub
+								AbDialogUtil
+										.removeDialog(AddMarkerActivity.this);
+							}
 						});
 
 			} else if ("3".equals(code)) {
 
-				showDialog("温馨提示",
+				AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
 						"保存失败：\n" + resultObject.getString("message"),
-						new DialogInterface.OnClickListener() {
+						new AbAlertDialogFragment.AbDialogOnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onPositiveClick() {
 								// TODO Auto-generated method stub
 								Intent i = new Intent(AddMarkerActivity.this,
 										LoginActivity.class);
@@ -534,14 +615,21 @@ public class AddMarkerActivity extends AbActivity {
 								overridePendingTransition(R.anim.fragment_in,
 										R.anim.fragment_out);
 
-								dialog.dismiss();
+								AbDialogUtil
+										.removeDialog(AddMarkerActivity.this);
+							}
+
+							@Override
+							public void onNegativeClick() {
+								// TODO Auto-generated method stub
+								AbDialogUtil
+										.removeDialog(AddMarkerActivity.this);
 							}
 						});
 
 			} else {
-				showDialog("温馨提示",
-						"保存失败：\n" + resultObject.getString("message")
-								+ "\n请稍后重试");
+				AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+						"保存失败：\n" + resultObject.getString("message"), null);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -597,6 +685,225 @@ public class AddMarkerActivity extends AbActivity {
 		}
 
 		updateMarkerIcon();
+		updateInputArea(target);
+	}
+
+	private void updateInputArea(int target) {
+		// TODO Auto-generated method stub
+		rentBikeArea.setVisibility(View.GONE);
+		bikeStroeArea.setVisibility(View.GONE);
+		parkArea.setVisibility(View.GONE);
+		sceneryArea.setVisibility(View.GONE);
+		repairArea.setVisibility(View.GONE);
+		mealArea.setVisibility(View.GONE);
+		washroomArea.setVisibility(View.GONE);
+
+		switch (target) {
+		case 1:
+			rentBikeArea.setVisibility(View.VISIBLE);
+			operatingType = "Public";
+			operatingTypeGoup = (RadioGroup) findViewById(R.id.operatingType);
+			operatingTypeGoup
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// TODO Auto-generated method stub
+							switch (checkedId) {
+							case R.id.publicType:
+								operatingType = "Public";
+								break;
+							case R.id.bikeStoreType:
+								operatingType = "BicycleShop";
+								break;
+							case R.id.privateType:
+								operatingType = "Private";
+								break;
+							default:
+								break;
+							}
+
+						}
+					});
+			break;
+		case 2:
+			bikeStroeArea.setVisibility(View.VISIBLE);
+			break;
+		case 3:
+			parkArea.setVisibility(View.VISIBLE);
+			operatingType = "Indoor";
+			operatingTypeGoup = (RadioGroup) findViewById(R.id.indorOutDoorChooose);
+			operatingTypeGoup
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// TODO Auto-generated method stub
+							switch (checkedId) {
+							case R.id.inDoor:
+								operatingType = "Indoor";
+								break;
+							case R.id.outDoor:
+								operatingType = "Outdoor";
+								break;
+							default:
+								break;
+							}
+
+						}
+					});
+
+			RadioGroup takeCaredArea = (RadioGroup) findViewById(R.id.takeCaredArea);
+			takeCaredArea
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// TODO Auto-generated method stub
+							switch (checkedId) {
+							case R.id.haveTakeCared:
+								takeCare = "true";
+								break;
+							case R.id.noTakeCared:
+								takeCare = "false";
+								break;
+							default:
+								break;
+							}
+
+						}
+					});
+
+			break;
+		case 4:
+			sceneryArea.setVisibility(View.VISIBLE);
+			RadioGroup enterChoose = (RadioGroup) findViewById(R.id.enterChoose);
+			enterChoose
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// TODO Auto-generated method stub
+							switch (checkedId) {
+							case R.id.canEnter:
+								allowEnter = "true";
+								break;
+							case R.id.noEnter:
+								allowEnter = "false";
+								break;
+							default:
+								break;
+							}
+
+						}
+					});
+
+			RadioGroup canParkChoose = (RadioGroup) findViewById(R.id.canParkChoose);
+			canParkChoose
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// TODO Auto-generated method stub
+							switch (checkedId) {
+							case R.id.canParkScenery:
+								allowPark = "true";
+								break;
+							case R.id.canNotParkScenery:
+								allowPark = "false";
+								break;
+							default:
+								break;
+							}
+
+						}
+					});
+
+			break;
+		case 5:
+			repairArea.setVisibility(View.VISIBLE);
+			operatingType = "FixedPoint";
+			operatingTypeGoup = (RadioGroup) findViewById(R.id.repairTypeChoose);
+			operatingTypeGoup
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// TODO Auto-generated method stub
+							switch (checkedId) {
+							case R.id.fixedStore:
+								operatingType = "FixedPoint";
+								break;
+							case R.id.tmpStore:
+								operatingType = "TemporaryPepairing";
+								break;
+							default:
+								break;
+							}
+
+						}
+					});
+			break;
+		case 6:
+			mealArea.setVisibility(View.VISIBLE);
+
+			RadioGroup ifCanParkedChooseMeal = (RadioGroup) findViewById(R.id.ifCanParkedChooseMeal);
+			ifCanParkedChooseMeal
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// TODO Auto-generated method stub
+							switch (checkedId) {
+							case R.id.canParkMeal:
+								allowPark = "true";
+								break;
+							case R.id.canNotParkMeal:
+								allowPark = "false";
+								break;
+							default:
+								break;
+							}
+
+						}
+					});
+			break;
+		case 7:
+			washroomArea.setVisibility(View.VISIBLE);
+
+			RadioGroup ifCanParkedChooseWashroom = (RadioGroup) findViewById(R.id.ifCanParkedChooseWashroom);
+			ifCanParkedChooseWashroom
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// TODO Auto-generated method stub
+							switch (checkedId) {
+							case R.id.canParkWashroom:
+								allowPark = "true";
+								break;
+							case R.id.canNotParkWashroom:
+								allowPark = "false";
+								break;
+							default:
+								break;
+							}
+
+						}
+					});
+			break;
+		default:
+			break;
+		}
+
 	}
 
 	/**
@@ -611,7 +918,8 @@ public class AddMarkerActivity extends AbActivity {
 					Uri.fromFile(mCurrentPhotoFile));
 			startActivityForResult(intent, CAMERA_WITH_DATA);
 		} catch (Exception e) {
-			showToast("未找到系统相机程序");
+
+			AbToastUtil.showToast(AddMarkerActivity.this, "未找到系统相机程序");
 		}
 	}
 
@@ -624,7 +932,7 @@ public class AddMarkerActivity extends AbActivity {
 		if (status.equals(Environment.MEDIA_MOUNTED)) {
 			doTakePhoto();
 		} else {
-			showToast("没有可用的存储卡");
+			AbToastUtil.showToast(AddMarkerActivity.this, "没有可用的存储卡");
 		}
 	}
 
@@ -652,7 +960,8 @@ public class AddMarkerActivity extends AbActivity {
 				BitmapUtil.compressBmpToFile(currentBitMap, picFile);
 				photoFiles[currentPhotoId - 1] = picFile;
 			} else {
-				showToast("未在存储卡中找到这个文件");
+
+				AbToastUtil.showToast(AddMarkerActivity.this, "未在存储卡中找到这个文件");
 			}
 			break;
 		case CAMERA_WITH_DATA:
@@ -719,6 +1028,8 @@ public class AddMarkerActivity extends AbActivity {
 			marker.setIcon(marker_icon_parking);
 		} else if ("Other".equalsIgnoreCase(markerType)) {
 			marker.setIcon(marker_icon_others);
+		} else if ("CarShop".equalsIgnoreCase(markerType)) {
+			marker.setIcon(marker_icon_bikestore);
 		} else {
 			marker.setIcon(marker_icon_others);
 		}
@@ -746,16 +1057,25 @@ public class AddMarkerActivity extends AbActivity {
 	private void goBack() {
 
 		if (!saveSucceed) {
-			showDialog("温馨提示", "确认取消并退出本页面吗？退出后本友好点信息将不再保存。",
-					new DialogInterface.OnClickListener() {
+
+			AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示",
+					"确认取消并退出本页面吗？退出后本友好点信息将不再保存。",
+					new AbAlertDialogFragment.AbDialogOnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onPositiveClick() {
 							// TODO Auto-generated method stub
-							dialog.dismiss();
+							AbDialogUtil.removeDialog(AddMarkerActivity.this);
 							AddMarkerActivity.this.finish();
 						}
+
+						@Override
+						public void onNegativeClick() {
+							// TODO Auto-generated method stub
+							AbDialogUtil.removeDialog(AddMarkerActivity.this);
+						}
 					});
+
 		} else {
 
 			Intent intent = getIntent();

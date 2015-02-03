@@ -7,18 +7,14 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.ab.bitmap.AbImageDownloader;
+import com.ab.image.AbImageLoader;
 import com.example.bybike.R;
-import com.example.bybike.adapter.ImageListAdapter.OnCollectButtonClick;
-import com.example.bybike.adapter.ImageListAdapter.OnLikeButtonClick;
-import com.example.bybike.adapter.ImageListAdapter.OnTalkButtonClick;
 
 /**
  * 路数列表的Adapter
@@ -38,7 +34,7 @@ public class RoutesBookListAdapter2 extends BaseAdapter {
 	// 列表展现的数据
 	private List mData;
 	// 图片下载器
-	private AbImageDownloader routeImageDownloader = null;
+	private AbImageLoader mAbImageLoader = null;
 
 	/**
 	 * 构造方法
@@ -53,10 +49,10 @@ public class RoutesBookListAdapter2 extends BaseAdapter {
 		// 用于将xml转为View
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		routeImageDownloader = new AbImageDownloader(mContext);
-		routeImageDownloader.setLoadingImage(R.drawable.image_loading);
-		routeImageDownloader.setErrorImage(R.drawable.image_error);
-		routeImageDownloader.setNoImage(R.drawable.image_no);
+		mAbImageLoader = AbImageLoader.newInstance(context);
+        mAbImageLoader.setLoadingImage(R.drawable.image_loading);
+        mAbImageLoader.setErrorImage(R.drawable.image_error);
+        mAbImageLoader.setEmptyImage(R.drawable.image_empty);
 	}
 
 	@Override
@@ -121,7 +117,7 @@ public class RoutesBookListAdapter2 extends BaseAdapter {
 				.get(position);
 		String routeUrl = (String) obj.get("routePic");
 		// 图片的下载
-		routeImageDownloader.display(holder.routePic, "http://b.hiphotos.baidu.com/image/w%3D400/sign=42dd371b7bf0f736d8fe4d013a54b382/a8014c086e061d95e3c2365c78f40ad163d9caca.jpg");
+		mAbImageLoader.display(holder.routePic, "http://b.hiphotos.baidu.com/image/w%3D400/sign=42dd371b7bf0f736d8fe4d013a54b382/a8014c086e061d95e3c2365c78f40ad163d9caca.jpg");
 		return convertView;
 	}
 

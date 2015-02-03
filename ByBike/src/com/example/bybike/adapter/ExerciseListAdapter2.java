@@ -15,9 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
-import com.ab.bitmap.AbImageDownloader;
-import com.ab.global.AbConstant;
-import com.example.bybike.NewMainActivity;
+import com.ab.image.AbImageLoader;
 import com.example.bybike.R;
 
 /**
@@ -45,8 +43,8 @@ public class ExerciseListAdapter2 extends BaseAdapter {
 	private String[] mFrom;
 	// view的id
 	private int[] mTo;
-	// 图片下载器
-	private AbImageDownloader mAbImageDownloader = null;
+	 // 图片下载器
+    private AbImageLoader mAbImageLoader = null;
 
 	/**
 	 * 构造方法
@@ -72,14 +70,11 @@ public class ExerciseListAdapter2 extends BaseAdapter {
 		// 用于将xml转为View
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		// 图片下载器
-		mAbImageDownloader = new AbImageDownloader(mContext);
-		mAbImageDownloader.setWidth(320);
-		mAbImageDownloader.setHeight(240);
-		mAbImageDownloader.setType(AbConstant.SCALEIMG);
-		mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
-		mAbImageDownloader.setErrorImage(R.drawable.image_error);
-		mAbImageDownloader.setNoImage(R.drawable.image_no);
+		 // 图片下载器
+        mAbImageLoader = AbImageLoader.newInstance(context);
+        mAbImageLoader.setLoadingImage(R.drawable.image_loading);
+        mAbImageLoader.setErrorImage(R.drawable.image_error);
+        mAbImageLoader.setEmptyImage(R.drawable.image_empty);
 	}
 
 	@Override
@@ -158,7 +153,7 @@ public class ExerciseListAdapter2 extends BaseAdapter {
 				.get(position);
 		String imageUrl = (String) obj.get("exercisePic");
 		// 图片的下载
-		mAbImageDownloader.display(holder.exercisePic, imageUrl);
+		mAbImageLoader.display(holder.exercisePic, imageUrl);
 
 		return convertView;
 	}

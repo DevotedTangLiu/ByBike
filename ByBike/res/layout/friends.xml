@@ -33,6 +33,21 @@
             android:textColor="@color/text_color"
             android:textStyle="bold" >
         </TextView>
+        
+        <RelativeLayout
+            android:id="@+id/addFriends"
+            android:layout_width="80dp"
+            android:layout_height="fill_parent"
+            android:onClick="clickHandler"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true" >
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/zoom_up" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout

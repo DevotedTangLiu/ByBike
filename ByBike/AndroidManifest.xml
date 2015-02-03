@@ -95,6 +95,12 @@
             android:screenOrientation="portrait" >
         </activity>
          <activity
+            android:name="com.example.bybike.friends.AddFriendsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+         <activity
             android:name="com.example.bybike.user.ForgetPasswordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"

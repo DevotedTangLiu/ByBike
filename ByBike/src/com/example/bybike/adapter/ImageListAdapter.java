@@ -10,14 +10,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ab.bitmap.AbImageDownloader;
-import com.ab.global.AbConstant;
+import com.ab.image.AbImageLoader;
 import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
 
@@ -47,7 +44,7 @@ public class ImageListAdapter extends BaseAdapter {
 	// view的id
 	private int[] mTo;
 	// 图片下载器
-	private AbImageDownloader mAbImageDownloader = null;
+	private AbImageLoader mAbImageLoader = null;
 
 	/**
 	 * 构造方法
@@ -74,10 +71,10 @@ public class ImageListAdapter extends BaseAdapter {
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		// 图片下载器
-		mAbImageDownloader = new AbImageDownloader(mContext);
-		mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
-		mAbImageDownloader.setErrorImage(R.drawable.image_error);
-		mAbImageDownloader.setNoImage(R.drawable.image_no);
+        mAbImageLoader = AbImageLoader.newInstance(context);
+        mAbImageLoader.setLoadingImage(R.drawable.image_loading);
+        mAbImageLoader.setErrorImage(R.drawable.image_error);
+        mAbImageLoader.setEmptyImage(R.drawable.image_empty);
 	}
 
 	@Override
@@ -155,7 +152,7 @@ public class ImageListAdapter extends BaseAdapter {
 				.get(position);
 		String imageUrl = (String) obj.get("exercisePic");
 		// 图片的下载
-		mAbImageDownloader.display(holder.exercisePic, imageUrl);
+		mAbImageLoader.display(holder.exercisePic, imageUrl);
 		holder.collectCount.setText((String)obj.get("collectCount"));
 		holder.likeCount.setText((String)obj.get("likeCount"));
 		holder.talkCount.setText((String)obj.get("talkCount"));

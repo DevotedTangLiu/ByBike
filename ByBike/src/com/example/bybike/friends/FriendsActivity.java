@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,15 +25,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
-import com.ab.bitmap.AbImageDownloader;
-import com.ab.global.AbConstant;
+import com.ab.image.AbImageLoader;
 import com.example.bybike.R;
 import com.example.bybike.db.model.UserBean;
 import com.example.bybike.friends.HanziToPinyin.Token;
 import com.example.bybike.friends.MyLetterListView.OnTouchingLetterChangedListener;
 
 public class FriendsActivity extends AbActivity {
-
+	
 	private BaseAdapter adapter;
 
 	private ListView listview;
@@ -52,7 +52,7 @@ public class FriendsActivity extends AbActivity {
 	public List<UserBean> abOrgpersonList = new ArrayList<UserBean>();
 
 	private WindowManager windowManager;
-	
+
 	private EditText searchText;
 
 	@Override
@@ -90,7 +90,7 @@ public class FriendsActivity extends AbActivity {
 	private void showFriends() {
 
 		List<UserBean> list = new ArrayList<UserBean>();
-		
+
 		list.clear();
 		UserBean a = new UserBean();
 		a.setUserNickName("Don Dong");
@@ -162,7 +162,7 @@ public class FriendsActivity extends AbActivity {
 
 		private List<UserBean> list;
 		// 图片下载器
-		private AbImageDownloader mAbImageDownloader = null;
+		private AbImageLoader mAbImageLoader = null;
 		// 用户列表
 		private List<UserBean> userList;
 
@@ -171,11 +171,10 @@ public class FriendsActivity extends AbActivity {
 			this.list = list;
 
 			// 图片下载器
-			mAbImageDownloader = new AbImageDownloader(context);
-			mAbImageDownloader.setType(AbConstant.ORIGINALIMG);
-			mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
-			mAbImageDownloader.setErrorImage(R.drawable.image_error);
-			mAbImageDownloader.setNoImage(R.drawable.image_no);
+			mAbImageLoader = AbImageLoader.newInstance(context);
+			mAbImageLoader.setLoadingImage(R.drawable.image_loading);
+			mAbImageLoader.setErrorImage(R.drawable.image_error);
+			mAbImageLoader.setEmptyImage(R.drawable.image_empty);
 
 			alphaIndexer = new HashMap<String, Integer>();
 			sections = new String[list.size()];
@@ -237,7 +236,7 @@ public class FriendsActivity extends AbActivity {
 				holder.alpha.setVisibility(View.GONE);
 			}
 			// 图片的下载
-			mAbImageDownloader.display(holder.avater, cv.getPicUrl());
+			mAbImageLoader.display(holder.avater, cv.getPicUrl());
 
 			return convertView;
 		}
@@ -281,32 +280,34 @@ public class FriendsActivity extends AbActivity {
 		}
 
 	}
-	
-	  /**
-     * 根据输入框中的值来过滤数据并更新ListView
-     * @param filterStr
-     */
-    private void filterData(String filterStr){
-        List<UserBean> tempList = new ArrayList<UserBean>();
-        
-        if(TextUtils.isEmpty(filterStr)){
-            tempList = abOrgpersonList;
-        }else{
-            tempList.clear();
-            
-            for (int i = 0; i < abOrgpersonList.size(); i++) {
-                UserBean item = abOrgpersonList.get(i);
-                String name = item.getUserNickName();
-                String pyname = item.getPinyinname();
-                if(name.indexOf(filterStr.toString()) != -1 || pyname.contains((filterStr.toString()))){
-                    tempList.add(item);
-                }
-            }
-        }
-        // 根据a-z进行排序
-        Collections.sort(tempList, pinyinComparator);
-        setAdapter(tempList);
-    }
+
+	/**
+	 * 根据输入框中的值来过滤数据并更新ListView
+	 * 
+	 * @param filterStr
+	 */
+	private void filterData(String filterStr) {
+		List<UserBean> tempList = new ArrayList<UserBean>();
+
+		if (TextUtils.isEmpty(filterStr)) {
+			tempList = abOrgpersonList;
+		} else {
+			tempList.clear();
+
+			for (int i = 0; i < abOrgpersonList.size(); i++) {
+				UserBean item = abOrgpersonList.get(i);
+				String name = item.getUserNickName();
+				String pyname = item.getPinyinname();
+				if (name.indexOf(filterStr.toString()) != -1
+						|| pyname.contains((filterStr.toString()))) {
+					tempList.add(item);
+				}
+			}
+		}
+		// 根据a-z进行排序
+		Collections.sort(tempList, pinyinComparator);
+		setAdapter(tempList);
+	}
 
 	private void initOverlay() {
 		LayoutInflater inflater = LayoutInflater.from(this);
@@ -405,6 +406,7 @@ public class FriendsActivity extends AbActivity {
 
 	/**
 	 * 点击事件
+	 * 
 	 * @param view
 	 */
 	public void clickHandler(View view) {
@@ -416,14 +418,19 @@ public class FriendsActivity extends AbActivity {
 			searchText.setText("");
 			closeKeyboard();
 			break;
+		case R.id.addFriends:
+			Intent i = new Intent(FriendsActivity.this, AddFriendsActivity.class);
+			startActivity(i);
+			overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+			break;
 		default:
 			break;
 		}
 	}
-	
-	 // 关闭软键盘
-    private void closeKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-    }
+
+	// 关闭软键盘
+	private void closeKeyboard() {
+		InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+	}
 }

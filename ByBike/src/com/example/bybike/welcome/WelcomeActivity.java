@@ -35,49 +35,12 @@ public class WelcomeActivity extends AbActivity {
 
         // 获取Http工具类
         mAbHttpUtil = AbHttpUtil.getInstance(this);
-        mAbHttpUtil.setDebug(false);
 
         /**
          * 启动通知服务
          */
         Intent intent = new Intent(WelcomeActivity.this, PushMsgRealService.class);
         startService(intent);
-
-        checkOnLine();
-
-    }
-
-    private void checkOnLine() {
-
-        String urlString = Constant.serverUrl + Constant.checkIfOnLineUrl;
-        urlString += ";jsessionid=";
-        urlString += SharedPreferencesUtil.getSharedPreferences_s(WelcomeActivity.this, Constant.SESSION);
-        mAbHttpUtil.get(urlString, new AbStringHttpResponseListener() {
-
-            // 获取数据成功会调用这里
-            @Override
-            public void onSuccess(int statusCode, String content) {
-
-                processResult(content);
-            };
-
-            // 开始执行前
-            @Override
-            public void onStart() {
-            }
-
-            // 失败，调用
-            @Override
-            public void onFailure(int statusCode, String content, Throwable error) {
-            }
-
-            // 完成后调用，失败，成功
-            @Override
-            public void onFinish() {
-            };
-
-        });
-
     }
 
     private boolean alreadyCheck = true;
@@ -112,7 +75,7 @@ public class WelcomeActivity extends AbActivity {
 
         super.onStart();
         final AbTaskItem item1 = new AbTaskItem();
-        item1.listener = new AbTaskListener() {
+        item1.setListener(new AbTaskListener() {
 
             @Override
             public void update() {
@@ -131,8 +94,8 @@ public class WelcomeActivity extends AbActivity {
                 } catch (Exception e) {
                 }
             };
-        };
-
+        });
+       
         mAbTaskQueue.execute(item1);
 
     }

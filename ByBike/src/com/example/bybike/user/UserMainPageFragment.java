@@ -26,21 +26,21 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ab.bitmap.AbImageDownloader;
 import com.ab.http.AbHttpUtil;
-import com.ab.view.pullview.AbPullListView;
+import com.ab.image.AbImageLoader;
+import com.ab.view.pullview.AbPullToRefreshView;
 import com.ab.view.titlebar.AbTitleBar;
 import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseListAdapter2;
-import com.example.bybike.adapter.MarkerListAdapter;
 import com.example.bybike.adapter.MarkerListAdapter2;
 import com.example.bybike.adapter.RoutesBookListAdapter2;
 import com.example.bybike.db.model.MarkerBean;
-import com.example.bybike.exercise.ExerciseDetailActivity2;
+import com.example.bybike.exercise.ExerciseDetailActivity3;
 import com.example.bybike.friends.FriendsActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.message.MessageListActivity;
@@ -58,357 +58,342 @@ import com.example.bybike.util.SharedPreferencesUtil;
  */
 public class UserMainPageFragment extends Fragment {
 
-	private NewMainActivity mActivity = null;
-	// http请求帮助类
-	private AbHttpUtil mAbHttpUtil = null;
-	// 图片下载类
-	private AbImageDownloader mAbImageDownloader = null;
-	//
-	private Button chooseExercise;
-	private Button chooseRouteBook;
-	private Button chooseMarker;
+    private NewMainActivity mActivity = null;
+    // http请求帮助类
+    private AbHttpUtil mAbHttpUtil = null;
+    // 图片下载类
+    private AbImageLoader mAbImageLoader = null;
+    //
+    private Button chooseExercise;
+    private Button chooseRouteBook;
+    private Button chooseMarker;
 
-	private List<Map<String, Object>> myExerciseListData = null;
-	private ExerciseListAdapter2 exerciseListAdapter = null;
-	private AbPullListView myExerciseListView = null;
+    private List<Map<String, Object>> myExerciseListData = null;
+    private ExerciseListAdapter2 exerciseListAdapter = null;
+    private AbPullToRefreshView myExerciseListView = null;
+    private ListView myExerciseList = null;
 
-	private List<Map<String, Object>> myRouteBookListData = null;
-	private RoutesBookListAdapter2 myRouteBookListAdapter = null;
-	private AbPullListView myRouteBookListView = null;
+    private List<Map<String, Object>> myRouteBookListData = null;
+    private RoutesBookListAdapter2 myRouteBookListAdapter = null;
+    private AbPullToRefreshView myRouteBookListView = null;
+    private ListView myRouteBookList = null;
 
-	private List<MarkerBean> myMarkerListData = null;
-	private MarkerListAdapter2 myMarkerListAdapter = null;
-	private AbPullListView myMarkerListView = null;
+    private List<MarkerBean> myMarkerListData = null;
+    private MarkerListAdapter2 myMarkerListAdapter = null;
+    private AbPullToRefreshView myMarkerListView = null;
+    private ListView myMarkerList = null;
 
-	private ViewPager mPager;// 页卡内容
-	private List<View> listViews; // Tab页面列表
-	
-	/**
-	 * 用户信息
-	 */
-	TextView userName;
-	CircleImageView userHeadImageView;
+    private ViewPager mPager;// 页卡内容
+    private List<View> listViews; // Tab页面列表
 
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+    /**
+     * 用户信息
+     */
+    TextView userName;
+    CircleImageView userHeadImageView;
 
-		View view = inflater.inflate(R.layout.fragment_uer_mian_page, null);
-		AbTitleBar mAbTitleBar = mActivity.getTitleBar();
-		mAbTitleBar.setVisibility(View.GONE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		// 获取Http工具类
-		mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
-		mAbHttpUtil.setDebug(false);
+        View view = inflater.inflate(R.layout.fragment_uer_mian_page, null);
+        AbTitleBar mAbTitleBar = mActivity.getTitleBar();
+        mAbTitleBar.setVisibility(View.GONE);
 
-		Button gotoSetting = (Button) view.findViewById(R.id.goToSetting);
-		gotoSetting.setOnClickListener(click);
-		RelativeLayout goToMessage = (RelativeLayout) view
-				.findViewById(R.id.goToMessage);
-		goToMessage.setOnClickListener(click);
+        // 获取Http工具类
+        mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
 
-		chooseExercise = (Button) view.findViewById(R.id.chooseExercise);
-		chooseExercise.setSelected(true);
-		chooseRouteBook = (Button) view.findViewById(R.id.chooseRouteBook);
-		chooseMarker = (Button) view.findViewById(R.id.chooseMarker);
-		chooseExercise.setOnClickListener(click);
-		chooseRouteBook.setOnClickListener(click);
-		chooseMarker.setOnClickListener(click);
+        Button gotoSetting = (Button) view.findViewById(R.id.goToSetting);
+        gotoSetting.setOnClickListener(click);
+        RelativeLayout goToMessage = (RelativeLayout) view.findViewById(R.id.goToMessage);
+        goToMessage.setOnClickListener(click);
 
-		//骑友设置下划线
-		TextView friendsCount = (TextView) view.findViewById(R.id.friendsCount);
-		friendsCount.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);// 下划线
-		friendsCount.setOnClickListener(click);
-		//设置用户名字
-		userName = (TextView)view.findViewById(R.id.userName);
-		//设置用户头像
-		mAbImageDownloader = new AbImageDownloader(mActivity);
-		userHeadImageView = (CircleImageView)view.findViewById(R.id.fragment_my_image_user);
-		
-		//填充用户活动、路书、友好点数据
-		mPager = (ViewPager) view.findViewById(R.id.vPager);
+        chooseExercise = (Button) view.findViewById(R.id.chooseExercise);
+        chooseExercise.setSelected(true);
+        chooseRouteBook = (Button) view.findViewById(R.id.chooseRouteBook);
+        chooseMarker = (Button) view.findViewById(R.id.chooseMarker);
+        chooseExercise.setOnClickListener(click);
+        chooseRouteBook.setOnClickListener(click);
+        chooseMarker.setOnClickListener(click);
+
+        // 骑友设置下划线
+        TextView friendsCount = (TextView) view.findViewById(R.id.friendsCount);
+        friendsCount.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);// 下划线
+        friendsCount.setOnClickListener(click);
+        // 设置用户名字
+        userName = (TextView) view.findViewById(R.id.userName);
+        // 设置用户头像
+        mAbImageLoader = AbImageLoader.newInstance(mActivity);
+        mAbImageLoader.setLoadingImage(R.drawable.image_loading);
+        mAbImageLoader.setErrorImage(R.drawable.image_error);
+        mAbImageLoader.setEmptyImage(R.drawable.image_empty);
+        userHeadImageView = (CircleImageView) view.findViewById(R.id.fragment_my_image_user);
+
+        // 填充用户活动、路书、友好点数据
+        mPager = (ViewPager) view.findViewById(R.id.vPager);
         listViews = new ArrayList<View>();
-		initViewPager();
-		
-		return view;
-	}
+        initViewPager();
 
-	/**
-	 * 初始化viewPager数据 initViewPager(这里用一句话描述这个方法的作用)
-	 */
-	private void initViewPager() {
+        return view;
+    }
 
-		LayoutInflater mInflater = mActivity.getLayoutInflater();
-		/**
-		 * 初始化我的活动列表
-		 */
-		View myExerciseListLayout = mInflater.inflate(R.layout.pull_list, null);
-		myExerciseListView = (AbPullListView) myExerciseListLayout
-				.findViewById(R.id.mListView);
-		View header = mInflater.inflate(R.layout.listview_header, null);
-		myExerciseListView.addHeaderView(header);
+    /**
+     * 初始化viewPager数据 initViewPager(这里用一句话描述这个方法的作用)
+     */
+    private void initViewPager() {
 
-		// ListView数据
-		myExerciseListData = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < 10; i++) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("exercisePic",
-					"http://img5.imgtn.bdimg.com/it/u=1530701415,1979691644&fm=21&gp=0.jpg");
-			myExerciseListData.add(map);
-		}
-		// 使用自定义的Adapter
-		exerciseListAdapter = new ExerciseListAdapter2(mActivity, mActivity,
-				myExerciseListData, R.layout.exercise_list_item2, new String[] {
-						"exercisePic", "exerciseTitle", "exerciseAddress",
-						"exerciseTime", "exerciseUserCount", "lickCount",
-						"talkCount", "collectCount" }, new int[] {
-						R.id.exercisePic, R.id.exerciseTitle,
-						R.id.exerciseRouteAddress, R.id.exerciseTime,
-						R.id.userCount, R.id.likeCount, R.id.talkCount,
-						R.id.collectCount });
-		myExerciseListView.setAdapter(exerciseListAdapter);
-		// item被点击事件
-		// item被点击事件
-		myExerciseListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+        LayoutInflater mInflater = mActivity.getLayoutInflater();
+        /**
+         * 初始化我的活动列表
+         */
+        View myExerciseListLayout = mInflater.inflate(R.layout.pull_list, null);
+        
+        myExerciseListView = (AbPullToRefreshView) myExerciseListLayout.findViewById(R.id.mPullRefreshView);
+        myExerciseList = (ListView) myExerciseListLayout.findViewById(R.id.mListView);
+        View header = mInflater.inflate(R.layout.listview_header, null);
+        myExerciseList.addHeaderView(header);
 
-				Intent i = new Intent();
-				i.setClass(mActivity, ExerciseDetailActivity2.class);
-				startActivity(i);
-				mActivity.overridePendingTransition(R.anim.fragment_in,
-						R.anim.fragment_out);
-			}
-		});
-		listViews.add(myExerciseListLayout);
-		/**
-		 * 初始化路书列表
-		 */
-		View myRouteBookListLayout = mInflater
-				.inflate(R.layout.pull_list, null);
-		myRouteBookListView = (AbPullListView) myRouteBookListLayout
-				.findViewById(R.id.mListView);
-		View routeBookHeader = mInflater.inflate(
-				R.layout.listview_header_routebooks, null);
-		myRouteBookListView.addHeaderView(routeBookHeader);
-		myRouteBookListData = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < 10; i++) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			myRouteBookListData.add(map);
-		}
-		myRouteBookListAdapter = new RoutesBookListAdapter2(mActivity,
-				myRouteBookListData);
-		myRouteBookListView.setAdapter(myRouteBookListAdapter);
-		myRouteBookListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+        // ListView数据
+        myExerciseListData = new ArrayList<Map<String, Object>>();
+        for (int i = 0; i < 10; i++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("exercisePic", "http://img5.imgtn.bdimg.com/it/u=1530701415,1979691644&fm=21&gp=0.jpg");
+            myExerciseListData.add(map);
+        }
+        // 使用自定义的Adapter
+        exerciseListAdapter = new ExerciseListAdapter2(mActivity, mActivity, myExerciseListData, R.layout.exercise_list_item2, new String[] {
+                "exercisePic", "exerciseTitle", "exerciseAddress", "exerciseTime", "exerciseUserCount", "lickCount", "talkCount", "collectCount" },
+                new int[] { R.id.exercisePic, R.id.exerciseTitle, R.id.exerciseRouteAddress, R.id.exerciseTime, R.id.userCount, R.id.likeCount,
+                        R.id.talkCount, R.id.collectCount });
+        myExerciseList.setAdapter(exerciseListAdapter);
+        // item被点击事件
+        // item被点击事件
+        myExerciseList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-				Intent i = new Intent();
-				i.setClass(mActivity, RouteDetailActivity.class);
-				startActivity(i);
-				mActivity.overridePendingTransition(R.anim.fragment_in,
-						R.anim.fragment_out);
-			}
-		});
-		listViews.add(myRouteBookListLayout);
+                Intent i = new Intent();
+                i.setClass(mActivity, ExerciseDetailActivity3.class);
+                startActivity(i);
+                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+            }
+        });
+        listViews.add(myExerciseListLayout);
+        /**
+         * 初始化路书列表
+         */
+        View myRouteBookListLayout = mInflater.inflate(R.layout.pull_list, null);
+        myRouteBookListView = (AbPullToRefreshView) myRouteBookListLayout.findViewById(R.id.mPullRefreshView);
+        myRouteBookList = (ListView) myRouteBookListLayout.findViewById(R.id.mListView);
+        View routeBookHeader = mInflater.inflate(R.layout.listview_header_routebooks, null);
+        myRouteBookList.addHeaderView(routeBookHeader);
+        myRouteBookListData = new ArrayList<Map<String, Object>>();
+        for (int i = 0; i < 10; i++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            myRouteBookListData.add(map);
+        }
+        myRouteBookListAdapter = new RoutesBookListAdapter2(mActivity, myRouteBookListData);
+        myRouteBookList.setAdapter(myRouteBookListAdapter);
+        myRouteBookList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-		/**
-		 * 初始化标记列表
-		 */
-		View myMarkerListLayout = mInflater.inflate(R.layout.pull_list, null);
-		myMarkerListView = (AbPullListView) myMarkerListLayout
-				.findViewById(R.id.mListView);
-		View markerHeader = mInflater.inflate(R.layout.listview_header_markers,
-				null);
-		myMarkerListView.addHeaderView(markerHeader);
-		myMarkerListData = new ArrayList<MarkerBean>();
-		for (int i = 0; i < 10; i++) {
-			MarkerBean mb = new MarkerBean();
-			myMarkerListData.add(mb);
-		}
-		myMarkerListAdapter = new MarkerListAdapter2(mActivity, myMarkerListData);
-		myMarkerListView.setAdapter(myMarkerListAdapter);
-		myMarkerListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+                Intent i = new Intent();
+                i.setClass(mActivity, RouteDetailActivity.class);
+                startActivity(i);
+                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+            }
+        });
+        listViews.add(myRouteBookListLayout);
 
-				Intent i = new Intent();
-				i.setClass(mActivity, MarkerDetailActivity.class);
-				startActivity(i);
-				mActivity.overridePendingTransition(R.anim.fragment_in,
-						R.anim.fragment_out);
-			}
-		});
-		listViews.add(myMarkerListLayout);
+        /**
+         * 初始化标记列表
+         */
+        View myMarkerListLayout = mInflater.inflate(R.layout.pull_list, null);
+        myMarkerListView = (AbPullToRefreshView) myRouteBookListLayout.findViewById(R.id.mPullRefreshView);
+        myMarkerList = (ListView) myRouteBookListLayout.findViewById(R.id.mListView);
+        View markerHeader = mInflater.inflate(R.layout.listview_header_markers, null);
+        myMarkerList.addHeaderView(markerHeader);
+        myMarkerListData = new ArrayList<MarkerBean>();
+        for (int i = 0; i < 10; i++) {
+            MarkerBean mb = new MarkerBean();
+            myMarkerListData.add(mb);
+        }
+        myMarkerListAdapter = new MarkerListAdapter2(mActivity, myMarkerListData);
+        myMarkerList.setAdapter(myMarkerListAdapter);
+        myMarkerList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-		/**
-		 * 显示viewPager
-		 */
-		mPager.setAdapter(new MyPagerAdapter(listViews));
-		mPager.setCurrentItem(0);
-		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
+                Intent i = new Intent();
+                i.setClass(mActivity, MarkerDetailActivity.class);
+                startActivity(i);
+                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+            }
+        });
+        listViews.add(myMarkerListLayout);
 
-	}
+        /**
+         * 显示viewPager
+         */
+        mPager.setAdapter(new MyPagerAdapter(listViews));
+        mPager.setCurrentItem(0);
+        mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
-	/**
-	 * 点击事件
-	 */
-	private OnClickListener click = new OnClickListener() {
+    }
 
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			switch (v.getId()) {
-			case R.id.goToMessage:
-				Intent goToMessageIntent = new Intent();
-				goToMessageIntent.setClass(mActivity,
-						MessageListActivity.class);
-				mActivity.startActivity(goToMessageIntent);
-				mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-				break;
-			case R.id.goToSetting:
-				Intent i = new Intent();
-				i.setClass(mActivity, SettingMainActivity.class);
-				mActivity.startActivityForResult(i, 10005);
-				mActivity.overridePendingTransition(R.anim.fragment_in,
-						R.anim.fragment_out);
-				break;
-			case R.id.chooseExercise:
-				mPager.setCurrentItem(0);
-				chooseExercise.setSelected(true);
-				chooseRouteBook.setSelected(false);
-				chooseMarker.setSelected(false);
-				break;
+    /**
+     * 点击事件
+     */
+    private OnClickListener click = new OnClickListener() {
 
-			case R.id.chooseRouteBook:
-				mPager.setCurrentItem(1);
-				chooseExercise.setSelected(false);
-				chooseRouteBook.setSelected(true);
-				chooseMarker.setSelected(false);
-				break;
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            switch (v.getId()) {
+            case R.id.goToMessage:
+                Intent goToMessageIntent = new Intent();
+                goToMessageIntent.setClass(mActivity, MessageListActivity.class);
+                mActivity.startActivity(goToMessageIntent);
+                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+                break;
+            case R.id.goToSetting:
+                Intent i = new Intent();
+                i.setClass(mActivity, SettingMainActivity.class);
+                mActivity.startActivityForResult(i, 10005);
+                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+                break;
+            case R.id.chooseExercise:
+                mPager.setCurrentItem(0);
+                chooseExercise.setSelected(true);
+                chooseRouteBook.setSelected(false);
+                chooseMarker.setSelected(false);
+                break;
 
-			case R.id.chooseMarker:
-				mPager.setCurrentItem(2);
-				chooseExercise.setSelected(false);
-				chooseRouteBook.setSelected(false);
-				chooseMarker.setSelected(true);
-				break;
-			case R.id.friendsCount:
-				Intent friendsIntent = new Intent();
-				friendsIntent.setClass(mActivity, FriendsActivity.class);
-				mActivity.startActivity(friendsIntent);
-				mActivity.overridePendingTransition(R.anim.fragment_in,
-						R.anim.fragment_out);
-				break;
-			default:
-				break;
-			}
+            case R.id.chooseRouteBook:
+                mPager.setCurrentItem(1);
+                chooseExercise.setSelected(false);
+                chooseRouteBook.setSelected(true);
+                chooseMarker.setSelected(false);
+                break;
 
-		}
-	};
+            case R.id.chooseMarker:
+                mPager.setCurrentItem(2);
+                chooseExercise.setSelected(false);
+                chooseRouteBook.setSelected(false);
+                chooseMarker.setSelected(true);
+                break;
+            case R.id.friendsCount:
+                Intent friendsIntent = new Intent();
+                friendsIntent.setClass(mActivity, FriendsActivity.class);
+                mActivity.startActivity(friendsIntent);
+                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+                break;
+            default:
+                break;
+            }
 
-	/**
-	 * ViewPager适配器
-	 */
-	public class MyPagerAdapter extends PagerAdapter {
-		public List<View> mListViews;
+        }
+    };
 
-		public MyPagerAdapter(List<View> mListViews) {
-			this.mListViews = mListViews;
-		}
+    /**
+     * ViewPager适配器
+     */
+    public class MyPagerAdapter extends PagerAdapter {
+        public List<View> mListViews;
 
-		@Override
-		public void destroyItem(View arg0, int arg1, Object arg2) {
-			((ViewPager) arg0).removeView(mListViews.get(arg1));
-		}
+        public MyPagerAdapter(List<View> mListViews) {
+            this.mListViews = mListViews;
+        }
 
-		@Override
-		public void finishUpdate(View arg0) {
-		}
+        @Override
+        public void destroyItem(View arg0, int arg1, Object arg2) {
+            ((ViewPager) arg0).removeView(mListViews.get(arg1));
+        }
 
-		@Override
-		public int getCount() {
-			return mListViews.size();
-		}
+        @Override
+        public void finishUpdate(View arg0) {
+        }
 
-		@Override
-		public Object instantiateItem(View arg0, int arg1) {
-			((ViewPager) arg0).addView(mListViews.get(arg1), 0);
-			return mListViews.get(arg1);
-		}
+        @Override
+        public int getCount() {
+            return mListViews.size();
+        }
 
-		@Override
-		public boolean isViewFromObject(View arg0, Object arg1) {
-			return arg0 == (arg1);
-		}
+        @Override
+        public Object instantiateItem(View arg0, int arg1) {
+            ((ViewPager) arg0).addView(mListViews.get(arg1), 0);
+            return mListViews.get(arg1);
+        }
 
-		@Override
-		public void restoreState(Parcelable arg0, ClassLoader arg1) {
-		}
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == (arg1);
+        }
 
-		@Override
-		public Parcelable saveState() {
-			return null;
-		}
+        @Override
+        public void restoreState(Parcelable arg0, ClassLoader arg1) {
+        }
 
-		@Override
-		public void startUpdate(View arg0) {
-		}
-	}
+        @Override
+        public Parcelable saveState() {
+            return null;
+        }
 
-	/**
-	 * 页卡切换监听
-	 */
-	public class MyOnPageChangeListener implements OnPageChangeListener {
+        @Override
+        public void startUpdate(View arg0) {
+        }
+    }
 
-		@Override
-		public void onPageSelected(int arg0) {
-			switch (arg0) {
-			case 0:
-				chooseExercise.setSelected(true);
-				chooseRouteBook.setSelected(false);
-				chooseMarker.setSelected(false);
-				break;
-			case 1:
-				chooseExercise.setSelected(false);
-				chooseRouteBook.setSelected(true);
-				chooseMarker.setSelected(false);
-				break;
-			case 2:
-				chooseExercise.setSelected(false);
-				chooseRouteBook.setSelected(false);
-				chooseMarker.setSelected(true);
-				break;
-			default:
-				break;
-			}
-		}
+    /**
+     * 页卡切换监听
+     */
+    public class MyOnPageChangeListener implements OnPageChangeListener {
 
-		@Override
-		public void onPageScrolled(int arg0, float arg1, int arg2) {
-		}
+        @Override
+        public void onPageSelected(int arg0) {
+            switch (arg0) {
+            case 0:
+                chooseExercise.setSelected(true);
+                chooseRouteBook.setSelected(false);
+                chooseMarker.setSelected(false);
+                break;
+            case 1:
+                chooseExercise.setSelected(false);
+                chooseRouteBook.setSelected(true);
+                chooseMarker.setSelected(false);
+                break;
+            case 2:
+                chooseExercise.setSelected(false);
+                chooseRouteBook.setSelected(false);
+                chooseMarker.setSelected(true);
+                break;
+            default:
+                break;
+            }
+        }
 
-		@Override
-		public void onPageScrollStateChanged(int arg0) {
-		}
-	}
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		mActivity = (NewMainActivity) activity;
-	}
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+        }
+    }
 
-	@Override
-	public void onResume(){
-		super.onResume();
-		userName.setText(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERNICKNAME));
-		String userHeadPicUrl = SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERAVATARURL);
-		if(userHeadPicUrl.length() > 0){
-		    mAbImageDownloader.display(userHeadImageView, Constant.serverUrl + userHeadPicUrl);
-		}
-		
-	}
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = (NewMainActivity) activity;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        userName.setText(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERNICKNAME));
+        String userHeadPicUrl = SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERAVATARURL);
+        if (userHeadPicUrl.length() > 0) {
+            mAbImageLoader.display(userHeadImageView, Constant.serverUrl + userHeadPicUrl);
+        }
+
+    }
 }

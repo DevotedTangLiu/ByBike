@@ -3,26 +3,20 @@ package com.example.bybike.adapter;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ab.bitmap.AbImageDownloader;
+import com.ab.image.AbImageLoader;
 import com.example.bybike.R;
-import com.example.bybike.adapter.ExerciseDiscussListAdapter.OnImageClickListener;
-import com.example.bybike.adapter.ImageListAdapter.OnCollectButtonClick;
-import com.example.bybike.adapter.ImageListAdapter.OnLikeButtonClick;
-import com.example.bybike.adapter.ImageListAdapter.OnTalkButtonClick;
 import com.example.bybike.user.UserPageActivity;
 import com.example.bybike.util.Constant;
 
@@ -43,8 +37,8 @@ public class RoutesBookListAdapter extends BaseAdapter {
 	// 列表展现的数据
 	private List mData;
 	// 图片下载器
-	private AbImageDownloader avatorImageDownloader = null;
-	private AbImageDownloader routeImageDownloader = null;
+	private AbImageLoader avatorImageDownloader = null;
+	private AbImageLoader routeImageDownloader = null;
 
 	/**
 	 * 构造方法
@@ -59,15 +53,15 @@ public class RoutesBookListAdapter extends BaseAdapter {
 		// 用于将xml转为View
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		routeImageDownloader = new AbImageDownloader(mContext);
-		routeImageDownloader.setLoadingImage(R.drawable.image_loading);
-		routeImageDownloader.setErrorImage(R.drawable.image_error);
-		routeImageDownloader.setNoImage(R.drawable.image_no);
-
-		avatorImageDownloader = new AbImageDownloader(mContext);
+		avatorImageDownloader = AbImageLoader.newInstance(context);
 		avatorImageDownloader.setLoadingImage(R.drawable.image_loading);
 		avatorImageDownloader.setErrorImage(R.drawable.image_error);
-		avatorImageDownloader.setNoImage(R.drawable.image_no);
+		avatorImageDownloader.setEmptyImage(R.drawable.image_empty);
+
+		routeImageDownloader = AbImageLoader.newInstance(context);
+		routeImageDownloader.setLoadingImage(R.drawable.image_loading);
+		routeImageDownloader.setErrorImage(R.drawable.image_error);
+		routeImageDownloader.setEmptyImage(R.drawable.image_empty);
 	}
 
 	@Override

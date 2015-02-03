@@ -29,6 +29,7 @@ import com.ab.activity.AbActivity;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.util.AbDialogUtil;
 import com.ab.view.titlebar.AbTitleBar;
 import com.example.bybike.R;
 
@@ -45,9 +46,6 @@ public class UpdateActivity extends AbActivity {
 
         // 获取Http工具类
         mAbHttpUtil = AbHttpUtil.getInstance(this);
-        mAbHttpUtil.setDebug(false);
-
-       
     }
 
     /**
@@ -158,7 +156,7 @@ public class UpdateActivity extends AbActivity {
     }
 
     void update() {
-        removeProgressDialog();
+        AbDialogUtil.removeDialog(UpdateActivity.this);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "ByBike.apk")),
                 "application/vnd.android.package-archive");
@@ -181,7 +179,7 @@ public class UpdateActivity extends AbActivity {
         case R.id.updateButton:
             String downloadUrl = "http://gdown.baidu.com/data/wisegame/4b9f5ddd9d7b1cb5/piaoliupingzi_15.apk";
             downFile(downloadUrl);
-            showProgressDialog("正在下载更新，请稍后..");
+            AbDialogUtil.showProgressDialog(UpdateActivity.this, 0, "正在下载更新，请稍后..");
             break;
         default:
             break;

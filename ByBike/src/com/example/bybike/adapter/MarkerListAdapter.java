@@ -3,7 +3,6 @@ package com.example.bybike.adapter;
 import java.util.List;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +14,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ab.fragment.AbAlertDialogFragment;
+import com.ab.util.AbDialogUtil;
 import com.example.bybike.R;
 import com.example.bybike.db.model.MarkerBean;
-import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.marker.MarkerListActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
@@ -185,17 +185,24 @@ public class MarkerListAdapter extends BaseAdapter {
 			
 		    if (!SharedPreferencesUtil.getSharedPreferences_b(mContext, Constant.ISLOGINED)) {
 
-		        mContext.showDialog("温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试", new DialogInterface.OnClickListener() {
+		    	AbDialogUtil.showAlertDialog(mContext, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+		    			new AbAlertDialogFragment.AbDialogOnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        Intent i = new Intent(mContext, LoginActivity.class);
-                        mContext.startActivity(i);
-                        mContext.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-                        dialog.dismiss();
-                    }
+					@Override
+					public void onPositiveClick() {
+						// TODO Auto-generated method stub
+						  Intent i = new Intent(mContext, LoginActivity.class);
+	                        mContext.startActivity(i);
+	                        mContext.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+	                        AbDialogUtil.removeDialog(mContext);
+					}
+					@Override
+					public void onNegativeClick() {
+						// TODO Auto-generated method stub
+						AbDialogUtil.removeDialog(mContext);
+					}
                 });
+		       
                 return;
             }
 		    TextView likeCount = (TextView)source.findViewById(R.id.likeCount);
@@ -229,16 +236,22 @@ public class MarkerListAdapter extends BaseAdapter {
 		public void onClick(View source) {
 		    if (!SharedPreferencesUtil.getSharedPreferences_b(mContext, Constant.ISLOGINED)) {
 
-                mContext.showDialog("温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试", new DialogInterface.OnClickListener() {
+		    	AbDialogUtil.showAlertDialog(mContext, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+		    			new AbAlertDialogFragment.AbDialogOnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        Intent i = new Intent(mContext, LoginActivity.class);
-                        mContext.startActivity(i);
-                        mContext.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-                        dialog.dismiss();
-                    }
+					@Override
+					public void onPositiveClick() {
+						// TODO Auto-generated method stub
+						  Intent i = new Intent(mContext, LoginActivity.class);
+	                        mContext.startActivity(i);
+	                        mContext.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+	                        AbDialogUtil.removeDialog(mContext);
+					}
+					@Override
+					public void onNegativeClick() {
+						// TODO Auto-generated method stub
+						AbDialogUtil.removeDialog(mContext);
+					}
                 });
                 return;
             }

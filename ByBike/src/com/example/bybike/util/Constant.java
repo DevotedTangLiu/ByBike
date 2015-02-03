@@ -172,5 +172,13 @@ public class Constant {
 	 * 添加友好点
 	 */
 	public static final String addMarkerUrl = "/bybike_ser/m/marker/save";
+	/**
+	 * 查询用户
+	 */
+	public static final String findUserUrl = "/bybike_ser/m/findUser";
+	/**
+	 * 获取私人消息
+	 */
+	public static final String getPrivateMessage = "/bybike_ser/m/news/getPrivateNews";
 	
 }

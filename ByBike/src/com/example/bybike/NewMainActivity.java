@@ -18,6 +18,7 @@ import com.ab.activity.AbActivity;
 import com.ab.task.AbTaskItem;
 import com.ab.task.AbTaskListener;
 import com.ab.task.AbTaskQueue;
+import com.ab.util.AbToastUtil;
 import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.exercise.ExerciseListFragment;
 import com.example.bybike.marker.AddMarkerActivity;
@@ -89,7 +90,7 @@ public class NewMainActivity extends AbActivity {
 		 * 该任务在两秒后将退出标志exit置为false,此时再次点击返回键不退出应用 3. 在任务update前，点击返回键，将退出应用
 		 **/
 		item1 = new AbTaskItem();
-		item1.listener = new AbTaskListener() {
+		item1.setListener(new AbTaskListener() {
 			@Override
 			public void update() {
 				exit = false;
@@ -102,8 +103,7 @@ public class NewMainActivity extends AbActivity {
 				} catch (Exception e) {
 				}
 			};
-		};
-
+		});
 	}
 
 	@Override
@@ -221,7 +221,7 @@ public class NewMainActivity extends AbActivity {
 
 			if (!exit) {
 				exit = true;
-				showToast("再按一次返回键退出应用");
+				AbToastUtil.showToast(NewMainActivity.this, "再按一次返回键退出应用");
 				mAbTaskQueue.execute(item1);
 			} else {
 				shutdown();

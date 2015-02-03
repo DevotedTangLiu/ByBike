@@ -15,10 +15,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
-import com.ab.global.AbConstant;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.util.AbToastUtil;
 import com.example.bybike.marker.MarkerListActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
@@ -31,7 +31,7 @@ public class SearchActivity extends AbActivity {
 	EditText searchContent;
 
 	ProgressDialog mProgressDialog;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,8 +40,7 @@ public class SearchActivity extends AbActivity {
 
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
-		mAbHttpUtil.setDebug(false);
-		
+
 		mProgressDialog = new ProgressDialog(SearchActivity.this, 5);
 		// 设置点击屏幕Dialog不消失
 		mProgressDialog.setCanceledOnTouchOutside(false);
@@ -93,9 +92,8 @@ public class SearchActivity extends AbActivity {
 	private void searchMarkers() {
 
 		if (!NetUtil.isConnnected(this)) {
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(this,
-					5);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this, 5);
 			builder.setMessage("网络不可用，请设置您的网络后重试");
 			builder.setTitle("温馨提示");
 			builder.create();
@@ -105,10 +103,10 @@ public class SearchActivity extends AbActivity {
 			mAlertDialog.show();
 			return;
 		}
-		
+
 		String name = searchContent.getText().toString().trim();
-		if("".equals(name)){
-			showToast("请输入搜索内容");
+		if ("".equals(name)) {
+			AbToastUtil.showToast(SearchActivity.this, "请输入搜索内容");
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.getMarkerListUrl;
@@ -146,7 +144,7 @@ public class SearchActivity extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				if(mProgressDialog != null){
+				if (mProgressDialog != null) {
 					mProgressDialog.dismiss();
 				}
 			};

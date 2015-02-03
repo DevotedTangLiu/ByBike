@@ -1,47 +1,44 @@
 package com.example.bybike.exercise;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ZoomControls;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
 import com.ab.activity.AbActivity;
-import com.ab.bitmap.AbImageDownloader;
+import com.ab.fragment.AbAlertDialogFragment;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.image.AbImageLoader;
+import com.ab.util.AbDialogUtil;
+import com.ab.util.AbToastUtil;
 import com.ab.view.sliding.AbSlidingPlayView;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
-import com.baidu.mapapi.map.GroundOverlayOptions;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -52,8 +49,6 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
-import com.example.bybike.marker.AddCommentActivity;
-import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.riding.RidingActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
@@ -81,7 +76,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 	List<ContentValues> discussValueList = null;
 	ExerciseDiscussListAdapter discussAdapter = null;
 	// 图片下载类
-	private AbImageDownloader mAbImageDownloader = null;
+	private AbImageLoader mAbImageDownloader = null;
 
 	View detailheader;
 	// 点赞、评论、分享区域
@@ -114,7 +109,6 @@ public class ExerciseDetailActivity3 extends AbActivity {
 
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
-		mAbHttpUtil.setDebug(false);
 
 		exerciseId = getIntent().getStringExtra("id");
 
@@ -182,23 +176,23 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				if (!SharedPreferencesUtil.getSharedPreferences_b(
 						ExerciseDetailActivity3.this, Constant.ISLOGINED)) {
 
-					showDialog("温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
-							new DialogInterface.OnClickListener() {
+					AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+			    			new AbAlertDialogFragment.AbDialogOnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// TODO Auto-generated method stub
-									Intent i = new Intent(
-											ExerciseDetailActivity3.this,
-											LoginActivity.class);
-									startActivity(i);
-									overridePendingTransition(
-											R.anim.fragment_in,
-											R.anim.fragment_out);
-									dialog.dismiss();
-								}
-							});
+						@Override
+						public void onPositiveClick() {
+							// TODO Auto-generated method stub
+							  Intent i = new Intent(ExerciseDetailActivity3.this, LoginActivity.class);
+							  ExerciseDetailActivity3.this.startActivity(i);
+							  ExerciseDetailActivity3.this.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+		                      AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
+						}
+						@Override
+						public void onNegativeClick() {
+							// TODO Auto-generated method stub
+							AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
+						}
+		            });
 					return;
 				}
 				if (v.isSelected()) {
@@ -226,23 +220,23 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				if (!SharedPreferencesUtil.getSharedPreferences_b(
 						ExerciseDetailActivity3.this, Constant.ISLOGINED)) {
 
-					showDialog("温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
-							new DialogInterface.OnClickListener() {
+					AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+			    			new AbAlertDialogFragment.AbDialogOnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// TODO Auto-generated method stub
-									Intent i = new Intent(
-											ExerciseDetailActivity3.this,
-											LoginActivity.class);
-									startActivity(i);
-									overridePendingTransition(
-											R.anim.fragment_in,
-											R.anim.fragment_out);
-									dialog.dismiss();
-								}
-							});
+						@Override
+						public void onPositiveClick() {
+							// TODO Auto-generated method stub
+							  Intent i = new Intent(ExerciseDetailActivity3.this, LoginActivity.class);
+							  ExerciseDetailActivity3.this.startActivity(i);
+							  ExerciseDetailActivity3.this.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+		                      AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
+						}
+						@Override
+						public void onNegativeClick() {
+							// TODO Auto-generated method stub
+							AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
+						}
+		            });
 					return;
 				}
 				
@@ -357,7 +351,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 	private void queryComments() {
 
 		if (!NetUtil.isConnnected(this)) {
-			showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+			AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0, "温馨提示",
+					"网络不可用，请设置您的网络后重试", null);
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.getCommentList;
@@ -381,7 +376,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-				showProgressDialog("请稍后...");
+				AbDialogUtil.showProgressDialog(ExerciseDetailActivity3.this, 0,
+						"正在查询评论列表，请稍后...",  "DIALOG2");
 			}
 
 			// 失败，调用
@@ -393,7 +389,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				removeProgressDialog();
+				AbDialogUtil.removeDialog(ExerciseDetailActivity3.this,  "DIALOG2");
 			};
 
 		});
@@ -430,7 +426,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				discussAdapter.notifyDataSetChanged();
 
 			} else {
-				showToast(resultObj.getString("message"));
+				AbToastUtil.showToast(ExerciseDetailActivity3.this, resultObj.getString("message"));
 			}
 
 		} catch (JSONException e) {
@@ -443,7 +439,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 
 	private void queryDetail() {
 		if (!NetUtil.isConnnected(this)) {
-			showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+			AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0, "温馨提示",
+					"网络不可用，请设置您的网络后重试", null);
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.exerciseDetailUrl;
@@ -465,7 +462,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-				showProgressDialog("请稍后...");
+				AbDialogUtil.showProgressDialog(ExerciseDetailActivity3.this, 0,
+						"正在查询，请稍后...", "DIALOG1");
 			}
 
 			// 失败，调用
@@ -477,7 +475,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				removeProgressDialog();
+				AbDialogUtil.removeDialog(ExerciseDetailActivity3.this,"DIALOG1");
 			};
 
 		});
@@ -528,10 +526,10 @@ public class ExerciseDetailActivity3 extends AbActivity {
 					}
 
 				}
-				mAbImageDownloader = new AbImageDownloader(this);
+				mAbImageDownloader = AbImageLoader.newInstance(ExerciseDetailActivity3.this);
 				mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
-				mAbImageDownloader.setNoImage(R.drawable.image_no);
 				mAbImageDownloader.setErrorImage(R.drawable.image_error);
+				mAbImageDownloader.setEmptyImage(R.drawable.image_empty);
 				for (int i = 0; i < 8; i++) {
 
 					if (imageUrls[i] != null && !"".equals(imageUrls[i])) {
@@ -539,8 +537,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 								R.layout.play_view_item, null);
 						ImageView mPlayImage = (ImageView) mPlayView
 								.findViewById(R.id.mPlayImage);
-						mAbSlidingPlayView
-								.setPageLineHorizontalGravity(Gravity.CENTER);
+//						mAbSlidingPlayView.setPageLineHorizontalGravity(Gravity.CENTER);
 						mAbSlidingPlayView.addView(mPlayView);
 
 						mAbImageDownloader.display(mPlayImage,
@@ -574,14 +571,14 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				}
 
 			} else {
-				showToast("查询失败，请稍后重试");
+				AbToastUtil.showToast(ExerciseDetailActivity3.this, "查询失败，请稍后重试");
 				ExerciseDetailActivity3.this.finish();
 			}
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			showToast("查询失败，请稍后重试");
+			AbToastUtil.showToast(ExerciseDetailActivity3.this, "查询失败，请稍后重试");
 			ExerciseDetailActivity3.this.finish();
 
 		}
@@ -669,7 +666,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 		super.onResume();
 		// 在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
 		mMapView.onResume();
-		removeProgressDialog();
+		AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
 	}
 
 	@Override

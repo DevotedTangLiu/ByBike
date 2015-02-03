@@ -494,7 +494,8 @@
                     android:layout_marginLeft="18dp"
                     android:layout_marginTop="14dp"
                     android:background="@drawable/cornorshape"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal"
+                    android:visibility="gone" >
 
                     <ImageView
                         android:layout_width="16dp"
@@ -508,7 +509,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:text="精蒸小吃，小洲租车"
+                        android:text=""
                         android:textColor="#9B9B9B"
                         android:textSize="13sp" />
                 </LinearLayout>

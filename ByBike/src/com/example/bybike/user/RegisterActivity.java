@@ -16,6 +16,7 @@ import com.ab.activity.AbActivity;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.util.AbDialogUtil;
 import com.example.bybike.R;
 import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.util.BitmapUtil;
@@ -96,7 +97,7 @@ public class RegisterActivity extends AbActivity {
     private void register() {
 
         if (!NetUtil.isConnnected(this)) {
-            showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+            AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示", "网络不可用，请设置您的网络后重试", null);
             return;
         }
 
@@ -106,15 +107,15 @@ public class RegisterActivity extends AbActivity {
         // String repeatPwdString = repeatPsd.getText().toString().trim();
 
         if (!accountString.contains("@") || !accountString.contains(".")) {
-            showDialog("温馨提示", "请输入正确的邮箱地址");
+            AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示", "请输入正确的邮箱地址", null);
             return;
         }
         if (nicknameString.equalsIgnoreCase("")) {
-            showDialog("温馨提示", "昵称不能为空，请重新输入");
+            AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示",  "昵称不能为空，请重新输入", null);
             return;
         }
         if (passwordString.length() < 6) {
-            showDialog("温馨提示", "密码长度不能小于6，请重新输入");
+            AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示", "密码长度不能小于6，请重新输入", null);
             return;
         }
         // if(!passwordString.equals(repeatPwdString)){
@@ -140,20 +141,19 @@ public class RegisterActivity extends AbActivity {
             // 开始执行前
             @Override
             public void onStart() {
-
-                showProgressDialog("正在注册，请稍后...");
+                AbDialogUtil.showProgressDialog(RegisterActivity.this, 0, "正在注册，请稍后...");
             }
 
             // 失败，调用
             @Override
             public void onFailure(int statusCode, String content, Throwable error) {
-                showDialog("温馨提示", "注册失败，请稍后重试");
+                AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示", "注册失败，请稍后重试", null);
             }
 
             // 完成后调用，失败，成功
             @Override
             public void onFinish() {
-                removeProgressDialog();
+                AbDialogUtil.removeDialog(RegisterActivity.this);
             };
 
         });
@@ -177,12 +177,12 @@ public class RegisterActivity extends AbActivity {
                 RegisterActivity.this.finish();
 
             } else {
-                showDialog("温馨提示", responseObj.getString("message"));
+                AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示", responseObj.getString("message"), null);
             }
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            showDialog("温馨提示", "注册失败，请稍后重试");
+            AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示", "注册失败，请稍后重试", null);
         }
     }
 

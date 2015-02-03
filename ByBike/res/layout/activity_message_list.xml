@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:background="#F5F5F5"
     android:orientation="vertical" >
-    
+
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="fill_parent"
@@ -40,16 +40,52 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:background="#C5C5C5" />
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp" >
 
-    <com.ab.view.pullview.AbPullListView
-        android:id="@+id/mListView"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:baselineAligned="false"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/applyButton"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/message_list_apply_selector"
+                android:onClick="onClick" />
+
+            <Button
+                android:id="@+id/commentButton"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/message_list_discuss_selector"
+                android:onClick="onClick" />
+
+            <Button
+                android:id="@+id/notifyButton"
+                android:layout_width="65dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/message_list_notify_selector"
+                android:onClick="onClick" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vPager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:cacheColorHint="#00000000"
-        android:divider="@drawable/list_view_divider"
-        android:dividerHeight="2dp"
-        android:fastScrollEnabled="false"
-        android:scrollbars="none" >
-    </com.ab.view.pullview.AbPullListView>
+        android:background="#E9E9E9"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" />
 
 </LinearLayout>

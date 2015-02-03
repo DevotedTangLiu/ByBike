@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ZoomControls;
 
 import com.ab.activity.AbActivity;
+import com.ab.util.AbDialogUtil;
+import com.ab.util.AbToastUtil;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
 import com.baidu.mapapi.map.BaiduMap.OnMarkerDragListener;
@@ -116,7 +118,8 @@ public class LocationMarkerActivity extends AbActivity implements OnGetGeoCoderR
 		 // 初始化搜索模块，注册事件监听
 	        mSearch = GeoCoder.newInstance();
 	        mSearch.setOnGetGeoCodeResultListener(this);
-	        showProgressDialog("正在定位“" + address +"”,请稍后...");
+	        AbDialogUtil.showProgressDialog(LocationMarkerActivity.this, 0,
+	        		"正在定位“" + address +"”,请稍后...");
 	        mSearch.geocode(new GeoCodeOption().city("").address(address));
 		}
 		
@@ -134,7 +137,8 @@ public class LocationMarkerActivity extends AbActivity implements OnGetGeoCoderR
 			}
 		});
 		
-		showDialog("温馨提示", "在地图中点击指定地点，或拖拽图标，即可完成位置选择");
+		AbDialogUtil.showAlertDialog(LocationMarkerActivity.this, 0, "温馨提示",
+				"在地图中点击指定地点，或拖拽图标，即可完成位置选择", null);
 	}
 
 
@@ -221,9 +225,9 @@ public class LocationMarkerActivity extends AbActivity implements OnGetGeoCoderR
     @Override
     public void onGetGeoCodeResult(GeoCodeResult result) {
         // TODO Auto-generated method stub
-        removeProgressDialog();
+    	AbDialogUtil.removeDialog(LocationMarkerActivity.this);
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-            showToast("抱歉，未能找到地址“"+address+"”的位置，请手动选择");
+        	AbToastUtil.showToast(LocationMarkerActivity.this, "抱歉，未能找到地址“"+address+"”的位置，请手动选择");
             return;
         }
         mBaiduMap.clear();

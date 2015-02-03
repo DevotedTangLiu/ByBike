@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.bybike.db.dao.MessageBeanDao;
+import com.example.bybike.db.model.MessageBean;
 import com.example.bybike.db.model.PostMessage;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -92,6 +94,8 @@ public class PushMsgRealService extends Service {
 		Log.i(tag, "Service is Destroyed");
 	}
 
+	
+	MessageBeanDao MessageBeanDao = null;
 	/**
 	 * 从服务器端获取消息
 	 * 
@@ -104,25 +108,51 @@ public class PushMsgRealService extends Service {
 		public void run() {
 			while (isRunning) {
 				try {
-					
+
 					String data = getPromotMessageFromServer();
 					// long id;
 					try {
 						JSONObject resultObj = new JSONObject(data);
 						String code = resultObj.getString("code");
 						if ("0".equals(code)) {
-							
 
-							JSONArray messageArray = resultObj.getJSONArray("data");
+							
+							JSONArray messageArray = resultObj
+									.getJSONArray("data");
+							MessageBeanDao = new MessageBeanDao(PushMsgRealService.this);
+							MessageBeanDao.startWritableDatabase(false);
 							for (int i = 0; i < messageArray.length(); i++) {
 								JSONObject message = messageArray.getJSONObject(i);
+								
+								
 								String title = message.getString("title");
 								String content = message.getString("content");
 								String id = message.getString("id");
 
-								PostMessage pm = new PostMessage(PushMsgRealService.this);
-								pm.sendMessage(messageNotificationID, title, content);
+								PostMessage pm = new PostMessage(
+										PushMsgRealService.this);
+								pm.sendMessage(messageNotificationID, title,
+										content);
+								
+								MessageBean mb = new MessageBean();
+								mb.setMessageId(message.getString("id"));
+								mb.setMessageContent(message.getString("content"));
+								mb.setMessageSender(message.getString("sender"));
+								mb.setMessageType(message.getString("function"));
+								mb.setMessageTime(message.getString("updateDate"));
+								
+								MessageBeanDao.insert(mb);
 							}
+							MessageBeanDao.closeDatabase();
+
+						} else if ("3".equals(code)) {
+
+							SharedPreferencesUtil.saveSharedPreferences_s(
+									PushMsgRealService.this, Constant.SESSION,
+									"");
+							SharedPreferencesUtil.saveSharedPreferences_b(
+									PushMsgRealService.this,
+									Constant.ISLOGINED, false);
 
 						}
 
@@ -154,10 +184,13 @@ public class PushMsgRealService extends Service {
 	/**
 	 * 获取优惠信息
 	 */
-	String requestURL = Constant.serverUrl + Constant.pushUrl;
+	String requestURL = Constant.serverUrl + Constant.getPrivateMessage;
 
 	public String getPromotMessageFromServer() {
-		String url = requestURL + "?checkTime=" + System.currentTimeMillis();
+		// String url = requestURL + "?checkTime=" + System.currentTimeMillis();
+		String url = requestURL + ";jsessionid=";
+		url += SharedPreferencesUtil.getSharedPreferences_s(this,
+				Constant.SESSION);
 		return javaHttpGet(url);
 	}
 

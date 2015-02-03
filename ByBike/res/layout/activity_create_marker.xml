@@ -457,137 +457,593 @@
                     </RelativeLayout>
                 </LinearLayout>
 
-                <!-- 经营店类型选择 -->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="27dp"
-                    android:layout_marginTop="20dp"
-                    android:text="经营店类型"
-                    android:textColor="#BBBBBB"
-                    android:textSize="12sp" />
-
-                <com.example.bybike.marker.RadioGroup
-                    android:id="@+id/operatingType"
+                <LinearLayout
+                    android:id="@+id/rentBikeArea"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="27dp"
-                    android:layout_marginRight="27dp"
-                    android:layout_marginTop="5dp" >
+                    android:orientation="vertical" >
+
+                    <!-- 经营店类型选择 -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="经营店类型"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
+
+                    <RadioGroup
+                        android:id="@+id/operatingType"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal" >
+
+
+                            <RadioButton
+                                android:id="@+id/publicType"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:checked="true"
+                                android:text="公共单车"
+                                android:textColor="#BBBBBB" />
+
+                            <RadioButton
+                                android:id="@+id/bikeStoreType"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="车店"
+                                android:textColor="#BBBBBB" />
+
+                            <RadioButton
+                                android:id="@+id/privateType"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="私人"
+                                android:textColor="#BBBBBB" />
+                        
+                    </RadioGroup>
+
+                    <!-- 车型选择 -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="车型"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
 
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" >
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="vertical" >
 
-                        <RadioButton
-                            android:id="@+id/publicType"
+                        <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1"
-                            android:checked="true"
-                            android:text="公共单车"
-                            android:textColor="#BBBBBB" />
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal" >
 
-                        <RadioButton
-                            android:id="@+id/bikeStoreType"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1"
-                            android:text="车店"
-                            android:textColor="#BBBBBB" />
+                            <CheckBox
+                                android:id="@+id/gongluche"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:checked="true"
+                                android:text="公路车"
+                                android:textColor="#BBBBBB" />
 
-                        <RadioButton
-                            android:id="@+id/privateType"
+                            <CheckBox
+                                android:id="@+id/shandiche"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="山地车"
+                                android:textColor="#BBBBBB" />
+
+                            <CheckBox
+                                android:id="@+id/xiaozhe"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="小折"
+                                android:textColor="#BBBBBB" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1"
-                            android:text="私人"
-                            android:textColor="#BBBBBB" />
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal" >
+
+                            <CheckBox
+                                android:id="@+id/shuangren"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="双人单车"
+                                android:textColor="#BBBBBB" />
+
+                            <CheckBox
+                                android:id="@+id/sifei"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="死飞"
+                                android:textColor="#BBBBBB" />
+
+                            <CheckBox
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:visibility="invisible" />
+                        </LinearLayout>
                     </LinearLayout>
-                </com.example.bybike.marker.RadioGroup>
 
-                <!-- 车型选择 -->
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/login_input_background" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="27dp"
-                    android:layout_marginTop="20dp"
-                    android:text="车型"
-                    android:textColor="#BBBBBB"
-                    android:textSize="12sp" />
+                        <EditText
+                            android:id="@+id/priceRentBike"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@null"
+                            android:hint="价格..."
+                            android:singleLine="true"
+                            android:textColor="#D2D2D2"
+                            android:textColorHint="#D2D2D2"
+                            android:textSize="16sp" 
+                            android:numeric="decimal">
+                        </EditText>
+                    </LinearLayout>
+                    
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/login_input_background" >
 
-                <com.example.bybike.marker.RadioGroup
-                    android:id="@+id/bikeType"
+                        <EditText
+                            android:id="@+id/phoneNumberRentBike"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@null"
+                            android:hint="电话..."
+                            android:phoneNumber="true"
+                            android:singleLine="true"
+                            android:textColor="#D2D2D2"
+                            android:textColorHint="#D2D2D2"
+                            android:textSize="16sp" >
+                        </EditText>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 车店 -->
+
+                <LinearLayout
+                    android:id="@+id/bikeStroeArea"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="27dp"
-                    android:layout_marginRight="27dp"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:visibility="gone" >
 
                     <LinearLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal" >
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/login_input_background" >
+
+                        <EditText
+                            android:id="@+id/phoneNumberBikeStore"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@null"
+                            android:hint="电话..."
+                            android:phoneNumber="true"
+                            android:singleLine="true"
+                            android:textColor="#D2D2D2"
+                            android:textColorHint="#D2D2D2"
+                            android:textSize="16sp" >
+                        </EditText>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 停车 -->
+                <LinearLayout
+                    android:id="@+id/parkArea"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="是否有人保管"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
+
+                    <RadioGroup
+                        android:id="@+id/takeCaredArea"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp" 
+                        android:orientation="horizontal">
 
                         <RadioButton
-                            android:id="@+id/gongluche"
+                            android:id="@+id/haveTakeCared"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:layout_weight="1"
                             android:checked="true"
-                            android:text="公路车"
+                            android:text="有人保管"
                             android:textColor="#BBBBBB" />
 
                         <RadioButton
-                            android:id="@+id/shandiche"
+                            android:id="@+id/noTakeCared"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:layout_weight="1"
-                            android:text="山地车"
+                            android:text="无人保管"
                             android:textColor="#BBBBBB" />
+                    </RadioGroup>
 
-                        <RadioButton
-                            android:id="@+id/xiaozhe"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1"
-                            android:text="小折"
-                            android:textColor="#BBBBBB" />
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="室内/室外"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
 
-                    <LinearLayout
+                    <RadioGroup
+                        android:id="@+id/indorOutDoorChooose"
                         android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp" 
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/inDoor"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="室内"
+                            android:textColor="#BBBBBB" />
+
+                        <RadioButton
+                            android:id="@+id/outDoor"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:text="室外"
+                            android:textColor="#BBBBBB" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <!-- 景点 -->
+                <LinearLayout
+                    android:id="@+id/sceneryArea"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" 
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="可否进入"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
+
+                    <RadioGroup
+                        android:id="@+id/enterChoose"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp"
                         android:orientation="horizontal" >
 
                         <RadioButton
-                            android:id="@+id/shuangren"
+                            android:id="@+id/canEnter"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:layout_weight="1"
-                            android:text="双人单车"
+                            android:checked="true"
+                            android:text="可以进入"
                             android:textColor="#BBBBBB" />
 
                         <RadioButton
-                            android:id="@+id/sifei"
+                            android:id="@+id/noEnter"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:layout_weight="1"
-                            android:text="死飞"
+                            android:text="不能进入"
+                            android:textColor="#BBBBBB" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="是否方便停车"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
+
+                    <RadioGroup
+                        android:id="@+id/canParkChoose"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal" >
+
+                        <RadioButton
+                            android:id="@+id/canParkScenery"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="方便停车"
                             android:textColor="#BBBBBB" />
 
                         <RadioButton
+                            android:id="@+id/canNotParkScenery"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:layout_weight="1"
-                            android:visibility="invisible" />
+                            android:text="不方便停车"
+                            android:textColor="#BBBBBB" />
+                    </RadioGroup>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/login_input_background" >
+
+                        <EditText
+                            android:id="@+id/phoneNumberScenery"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@null"
+                            android:hint="电话..."
+                            android:phoneNumber="true"
+                            android:singleLine="true"
+                            android:textColor="#D2D2D2"
+                            android:textColorHint="#D2D2D2"
+                            android:textSize="16sp" >
+                        </EditText>
                     </LinearLayout>
-                </com.example.bybike.marker.RadioGroup>
+                </LinearLayout>
 
+                
+                <!-- 维修 -->
+                <LinearLayout
+                    android:id="@+id/repairArea"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" 
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="经营店类型"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
+
+                    <RadioGroup
+                        android:id="@+id/repairTypeChoose"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal" >
+
+                        <RadioButton
+                            android:id="@+id/fixedStore"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="固定店铺"
+                            android:textColor="#BBBBBB" />
+
+                        <RadioButton
+                            android:id="@+id/tmpStore"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:text="临时维修点"
+                            android:textColor="#BBBBBB" />
+                    </RadioGroup>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/login_input_background" >
+
+                        <EditText
+                            android:id="@+id/phoneNumberRepair"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@null"
+                            android:hint="电话..."
+                            android:phoneNumber="true"
+                            android:singleLine="true"
+                            android:textColor="#D2D2D2"
+                            android:textColorHint="#D2D2D2"
+                            android:textSize="16sp" >
+                        </EditText>
+                    </LinearLayout>
+                </LinearLayout>
+                
+                <!-- 餐饮 -->
+                <LinearLayout
+                    android:id="@+id/mealArea"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" 
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="是否方便停车"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
+
+                    <RadioGroup
+                        android:id="@+id/ifCanParkedChooseMeal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal" >
+
+                        <RadioButton
+                            android:id="@+id/canParkMeal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="方便停车"
+                            android:textColor="#BBBBBB" />
+
+                        <RadioButton
+                            android:id="@+id/canNotParkMeal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:text="不方便停车"
+                            android:textColor="#BBBBBB" />
+                    </RadioGroup>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/login_input_background" >
+
+                        <EditText
+                            android:id="@+id/phoneNumberMeal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@null"
+                            android:hint="电话..."
+                            android:phoneNumber="true"
+                            android:singleLine="true"
+                            android:textColor="#D2D2D2"
+                            android:textColorHint="#D2D2D2"
+                            android:textSize="16sp" >
+                        </EditText>
+                    </LinearLayout>
+                </LinearLayout>
+                
+                
+                <!-- 洗手间 -->
+                <LinearLayout
+                    android:id="@+id/washroomArea"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" 
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginTop="20dp"
+                        android:text="是否方便停车"
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp" />
+
+                    <RadioGroup
+                        android:id="@+id/ifCanParkedChooseWashroom"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="27dp"
+                        android:layout_marginRight="27dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal" >
+
+                        <RadioButton
+                            android:id="@+id/canParkWashroom"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="方便停车"
+                            android:textColor="#BBBBBB" />
+
+                        <RadioButton
+                            android:id="@+id/canNotParkWashroom"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:text="不方便停车"
+                            android:textColor="#BBBBBB" />
+                    </RadioGroup>
+                </LinearLayout>
+                
                 <!-- 取消和保存按钮 -->
 
                 <RelativeLayout

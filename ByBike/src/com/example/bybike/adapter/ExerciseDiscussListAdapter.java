@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.ab.bitmap.AbImageDownloader;
+import com.ab.image.AbImageLoader;
 import com.example.bybike.R;
 import com.example.bybike.user.UserPageActivity;
 import com.example.bybike.util.CircleImageView;
@@ -36,7 +36,7 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
     private Context context;
     private List<ContentValues> list;
     // 图片下载器
-    private AbImageDownloader mAbImageDownloader = null;
+    private AbImageLoader mAbImageLoader = null;
 
     public ExerciseDiscussListAdapter(Context context, List<ContentValues> list) {
         this.context = context;
@@ -44,10 +44,10 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
         this.list = list;
 
         // 图片下载器
-        mAbImageDownloader = new AbImageDownloader(context);
-        mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
-        mAbImageDownloader.setErrorImage(R.drawable.image_error);
-        mAbImageDownloader.setNoImage(R.drawable.image_no);
+        mAbImageLoader = AbImageLoader.newInstance(context);
+        mAbImageLoader.setLoadingImage(R.drawable.image_loading);
+        mAbImageLoader.setErrorImage(R.drawable.image_error);
+        mAbImageLoader.setEmptyImage(R.drawable.image_empty);
     }
 
     @Override
@@ -96,9 +96,9 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
         if(v.getAsString("avater").equals("")){
         	holder.avater.setBackgroundResource(R.drawable.user_icon_pic);
         }else if(v.getAsString("avater").startsWith("http")){
-        	 mAbImageDownloader.display(holder.avater, v.getAsString("avater"));
+        	mAbImageLoader.display(holder.avater, v.getAsString("avater"));
         }else{
-        	mAbImageDownloader.display(holder.avater, Constant.serverUrl + v.getAsString("avater"));
+        	mAbImageLoader.display(holder.avater, Constant.serverUrl + v.getAsString("avater"));
         }
         return convertView;
     }

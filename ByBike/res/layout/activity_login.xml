@@ -44,7 +44,7 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="8dp"
                 android:background="@null"
-                android:hint="邮箱"
+                android:hint="用户名/邮箱"
                 android:textColor="#D2D2D2"
                 android:textColorHint="#D2D2D2" >
             </EditText>

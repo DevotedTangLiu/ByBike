@@ -21,11 +21,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
+import com.ab.fragment.AbAlertDialogFragment;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.util.AbDialogUtil;
+import com.ab.util.AbToastUtil;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
+import com.example.bybike.marker.AddCommentActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
@@ -53,7 +57,6 @@ public class AddRouteCommentActivity extends AbActivity {
 		getTitleBar().setVisibility(View.GONE);
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
-		mAbHttpUtil.setDebug(false);
 
 		TextView title = (TextView)findViewById(R.id.title);
 		title.setText(getIntent().getStringExtra("name"));
@@ -119,26 +122,33 @@ public class AddRouteCommentActivity extends AbActivity {
 	private void sendComment(){
 		
 		if (!NetUtil.isConnnected(this)) {
-			showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+			AbDialogUtil.showAlertDialog(AddRouteCommentActivity.this, 0, "温馨提示",
+					"网络不可用，请设置您的网络后重试", null);
 			return;
 		}
 		String content = comment.getText().toString().trim();
 		if("".equals(content)){
-			showToast("请输入评论内容");
+			AbToastUtil.showToast(AddRouteCommentActivity.this, "请输入评论内容");
 			return;
 		}
 		if(!SharedPreferencesUtil.getSharedPreferences_b(this, Constant.ISLOGINED)){
-			showDialog("温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试", new OnClickListener() {
-				
+			AbDialogUtil.showAlertDialog(AddRouteCommentActivity.this, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+	    			new AbAlertDialogFragment.AbDialogOnClickListener() {
+
 				@Override
-				public void onClick(DialogInterface dialog, int which) {
+				public void onPositiveClick() {
 					// TODO Auto-generated method stub
-					Intent i = new Intent(AddRouteCommentActivity.this, LoginActivity.class);
-					startActivity(i);
-					overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-					dialog.dismiss();
+					  Intent i = new Intent(AddRouteCommentActivity.this, LoginActivity.class);
+					  AddRouteCommentActivity.this.startActivity(i);
+					  AddRouteCommentActivity.this.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+                      AbDialogUtil.removeDialog(AddRouteCommentActivity.this);
 				}
-			});
+				@Override
+				public void onNegativeClick() {
+					// TODO Auto-generated method stub
+					AbDialogUtil.removeDialog(AddRouteCommentActivity.this);
+				}
+            });
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.addRouteCommentUrl;
@@ -161,20 +171,21 @@ public class AddRouteCommentActivity extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-				showProgressDialog("正在评论...");
+				AbDialogUtil.showProgressDialog(AddRouteCommentActivity.this, 0,
+						"正在评论...");
 			}
 
 			// 失败，调用
 			@Override
 			public void onFailure(int statusCode, String content,
 					Throwable error) {
-				showToast("评论失败，请稍后重试...");
+				AbToastUtil.showToast(AddRouteCommentActivity.this, "评论失败，请稍后重试...");
 			}
 
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				removeProgressDialog();
+				AbDialogUtil.removeDialog(AddRouteCommentActivity.this);
 			};
 
 		});
@@ -215,16 +226,23 @@ public class AddRouteCommentActivity extends AbActivity {
 			}else if("3".equals(code)){
 				
 				SharedPreferencesUtil.saveSharedPreferences_b(AddRouteCommentActivity.this, Constant.ISLOGINED, false);
-				showDialog("温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试", new OnClickListener() {
-					
+				AbDialogUtil.showAlertDialog(AddRouteCommentActivity.this, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+		    			new AbAlertDialogFragment.AbDialogOnClickListener() {
+
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
+					public void onPositiveClick() {
 						// TODO Auto-generated method stub
-						Intent i = new Intent(AddRouteCommentActivity.this, LoginActivity.class);
-						startActivity(i);
-						overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+						  Intent i = new Intent(AddRouteCommentActivity.this, LoginActivity.class);
+						  startActivity(i);
+						  overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+	                      AbDialogUtil.removeDialog(AddRouteCommentActivity.this);
 					}
-				});
+					@Override
+					public void onNegativeClick() {
+						// TODO Auto-generated method stub
+						AbDialogUtil.removeDialog(AddRouteCommentActivity.this);
+					}
+	            });
 				
 			}else{
 				

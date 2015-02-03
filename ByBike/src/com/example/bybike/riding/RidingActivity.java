@@ -25,7 +25,10 @@ import android.widget.TextView;
 import android.widget.ZoomControls;
 
 import com.ab.activity.AbActivity;
+import com.ab.fragment.AbAlertDialogFragment;
 import com.ab.http.AbHttpUtil;
+import com.ab.util.AbDialogUtil;
+import com.ab.util.AbToastUtil;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -109,8 +112,8 @@ public class RidingActivity extends AbActivity {
 	TextView carbonReduce;
 	TextView timeUsed;
 	DecimalFormat decimalformat = new DecimalFormat("#.00");
-	
-	List<MarkerBean>addMarkersList = new ArrayList<MarkerBean>();
+
+	List<MarkerBean> addMarkersList = new ArrayList<MarkerBean>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +123,6 @@ public class RidingActivity extends AbActivity {
 
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
-		mAbHttpUtil.setDebug(false);
 
 		bitMapDescriptorList.clear();
 		bitMapDescriptorList.add(marker_icon_bikestore);
@@ -143,6 +145,7 @@ public class RidingActivity extends AbActivity {
 			mCurrentLongitude = bundle.getDouble("longtitude");
 			currentLatLng = new LatLng(mCurrentLantitude, mCurrentLongitude);
 			points.add(currentLatLng);
+			back_points.add(currentLatLng);
 		}
 
 		distance = (TextView) findViewById(R.id.distance);
@@ -216,8 +219,8 @@ public class RidingActivity extends AbActivity {
 		option.setIsNeedAddress(true);
 		option.setNeedDeviceDirect(true);
 		mLocClient.setLocOption(option);
-		// showProgressDialog("正在定位,请稍后...");
-		// mLocClient.start();// 开始定位
+		AbDialogUtil.showProgressDialog(RidingActivity.this, 0, "正在定位，请稍后...");
+		mLocClient.start();// 开始定位
 
 		popView = LayoutInflater.from(this).inflate(
 				R.layout.infowindow_interest_points, null);
@@ -286,12 +289,7 @@ public class RidingActivity extends AbActivity {
 			MapStatusUpdate u2 = MapStatusUpdateFactory
 					.newLatLng(currentLatLng);
 			mBaidumap.animateMapStatus(u2);
-		} else {
-
-			showProgressDialog("正在定位,请稍后...");
-			mLocClient.start();// 开始定位
-
-		}
+		} 
 
 	}
 
@@ -329,15 +327,24 @@ public class RidingActivity extends AbActivity {
 
 		switch (v.getId()) {
 		case R.id.quitButton:
-			showDialog("温馨提示", "确认要退出吗？\n退出后行程信息将不再保存。",
-					new DialogInterface.OnClickListener() {
+
+			AbDialogUtil.showAlertDialog(RidingActivity.this, 0, "温馨提示",
+					"确认要退出吗？\n退出后行程信息将不再保存。",
+					new AbAlertDialogFragment.AbDialogOnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onPositiveClick() {
 							// TODO Auto-generated method stub
+							AbDialogUtil.removeDialog(RidingActivity.this);
 							RidingActivity.this.finish();
 							overridePendingTransition(R.anim.fragment_in,
 									R.anim.fragment_out);
+						}
+
+						@Override
+						public void onNegativeClick() {
+							// TODO Auto-generated method stub
+							AbDialogUtil.removeDialog(RidingActivity.this);
 						}
 					});
 
@@ -384,13 +391,15 @@ public class RidingActivity extends AbActivity {
 			mBaidumap.animateMapStatus(u2);
 			break;
 		case R.id.locate:
-			showProgressDialog("正在定位,请稍后...");
+			AbDialogUtil.showProgressDialog(RidingActivity.this, 0, "正在定位，请稍后...");
 			mLocClient.start();// 开始定位
 			break;
 		case R.id.chooseIcon:
 			showChooseMarkerDialog();
 			break;
 		case R.id.stopButton:
+		    isRiding = false;
+		    mLocClient.stop();// 停止定位
 			Intent intent = new Intent(RidingActivity.this,
 					AddRouteBookActivity.class);
 			intent.putExtra("distance", distance.getText().toString());
@@ -404,7 +413,7 @@ public class RidingActivity extends AbActivity {
 				try {
 					jo.put("lat", lt.latitude);
 					jo.put("lng", lt.longitude);
-					jo.put("sortNum", String.valueOf(index));
+					jo.put("sortNum", index);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -430,7 +439,7 @@ public class RidingActivity extends AbActivity {
 				markerBeanArray.put(jo);
 			}
 			intent.putExtra("addMarkerList", markerBeanArray.toString());
-			
+
 			startActivity(intent);
 			overridePendingTransition(R.anim.fragment_up, R.anim.fragment_down);
 			break;
@@ -570,7 +579,7 @@ public class RidingActivity extends AbActivity {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 
-			removeProgressDialog();
+			AbDialogUtil.removeDialog(RidingActivity.this);
 			// map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
@@ -579,7 +588,7 @@ public class RidingActivity extends AbActivity {
 			case 62:
 				return;
 			case 63:
-				showToast("网络异常，请检查网络连接后重试");
+				AbToastUtil.showToast(RidingActivity.this, "网络异常，请检查网络连接后重试");
 				return;
 			case 162:
 				return;
@@ -615,18 +624,22 @@ public class RidingActivity extends AbActivity {
 			//
 			// 添加折线
 			points.add(myCurrentLatLng);
-			back_points.add(myCurrentLatLng);
 			if (points.size() >= 2) {
-
-				OverlayOptions ooPolyline = new PolylineOptions().width(10)
-						.color(0xAAFF0000).points(points);
-				mBaidumap.addOverlay(ooPolyline);
 
 				// 计算两次定位之间的距离
 				Double dis = DistanceUtil.getDistance(points.get(0),
 						points.get(1));
-				distanceInMeter += dis;
+				// 大于5米才记录
+				if (dis < 5.0) {
+					points.remove(1);
+					return;
+				}
+				back_points.add(myCurrentLatLng);
+				OverlayOptions ooPolyline = new PolylineOptions().width(10)
+						.color(0xAAFF0000).points(points);
+				mBaidumap.addOverlay(ooPolyline);
 
+				distanceInMeter += dis;
 				String tmpDistance = decimalformat
 						.format(distanceInMeter / 1000);
 				if (tmpDistance.startsWith(".")) {
@@ -652,8 +665,6 @@ public class RidingActivity extends AbActivity {
 			if (back_points.size() >= 5000) {
 				back_points.remove(0);
 			}
-			OverlayManager om = new BusLineOverlay(mBaidumap);
-			om.zoomToSpan();
 		}
 	}
 
@@ -684,7 +695,7 @@ public class RidingActivity extends AbActivity {
 	private void queryMarkerList() {
 
 		markerBeanDao = new MarkerBeanDao(this);
-		markerBeanDao.startReadableDatabase(false);
+		markerBeanDao.startReadableDatabase();
 		List<MarkerBean> markers = markerBeanDao.queryList();
 
 		for (MarkerBean m : markers) {
@@ -729,7 +740,7 @@ public class RidingActivity extends AbActivity {
 			mMarkerA.setTitle("true");
 			markerList.add(mMarkerA);
 		}
-		markerBeanDao.closeDatabase(false);
+		markerBeanDao.closeDatabase();
 		markers.clear();
 
 	}

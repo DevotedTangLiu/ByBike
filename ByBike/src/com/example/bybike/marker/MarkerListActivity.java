@@ -12,12 +12,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.ab.activity.AbActivity;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
-import com.ab.view.pullview.AbPullListView;
+import com.ab.view.pullview.AbPullToRefreshView;
 import com.example.bybike.R;
 import com.example.bybike.adapter.MarkerListAdapter;
 import com.example.bybike.db.model.MarkerBean;
@@ -31,7 +32,9 @@ public class MarkerListActivity extends AbActivity {
 
 	private List<MarkerBean> myMarkerListData = null;
 	private MarkerListAdapter myMarkerListAdapter = null;
-	private AbPullListView myMarkerListView = null;
+	
+	private AbPullToRefreshView mAbPullToRefreshView = null;
+	private ListView mListView = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +43,17 @@ public class MarkerListActivity extends AbActivity {
 		getTitleBar().setVisibility(View.GONE);
 
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
-		mAbHttpUtil.setDebug(false);
 
-		myMarkerListView = (AbPullListView) findViewById(R.id.mListView);
+		mAbPullToRefreshView = (AbPullToRefreshView) findViewById(R.id.mPullRefreshView);
+		mListView = (ListView) findViewById(R.id.mListView);
 		// 打开关闭下拉刷新加载更多功能
-		myMarkerListView.setPullRefreshEnable(false);
-		myMarkerListView.setPullLoadEnable(false);
+		mAbPullToRefreshView.setPullRefreshEnable(false);
+		mAbPullToRefreshView.setLoadMoreEnable(false);
 		myMarkerListData = new ArrayList<MarkerBean>();
 		myMarkerListAdapter = new MarkerListAdapter(MarkerListActivity.this,
 				myMarkerListData);
-		myMarkerListView.setAdapter(myMarkerListAdapter);
-		myMarkerListView.setOnItemClickListener(new OnItemClickListener() {
+		mListView.setAdapter(myMarkerListAdapter);
+		mListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {

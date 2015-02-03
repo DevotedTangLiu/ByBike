@@ -15,6 +15,7 @@ import com.ab.activity.AbActivity;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.util.AbDialogUtil;
 import com.example.bybike.R;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
@@ -34,8 +35,6 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
 
         // 获取Http工具类
         mAbHttpUtil = AbHttpUtil.getInstance(this);
-        mAbHttpUtil.setDebug(false);
-
     }
 
     @Override
@@ -111,7 +110,7 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
 
     private void logout() {
         if (!NetUtil.isConnnected(this)) {
-            showDialog("温馨提示", "网络不可用，请设置您的网络后重试");
+            AbDialogUtil.showAlertDialog(SettingMainActivity.this, 0, "温馨提示", "网络不可用，请设置您的网络后重试", null);
             return;
         }
         String urlString = Constant.serverUrl + Constant.logoutUrl;
@@ -129,24 +128,23 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             // 开始执行前
             @Override
             public void onStart() {
-                showProgressDialog("正在登出，请稍后...");
+                AbDialogUtil.showProgressDialog(SettingMainActivity.this, 0, "正在登出，请稍后...");
             }
 
             // 失败，调用
             @Override
-            public void onFailure(int statusCode, String content,
-                    Throwable error) {
+            public void onFailure(int statusCode, String content, Throwable error) {
             }
 
             // 完成后调用，失败，成功
             @Override
             public void onFinish() {
-                removeProgressDialog();
+                AbDialogUtil.removeDialog(SettingMainActivity.this);
             };
 
         });
     }
-    
+
     protected void processResult(String content) {
         // TODO Auto-generated method stub
         try {
@@ -154,20 +152,20 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
                 String sessionId = responseObj.getString("jsessionid");
-//                SharedPreferencesUtil.saveSharedPreferences_s(SettingMainActivity.this, Constant.SESSION, sessionId);
+                // SharedPreferencesUtil.saveSharedPreferences_s(SettingMainActivity.this, Constant.SESSION, sessionId);
                 SharedPreferencesUtil.saveSharedPreferences_b(SettingMainActivity.this, Constant.ISLOGINED, false);
                 Intent intent = getIntent();
                 setResult(RESULT_OK, intent);
                 this.finish();
-                
+
             } else {
-                
-                showDialog("温馨提示", responseObj.getString("message"));
+
+                AbDialogUtil.showAlertDialog(SettingMainActivity.this, 0, "温馨提示", responseObj.getString("message"), null);
             }
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            showDialog("温馨提示", "提交失败，请稍后重试");
+            AbDialogUtil.showAlertDialog(SettingMainActivity.this, 0, "温馨提示", "提交失败，请稍后重试", null);
         }
 
     }

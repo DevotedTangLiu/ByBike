@@ -31,6 +31,8 @@ import android.widget.ZoomControls;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.util.AbDialogUtil;
+import com.ab.util.AbToastUtil;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -50,12 +52,10 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.bybike.db.dao.MarkerBeanDao;
-import com.example.bybike.db.dao.UserBeanDao;
 import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.riding.MyOrientationListener;
 import com.example.bybike.riding.MyOrientationListener.OnOrientationListener;
-import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -116,7 +116,6 @@ public class MainPageFragment extends Fragment {
 		mActivity.getTitleBar().setVisibility(View.GONE);
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(mActivity);
-		mAbHttpUtil.setDebug(false);
 
 		bitMapDescriptorList.clear();
 		bitMapDescriptorList.add(marker_icon_bikestore);
@@ -300,7 +299,7 @@ public class MainPageFragment extends Fragment {
 		option.setIsNeedAddress(true);
 		option.setNeedDeviceDirect(true);
 		mLocClient.setLocOption(option);
-		mActivity.showProgressDialog("正在定位,请稍后...");
+		AbDialogUtil.showProgressDialog(mActivity, 0, "正在定位,请稍后...");
 		mLocClient.start();// 开始定位
 
 		popView = LayoutInflater.from(mActivity).inflate(
@@ -448,7 +447,7 @@ public class MainPageFragment extends Fragment {
 				Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("pageNo", "1");
-		p.put("pageSize", "100");
+		p.put("pageSize", "30");
 		// 绑定参数
 		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -587,7 +586,7 @@ public class MainPageFragment extends Fragment {
 					markerBeanDao.insert(mb);
 
 				}
-				markerBeanDao.closeDatabase(false);
+				markerBeanDao.closeDatabase();
 			}
 		} catch (Exception e) {
 
@@ -603,7 +602,7 @@ public class MainPageFragment extends Fragment {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 
-			mActivity.removeProgressDialog();
+			AbDialogUtil.removeDialog(mActivity);
 			// map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
@@ -612,7 +611,7 @@ public class MainPageFragment extends Fragment {
 			case 62:
 				return;
 			case 63:
-				mActivity.showToast("网络异常，请检查网络连接后重试");
+				AbToastUtil.showToast(mActivity, "网络异常，请检查网络连接后重试");
 				return;
 			case 162:
 				return;

@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ab.bitmap.AbImageDownloader;
+import com.ab.image.AbImageLoader;
 import com.example.bybike.R;
 import com.example.bybike.util.CircleImageView;
 
@@ -32,7 +32,7 @@ public class MessageListAdapter extends BaseAdapter {
 	// 列表展现的数据
 	private List<ContentValues> list;
 	// 图片下载器
-	private AbImageDownloader mAbImageDownloader = null;
+	private AbImageLoader mAbImageDownloader = null;
 
 	/**
 	 * 构造方法
@@ -47,7 +47,7 @@ public class MessageListAdapter extends BaseAdapter {
 		// 用于将xml转为View
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mAbImageDownloader = new AbImageDownloader(mContext);
+		mAbImageDownloader = AbImageLoader.newInstance(context);
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class MessageListAdapter extends BaseAdapter {
 		// 获取该行的数据
 		ContentValues v = this.list.get(position);
 		int type = v.getAsInteger("messageType");
-		if(type == 0){
+		if(type == 0 || type == 1){
 			mAbImageDownloader.display(holder.imageView, v.getAsString("avater"));
 			holder.notifyIcon.setVisibility(View.INVISIBLE);
 		}else if(type == 2){

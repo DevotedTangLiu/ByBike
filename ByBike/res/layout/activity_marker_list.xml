@@ -41,14 +41,21 @@
         android:layout_height="1dp"
         android:background="#C5C5C5" />
 
-    <com.ab.view.pullview.AbPullListView
-        android:id="@+id/mListView"
+     <com.ab.view.pullview.AbPullToRefreshView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mPullRefreshView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:cacheColorHint="#00000000"
-        android:divider="@null"
-        android:fastScrollEnabled="false"
-        android:scrollbars="none" >
-    </com.ab.view.pullview.AbPullListView>
+        android:background="#E9E9E9" >
+
+        <ListView
+            android:id="@+id/mListView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:fastScrollEnabled="false"
+            android:scrollbars="none" />
+    </com.ab.view.pullview.AbPullToRefreshView>
 
 </LinearLayout>

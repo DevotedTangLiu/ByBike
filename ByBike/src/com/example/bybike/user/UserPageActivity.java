@@ -22,19 +22,19 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
-import com.ab.bitmap.AbImageDownloader;
 import com.ab.http.AbHttpUtil;
-import com.ab.view.pullview.AbPullListView;
+import com.ab.image.AbImageLoader;
+import com.ab.view.pullview.AbPullToRefreshView;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseListAdapter2;
-import com.example.bybike.adapter.MarkerListAdapter;
 import com.example.bybike.adapter.MarkerListAdapter2;
 import com.example.bybike.adapter.RoutesBookListAdapter2;
 import com.example.bybike.db.model.MarkerBean;
-import com.example.bybike.exercise.ExerciseDetailActivity2;
+import com.example.bybike.exercise.ExerciseDetailActivity3;
 import com.example.bybike.friends.FriendsActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.routes.RouteDetailActivity;
@@ -52,8 +52,8 @@ public class UserPageActivity extends AbActivity {
 
     // http请求帮助类
     private AbHttpUtil mAbHttpUtil = null;
-    // 图片下载类
-    private AbImageDownloader mAbImageDownloader = null;
+ // 图片下载类
+    private AbImageLoader mAbImageLoader = null;
     //
     private Button chooseExercise;
     private Button chooseRouteBook;
@@ -61,15 +61,18 @@ public class UserPageActivity extends AbActivity {
 
     private List<Map<String, Object>> myExerciseListData = null;
     private ExerciseListAdapter2 exerciseListAdapter = null;
-    private AbPullListView myExerciseListView = null;
+    private AbPullToRefreshView myExerciseListView = null;
+    private ListView myExerciseList = null;
 
     private List<Map<String, Object>> myRouteBookListData = null;
     private RoutesBookListAdapter2 myRouteBookListAdapter = null;
-    private AbPullListView myRouteBookListView = null;
+    private AbPullToRefreshView myRouteBookListView = null;
+    private ListView myRouteBookList = null;
 
     private List<MarkerBean> myMarkerListData = null;
     private MarkerListAdapter2 myMarkerListAdapter = null;
-    private AbPullListView myMarkerListView = null;
+    private AbPullToRefreshView myMarkerListView = null;
+    private ListView myMarkerList = null;
 
     private ViewPager mPager;// 页卡内容
     private List<View> listViews; // Tab页面列表
@@ -88,7 +91,6 @@ public class UserPageActivity extends AbActivity {
 
         // 获取Http工具类
         mAbHttpUtil = AbHttpUtil.getInstance(this);
-        mAbHttpUtil.setDebug(false);
 
         chooseExercise = (Button) findViewById(R.id.chooseExercise);
         chooseExercise.setSelected(true);
@@ -101,13 +103,13 @@ public class UserPageActivity extends AbActivity {
         // 设置用户名字
         userName = (TextView) findViewById(R.id.userName);
         // 设置用户头像
-        mAbImageDownloader = new AbImageDownloader(this);
+        mAbImageLoader = AbImageLoader.newInstance(UserPageActivity.this);
         userHeadImageView = (CircleImageView)findViewById(R.id.fragment_my_image_user);
         
         userName.setText(SharedPreferencesUtil.getSharedPreferences_s(this, Constant.USERNICKNAME));
         String userHeadPicUrl = SharedPreferencesUtil.getSharedPreferences_s(this, Constant.USERAVATARURL);
         if(userHeadPicUrl.length() > 0){
-            mAbImageDownloader.display(userHeadImageView, Constant.serverUrl + userHeadPicUrl);
+            mAbImageLoader.display(userHeadImageView, Constant.serverUrl + userHeadPicUrl);
         }
 
         // 填充用户活动、路书、友好点数据
@@ -127,10 +129,10 @@ public class UserPageActivity extends AbActivity {
          * 初始化我的活动列表
          */
         View myExerciseListLayout = mInflater.inflate(R.layout.pull_list, null);
-        myExerciseListView = (AbPullListView) myExerciseListLayout
-                .findViewById(R.id.mListView);
+        myExerciseListView = (AbPullToRefreshView) myExerciseListLayout.findViewById(R.id.mPullRefreshView);
+        myExerciseList = (ListView) myExerciseListLayout.findViewById(R.id.mListView);
         View header = mInflater.inflate(R.layout.listview_header, null);
-        myExerciseListView.addHeaderView(header);
+        myExerciseList.addHeaderView(header);
 
         // ListView数据
         myExerciseListData = new ArrayList<Map<String, Object>>();
@@ -150,16 +152,16 @@ public class UserPageActivity extends AbActivity {
                         R.id.exerciseRouteAddress, R.id.exerciseTime,
                         R.id.userCount, R.id.likeCount, R.id.talkCount,
                         R.id.collectCount });
-        myExerciseListView.setAdapter(exerciseListAdapter);
+        myExerciseList.setAdapter(exerciseListAdapter);
         // item被点击事件
         // item被点击事件
-        myExerciseListView.setOnItemClickListener(new OnItemClickListener() {
+        myExerciseList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
 
                 Intent i = new Intent();
-                i.setClass(UserPageActivity.this, ExerciseDetailActivity2.class);
+                i.setClass(UserPageActivity.this, ExerciseDetailActivity3.class);
                 startActivity(i);
                 overridePendingTransition(R.anim.fragment_in,
                         R.anim.fragment_out);
@@ -171,11 +173,10 @@ public class UserPageActivity extends AbActivity {
          */
         View myRouteBookListLayout = mInflater
                 .inflate(R.layout.pull_list, null);
-        myRouteBookListView = (AbPullListView) myRouteBookListLayout
-                .findViewById(R.id.mListView);
-        View routeBookHeader = mInflater.inflate(
-                R.layout.listview_header_routebooks, null);
-        myRouteBookListView.addHeaderView(routeBookHeader);
+        myRouteBookListView = (AbPullToRefreshView) myRouteBookListLayout.findViewById(R.id.mPullRefreshView);
+        myRouteBookList = (ListView) myRouteBookListLayout.findViewById(R.id.mListView);
+        View routeBookHeader = mInflater.inflate(R.layout.listview_header_routebooks, null);
+        myRouteBookList.addHeaderView(routeBookHeader);
         myRouteBookListData = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < 10; i++) {
             Map<String, Object> map = new HashMap<String, Object>();
@@ -183,8 +184,8 @@ public class UserPageActivity extends AbActivity {
         }
         myRouteBookListAdapter = new RoutesBookListAdapter2(UserPageActivity.this,
                 myRouteBookListData);
-        myRouteBookListView.setAdapter(myRouteBookListAdapter);
-        myRouteBookListView.setOnItemClickListener(new OnItemClickListener() {
+        myRouteBookList.setAdapter(myRouteBookListAdapter);
+        myRouteBookList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
@@ -202,19 +203,18 @@ public class UserPageActivity extends AbActivity {
          * 初始化标记列表
          */
         View myMarkerListLayout = mInflater.inflate(R.layout.pull_list, null);
-        myMarkerListView = (AbPullListView) myMarkerListLayout
-                .findViewById(R.id.mListView);
-        View markerHeader = mInflater.inflate(R.layout.listview_header_markers,
-                null);
-        myMarkerListView.addHeaderView(markerHeader);
+        myMarkerListView = (AbPullToRefreshView) myRouteBookListLayout.findViewById(R.id.mPullRefreshView);
+        myMarkerList = (ListView) myRouteBookListLayout.findViewById(R.id.mListView);
+        View markerHeader = mInflater.inflate(R.layout.listview_header_markers, null);
+        myMarkerList.addHeaderView(markerHeader);
         myMarkerListData = new ArrayList<MarkerBean>();
         for (int i = 0; i < 10; i++) {
             MarkerBean mb = new MarkerBean();
             myMarkerListData.add(mb);
         }
         myMarkerListAdapter = new MarkerListAdapter2(UserPageActivity.this, myMarkerListData);
-        myMarkerListView.setAdapter(myMarkerListAdapter);
-        myMarkerListView.setOnItemClickListener(new OnItemClickListener() {
+        myMarkerList.setAdapter(myMarkerListAdapter);
+        myMarkerList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
