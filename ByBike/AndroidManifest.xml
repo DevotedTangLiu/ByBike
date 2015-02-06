@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <!-- 访问通讯录 -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -94,13 +95,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.bybike.friends.AddFriendsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.bybike.user.ForgetPasswordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
@@ -120,18 +121,18 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.bybike.exercise.ApplyAcitivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.bybike.exercise.AddActivityCommentActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" 
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
 
@@ -142,12 +143,12 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.bybike.routes.AddRouteCommentActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" 
-            android:windowSoftInputMode="stateVisible|adjustResize">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <!-- 搜索 -->
         <activity
@@ -197,11 +198,11 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.bybike.marker.AddCommentActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" 
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
@@ -210,7 +211,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.bybike.marker.LocationMarkerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
@@ -222,7 +223,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.bybike.marker.MarkerListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
@@ -242,7 +243,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
-        
+
         <!-- 消息列表 -->
         <activity
             android:name="com.example.bybike.message.MessageListActivity"
@@ -298,9 +299,13 @@
         </receiver>
 
         <!-- 百度地图 -->
+<!--         <meta-data -->
+<!--         android:name="com.baidu.lbsapi.API_KEY" -->
+<!--         android:value="QqQknAqPWcF168bmyLZskdc6" /> -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="c3r3ItD7MmGGi1aRb2GRinlS" />
+
         <!-- 定位服务 -->
         <service
             android:name="com.baidu.location.f"

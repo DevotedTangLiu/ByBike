@@ -81,7 +81,7 @@ public class AddFriendsActivity extends AbActivity {
 		setContentView(R.layout.activity_add_friends);
 
 		// 获取Http工具类
-		mAbHttpUtil = AbHttpUtil.getInstance(this);
+		mAbHttpUtil = AbHttpUtil.getInstance(AddFriendsActivity.this);
 
 		mProgressDialog = new ProgressDialog(AddFriendsActivity.this, 5);
 		// 设置点击屏幕Dialog不消失
@@ -154,9 +154,11 @@ public class AddFriendsActivity extends AbActivity {
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.findUserUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(
 				AddFriendsActivity.this, Constant.SESSION);
+//		urlString += ";jsessionid=";
+//		urlString += SharedPreferencesUtil.getSharedPreferences_s(
+//				AddFriendsActivity.this, Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("pageNo", "1");
 		p.put("pageSize", "100");
@@ -193,7 +195,7 @@ public class AddFriendsActivity extends AbActivity {
 				}
 			};
 
-		});
+		}, jsession);
 
 	}
 	
@@ -203,7 +205,7 @@ public class AddFriendsActivity extends AbActivity {
 		try {
 			JSONObject resultObj = new JSONObject(content);
 			String code = resultObj.getString("code");
-			if ("0".equals(code)) {
+			if ("1".equals(code)) {
 				JSONObject dataObj = resultObj.getJSONObject("data");
 				
 				JSONArray listArray = dataObj.getJSONArray("list");

@@ -19,7 +19,7 @@
             android:onClick="clickHandler"
             android:orientation="vertical" >
 
-            <Button
+            <ImageView
                 android:layout_width="17dp"
                 android:layout_height="23dp"
                 android:layout_centerVertical="true"

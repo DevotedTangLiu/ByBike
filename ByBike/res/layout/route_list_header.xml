@@ -173,4 +173,199 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <!-- 地区筛选 -->
+    <LinearLayout
+        android:id="@+id/areaOfGZ"
+        android:layout_width="fill_parent"
+        android:layout_height="110dp"
+        android:orientation="vertical" 
+        android:visibility="gone" >
+
+        <LinearLayout       
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:id="@+id/panyuqu"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sellect_button_selector" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="番禺区"
+                        android:textColor="@color/text_color" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:id="@+id/tianhequ"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sellect_button_selector" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="天河区"
+                        android:textColor="@color/text_color" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:id="@+id/huangpuqu"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sellect_button_selector" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="黄浦区"
+                        android:textColor="@color/text_color" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:id="@+id/yuexiuqu"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sellect_button_selector" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="越秀区"
+                        android:textColor="@color/text_color" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+        
+        <LinearLayout       
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:id="@+id/haizhuqu"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sellect_button_selector" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="海珠区"
+                        android:textColor="@color/text_color" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:id="@+id/liwanqu"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sellect_button_selector" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="荔湾区"
+                        android:textColor="@color/text_color" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:id="@+id/baiyunqu"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sellect_button_selector" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="白云区"
+                        android:textColor="@color/text_color" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:id="@+id/qitaqu"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sellect_button_selector" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="其它"
+                        android:textColor="@color/text_color" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>

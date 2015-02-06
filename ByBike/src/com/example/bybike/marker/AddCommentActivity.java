@@ -41,6 +41,9 @@ public class AddCommentActivity extends AbActivity {
 	private AbHttpUtil mAbHttpUtil = null;
 	private String markerId = "";
 	private String commentsString = "";
+	private String commentId = "";
+	private String receiverId = "";
+	private String receiverName = "";
 
 	ListView discussList;
 	List<ContentValues> discussValueList = null;
@@ -62,10 +65,18 @@ public class AddCommentActivity extends AbActivity {
 		title.setText(getIntent().getStringExtra("name"));
 		comment = (EditText)findViewById(R.id.comment);
 		discussCount = (TextView)findViewById(R.id.discussCount);
-		
+		//获取上一页传来的参数
 		markerId = getIntent().getStringExtra("id");
 		commentsString = getIntent().getStringExtra("comments");
-
+		
+		receiverId = getIntent().getStringExtra("receiverId");
+		receiverName = getIntent().getStringExtra("receiverName");
+		commentId = getIntent().getStringExtra("commentId");
+		
+		if(receiverName != null && !"".equals(receiverName)){
+			comment.setHint("回复" + receiverName + ":");
+		}
+		//填充评论列表
 		discussList = (ListView) findViewById(R.id.discussList);
 		discussValueList = new ArrayList<ContentValues>();
 		discussAdapter = new ExerciseDiscussListAdapter(
@@ -79,16 +90,22 @@ public class AddCommentActivity extends AbActivity {
 
 				JSONObject jo = dataArray.getJSONObject(i);
 				ContentValues v1 = new ContentValues();
+				
+				v1.put("id", jo.getString("id"));
 				v1.put("senderId", jo.getString("senderId"));
 				v1.put("userName", jo.getString("senderName"));
 				v1.put("discussContent", jo.getString("content"));
-				if(!"null".equals(jo.getString("senderHeadUrl"))){
+				if (!"null".equals(jo.getString("senderHeadUrl"))) {
 					v1.put("avater",
-							Constant.serverUrl + jo.getString("senderHeadUrl"));
-				}else{
+							Constant.serverUrl
+									+ jo.getString("senderHeadUrl"));
+				} else {
 					v1.put("avater", "");
 				}
-				v1.put("discussTime", jo.getString("discussTime"));
+				v1.put("discussTime", jo.getString("discussTime")
+						.substring(0, 19));
+				v1.put("receiverId", jo.getString("receiverId"));
+				v1.put("receiverName", jo.getString("receiverName"));		
 				discussValueList.add(v1);
 			}
 			discussAdapter.notifyDataSetChanged();
@@ -152,12 +169,20 @@ public class AddCommentActivity extends AbActivity {
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.commentMarkerUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(AddCommentActivity.this,
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(AddCommentActivity.this,
 				Constant.SESSION);
+//		urlString += ";jsessionid=";
+//		urlString += SharedPreferencesUtil.getSharedPreferences_s(AddCommentActivity.this,
+//				Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("markerId", markerId);
 		p.put("content", content);
+		if(null != commentId && !"".endsWith(commentId)){
+			p.put("discussId", commentId);
+		}
+		if(null != receiverId && !"".endsWith(receiverId)){
+			p.put("receiverId", receiverId);
+		}
 		// 绑定参数
 		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -188,7 +213,7 @@ public class AddCommentActivity extends AbActivity {
 				AbDialogUtil.removeDialog(AddCommentActivity.this);
 			};
 
-		});
+		}, jsession);
 		
 	}
 
@@ -208,6 +233,9 @@ public class AddCommentActivity extends AbActivity {
 				v1.put("discussContent", comment.getText().toString().trim());
 				v1.put("avater",SharedPreferencesUtil.getSharedPreferences_s(AddCommentActivity.this, Constant.USERAVATARURL));
 				v1.put("discussTime", (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()).toString());
+				v1.put("receiverId", receiverId);
+				v1.put("receiverName", receiverName);		
+				
 				discussValueList.add(v1);
 				
 				discussAdapter.notifyDataSetChanged();
@@ -219,13 +247,15 @@ public class AddCommentActivity extends AbActivity {
 				jo.put("content", v1.get("discussContent"));
 				jo.put("senderHeadUrl", v1.get("avater"));
 				jo.put("discussTime", v1.get("discussTime"));
+				jo.put("receiverId", receiverId);
+				jo.put("receiverName", receiverName);
 				dataArray.put(jo);
 				
 				comment.setText("");
 				
 			}else if("3".equals(code)){
 				
-				SharedPreferencesUtil.saveSharedPreferences_b(AddCommentActivity.this, Constant.ISLOGINED, false);
+//				SharedPreferencesUtil.saveSharedPreferences_b(AddCommentActivity.this, Constant.ISLOGINED, false);
 				AbDialogUtil.showAlertDialog(AddCommentActivity.this, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
 		    			new AbAlertDialogFragment.AbDialogOnClickListener() {
 
@@ -245,7 +275,7 @@ public class AddCommentActivity extends AbActivity {
 	            });
 				
 			}else{
-				
+				AbToastUtil.showToast(AddCommentActivity.this, "评论失败，请稍后重试...");
 			}
 			
 		} catch (JSONException e) {

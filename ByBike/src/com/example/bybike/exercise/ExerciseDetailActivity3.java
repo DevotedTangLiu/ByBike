@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,6 +52,9 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
+import com.example.bybike.friends.AddFriendsActivity;
+import com.example.bybike.marker.AddCommentActivity;
+import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.riding.RidingActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
@@ -100,6 +106,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 	Button shareButton;
 
 	private String activityData;
+	TextView applyText;
+	ProgressDialog mProgressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +117,36 @@ public class ExerciseDetailActivity3 extends AbActivity {
 
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
+		mProgressDialog = new ProgressDialog(ExerciseDetailActivity3.this, 5);
+        // 设置点击屏幕Dialog不消失
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setMessage("正在查询，请稍后...");
 
 		exerciseId = getIntent().getStringExtra("id");
 
 		// 评论列表
 		discussList = (ListView) findViewById(R.id.discussList);
+		discussList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				ContentValues cv = discussValueList.get(position - 1);
+				
+				Intent i = new Intent(ExerciseDetailActivity3.this,
+						AddActivityCommentActivity.class);
+				i.putExtra("id", exerciseId);			
+				i.putExtra("comments", commentsString);
+				i.putExtra("name", activityNameString);
+				i.putExtra("receiverId", cv.getAsString("senderId"));
+				i.putExtra("receiverName", cv.getAsString("userName"));
+				i.putExtra("commentId", cv.getAsString("id"));
+				startActivityForResult(i, 0);
+				overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
+				
+			}
+		});
 		// 添加header
 		detailheader = mInflater.inflate(R.layout.header_exercise_detail, null);
 
@@ -157,7 +190,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 		// 获取地图控件引用
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		mBaidumap = mMapView.getMap();
-
+		applyText = (TextView)findViewById(R.id.applyText);
 		initActivity();
 	}
 
@@ -376,8 +409,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-				AbDialogUtil.showProgressDialog(ExerciseDetailActivity3.this, 0,
-						"正在查询评论列表，请稍后...",  "DIALOG2");
+			    mProgressDialog.show();
 			}
 
 			// 失败，调用
@@ -389,7 +421,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				AbDialogUtil.removeDialog(ExerciseDetailActivity3.this,  "DIALOG2");
+			    mProgressDialog.dismiss();
 			};
 
 		});
@@ -410,6 +442,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 
 					JSONObject jo = dataArray.getJSONObject(i);
 					ContentValues v1 = new ContentValues();
+					v1.put("id", jo.getString("id"));
 					v1.put("senderId", jo.getString("senderId"));
 					v1.put("userName", jo.getString("senderName"));
 					v1.put("discussContent", jo.getString("content"));
@@ -421,7 +454,9 @@ public class ExerciseDetailActivity3 extends AbActivity {
 						v1.put("avater", "");
 					}
 					v1.put("discussTime", jo.getString("discussTime"));
-					discussValueList.add(v1);
+					v1.put("receiverId", jo.getString("receiverId"));
+					v1.put("receiverName", jo.getString("receiverName"));
+					discussValueList.add(v1);					
 				}
 				discussAdapter.notifyDataSetChanged();
 
@@ -462,8 +497,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-				AbDialogUtil.showProgressDialog(ExerciseDetailActivity3.this, 0,
-						"正在查询，请稍后...", "DIALOG1");
+			    mProgressDialog.show();
 			}
 
 			// 失败，调用
@@ -475,7 +509,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				AbDialogUtil.removeDialog(ExerciseDetailActivity3.this,"DIALOG1");
+			    mProgressDialog.dismiss();
 			};
 
 		});
@@ -514,6 +548,12 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				likeCount.setText(activityObj.getString("likeCount"));
 				discussCount.setText("评论 ("
 						+ activityObj.getString("commentCount") + ")");
+				
+				if("72".equals(activityObj.getString("joinStatus")) || "71".equals(activityObj.getString("joinStatus"))){
+				    applyText.setText("已报名");
+				}else{
+				    applyText.setText("报名");
+				}
 
 				// 下载和显示图片
 				for (int i = 1; i <= 8; i++) {
@@ -612,7 +652,11 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			showShare();
 			break;
 		case R.id.applyArea: // 点击报名事件
-			applyClick();
+		    if(applyText.getText().toString().equals("报名")){
+		        applyClick();
+		    }else{
+		        AbToastUtil.showToast(ExerciseDetailActivity3.this, "你已经报过名了...");
+		    }
 			break;
 		case R.id.discussButton:
 			Intent i = new Intent(ExerciseDetailActivity3.this,
@@ -620,6 +664,9 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			i.putExtra("id", exerciseId);
 			i.putExtra("comments", commentsString);
 			i.putExtra("name", activityNameString);
+			i.putExtra("receiverId", "");
+			i.putExtra("receiverName", "");
+			i.putExtra("commentId", "");
 			startActivityForResult(i, 0);
 			overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
 			break;
@@ -721,6 +768,9 @@ public class ExerciseDetailActivity3 extends AbActivity {
 							v1.put("avater", jo.getString("senderHeadUrl"));
 							v1.put("discussTime", jo.getString("discussTime")
 									.substring(0, 19));
+							v1.put("receiverId", jo.getString("receiverId"));
+							v1.put("receiverName", jo.getString("receiverName"));
+							
 							discussValueList.add(v1);
 						}
 						discussAdapter.notifyDataSetChanged();

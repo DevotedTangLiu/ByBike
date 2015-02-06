@@ -5,7 +5,7 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="270dp"
+        android:layout_height="wrap_content"
         android:background="#F5F5F5" >
 
         <RelativeLayout
@@ -19,7 +19,7 @@
                 android:layout_height="50dp"
                 android:onClick="onClick" >
 
-                <Button
+                <ImageView
                     android:layout_width="15dp"
                     android:layout_height="20dp"
                     android:layout_centerVertical="true"
@@ -29,11 +29,13 @@
 
             <Button
                 android:id="@+id/deleteFriend"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
+                android:layout_width="54dp"
+                android:layout_height="23dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
+                android:visibility="gone"
+                android:onClick="onClick"
                 android:background="@drawable/delete_friend" >
             </Button>
         </RelativeLayout>
@@ -74,15 +76,26 @@
             android:layout_below="@id/fragment_my_image_user"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
-            android:text="Chaolotte Yam"
+            android:text=""
             android:textColor="#4A4A4A"
             android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/addFriend"
+            android:layout_width="54dp"
+            android:layout_height="23dp"
+            android:layout_below="@id/userName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:background="@drawable/add_friend_button"
+            android:onClick="onClick"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/userInfo"
             android:layout_width="fill_parent"
             android:layout_height="20dp"
-            android:layout_below="@id/userName"
+            android:layout_below="@id/addFriend"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
             android:orientation="horizontal" >
@@ -107,10 +120,11 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/totalDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="103"
+                        android:text="0"
                         android:textColor="#4A4A4A"
                         android:textSize="16sp" />
 
@@ -144,10 +158,11 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/totalCarbon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="0.98"
+                        android:text="0.00"
                         android:textColor="#4A4A4A"
                         android:textSize="16sp" />
 
@@ -196,52 +211,57 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="20dp"
+            android:layout_height="25dp"
             android:layout_below="@id/userInfo"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal" >
+            android:layout_marginTop="17dp" >
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1" >
+                android:layout_height="20dp"
+                android:orientation="horizontal" >
 
-                <Button
-                    android:id="@+id/chooseExercise"
-                    android:layout_width="46dp"
-                    android:layout_height="17dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/exercise_button_selector"
-                    android:onClick="onClick" />
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1" >
 
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1" >
+                    <Button
+                        android:id="@+id/chooseExercise"
+                        android:layout_width="46dp"
+                        android:layout_height="17dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/exercise_button_selector"
+                        android:onClick="onClick" />
+                </RelativeLayout>
 
-                <Button
-                    android:id="@+id/chooseRouteBook"
-                    android:layout_width="45dp"
-                    android:layout_height="14dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/routebook_button_selector"
-                    android:onClick="onClick" />
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1" >
 
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1" >
+                    <Button
+                        android:id="@+id/chooseRouteBook"
+                        android:layout_width="45dp"
+                        android:layout_height="14dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/routebook_button_selector"
+                        android:onClick="onClick" />
+                </RelativeLayout>
 
-                <Button
-                    android:id="@+id/chooseMarker"
-                    android:layout_width="45dp"
-                    android:layout_height="15dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/mark_button_selector"
-                    android:onClick="onClick" />
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1" >
+
+                    <Button
+                        android:id="@+id/chooseMarker"
+                        android:layout_width="45dp"
+                        android:layout_height="15dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/mark_button_selector"
+                        android:onClick="onClick" />
+                </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

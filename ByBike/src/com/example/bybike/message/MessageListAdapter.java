@@ -2,7 +2,6 @@ package com.example.bybike.message;
 
 import java.util.List;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,9 @@ import android.widget.TextView;
 
 import com.ab.image.AbImageLoader;
 import com.example.bybike.R;
+import com.example.bybike.db.model.MessageBean;
 import com.example.bybike.util.CircleImageView;
+import com.example.bybike.util.Constant;
 
 /**
  * 消息列表的Adapter
@@ -30,7 +31,7 @@ public class MessageListAdapter extends BaseAdapter {
 	// xml转View对象
 	private LayoutInflater mInflater;
 	// 列表展现的数据
-	private List<ContentValues> list;
+	private List<MessageBean> list;
 	// 图片下载器
 	private AbImageLoader mAbImageDownloader = null;
 
@@ -40,7 +41,7 @@ public class MessageListAdapter extends BaseAdapter {
 	 * @param context
 	 * @param list
 	 */
-	public MessageListAdapter(Context context, List<ContentValues> list) {
+	public MessageListAdapter(Context context, List<MessageBean> list) {
 
 		this.mContext = context;
 		this.list = list;
@@ -71,32 +72,50 @@ public class MessageListAdapter extends BaseAdapter {
 		final ViewHolder holder;
 		if (convertView == null) {
 			// 使用自定义的list_items作为Layout
-			convertView = mInflater.inflate(R.layout.message_apply_list_item, null);
+			convertView = mInflater.inflate(R.layout.message_apply_list_item,
+					null);
 			// 减少findView的次数
 			holder = new ViewHolder();
-			holder.imageView = (CircleImageView)convertView.findViewById(R.id.imageView);
-			holder.messageContent = (TextView)convertView.findViewById(R.id.messageContent);
-			holder.messageTime = (TextView)convertView.findViewById(R.id.messageTime);
-			holder.notifyIcon = (ImageView)convertView.findViewById(R.id.notifyIcon);
+			holder.imageView = (CircleImageView) convertView
+					.findViewById(R.id.imageView);
+			holder.messageContent = (TextView) convertView
+					.findViewById(R.id.messageContent);
+			holder.messageTime = (TextView) convertView
+					.findViewById(R.id.messageTime);
+			holder.notifyIcon = (ImageView) convertView
+					.findViewById(R.id.notifyIcon);
 			// 初始化布局中的元素
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		// 获取该行的数据
-		ContentValues v = this.list.get(position);
-		int type = v.getAsInteger("messageType");
-		if(type == 0 || type == 1){
-			mAbImageDownloader.display(holder.imageView, v.getAsString("avater"));
+		MessageBean mb = this.list.get(position);
+		int type = Integer.valueOf(mb.getMessageType());
+		switch (type) {
+		case 0:
+			mAbImageDownloader.display(holder.imageView, Constant.serverUrl + mb.getSenderHeadUrl());
+			holder.notifyIcon.setVisibility(View.INVISIBLE);	
+			holder.messageContent.setText(mb.getSenderName() + " 邀请您添加为好友");
+			holder.messageTime.setText(mb.getSendTime());
+			break;
+
+		case 1:
+			mAbImageDownloader.display(holder.imageView, Constant.serverUrl + mb.getSenderHeadUrl());
 			holder.notifyIcon.setVisibility(View.INVISIBLE);
-		}else if(type == 2){
+			holder.messageContent.setText(mb.getSenderName() + " 回复了你");
+			holder.messageTime.setText(mb.getSendTime());
+			break;
+		case 2:
 			holder.imageView.setVisibility(View.INVISIBLE);
 			holder.notifyIcon.setVisibility(View.VISIBLE);
+			holder.messageContent.setText(mb.getMessageContent());
+			holder.messageTime.setText(mb.getSendTime());
+			break;
+		default:
+			break;
 		}
-		
-		holder.messageContent.setText(v.getAsString("message"));
-		holder.messageTime.setText(v.getAsString("messageTime"));
-		
+
 		// 图片的下载
 		return convertView;
 	}

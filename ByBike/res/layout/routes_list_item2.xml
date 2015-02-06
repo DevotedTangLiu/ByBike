@@ -30,7 +30,7 @@
                 android:layout_width="120dp"
                 android:layout_height="75dp"
                 android:layout_alignParentRight="true"
-                android:scaleType="fitXY" />
+                android:scaleType="centerCrop" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -40,6 +40,7 @@
                 android:orientation="vertical" >
 
                 <TextView
+                    android:id="@+id/routeTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -49,6 +50,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/routeAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
@@ -57,11 +59,12 @@
                     android:textSize="9sp" />
 
                 <TextView
+                    android:id="@+id/routeDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:maxLines="2"
-                    android:text="很久以前就打算早点起床，踩车上班。不过一直没有机会啊。今天..."
+                    android:text=""
                     android:textColor="#646464"
                     android:textSize="10sp" />
             </LinearLayout>

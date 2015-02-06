@@ -44,6 +44,12 @@ public class Constant {
 	 * 第一次启动应用
 	 */
 	public static final String FIRSTUSED = "firstUsed";
+	
+	public static final String carbonCount = "carbonCount";
+	
+	public static final String totalDistance = "totalDistance";
+	
+	public static final String hasLogined = "hasLogined";
 	/**
 	 * 服务器地址
 	 */
@@ -180,5 +186,19 @@ public class Constant {
 	 * 获取私人消息
 	 */
 	public static final String getPrivateMessage = "/bybike_ser/m/news/getPrivateNews";
+	/**
+	 * 获取用户信息
+	 */
+	public static final String getUserInfoUrl = "/bybike_ser/m/getUserInfoById";
+	/**
+	 * 添加好友url
+	 */
+	public static final String addFriendUrl = "/bybike_ser/m/addFriendApply";
+	/**
+	 * 删除好友url
+	 */
+	public static final String deleteFriendUrl = "/bybike_ser/m/removeFrinend";
+	
+	public static final String markerDataLoaded = "markerDataLoaded";
 	
 }

@@ -3,7 +3,8 @@ package com.example.bybike.message;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.ContentValues;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -28,17 +29,17 @@ public class MessageListActivity extends AbActivity {
 	// http请求帮助类
 	private AbHttpUtil mAbHttpUtil = null;
 
-	private List<ContentValues> myApplyListData = null;
+	private List<MessageBean> myApplyListData = null;
 	private MessageListAdapter myApplyListAdapter = null;
 	private AbPullToRefreshView myApplyListView = null;
 	private ListView myApplyList = null;
 
-	private List<ContentValues> myCommentListData = null;
+	private List<MessageBean> myCommentListData = null;
 	private MessageListAdapter myCommentListAdapter = null;
 	private AbPullToRefreshView myCommentListView = null;
 	private ListView myCommentList = null;
 
-	private List<ContentValues> myNotifyListData = null;
+	private List<MessageBean> myNotifyListData = null;
 	private MessageListAdapter myNotifyListAdapter = null;
 	private AbPullToRefreshView myNotifyListView = null;
 	private ListView myNotifyList = null;
@@ -49,6 +50,8 @@ public class MessageListActivity extends AbActivity {
 	private Button applyButton;
 	private Button commentButton;
 	private Button notifyButton;
+	
+	MessageBeanDao messageBeanDao = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +64,18 @@ public class MessageListActivity extends AbActivity {
 		applyButton = (Button) findViewById(R.id.applyButton);
 		commentButton = (Button) findViewById(R.id.commentButton);
 		notifyButton = (Button) findViewById(R.id.notifyButton);
-
 		applyButton.setSelected(true);
-
+		
 		// 填充用户活动、路书、友好点数据
 		mPager = (ViewPager) findViewById(R.id.vPager);
 		listViews = new ArrayList<View>();
 		initViewPager();
+	}
+	
+	@Override
+	protected void onResume(){		
+		super.onResume();
+		
 	}
 
 	/**
@@ -82,10 +90,16 @@ public class MessageListActivity extends AbActivity {
 		View myApplyListLayout = mInflater.inflate(R.layout.pull_list, null);
 		myApplyListView = (AbPullToRefreshView) myApplyListLayout
 				.findViewById(R.id.mPullRefreshView);
+		
+		myApplyListView.setPullRefreshEnable(false);
+		myApplyListView.setLoadMoreEnable(false);
+		
 		myApplyList = (ListView) myApplyListLayout.findViewById(R.id.mListView);
+		myApplyList.setDivider(new ColorDrawable(Color.GRAY));  
+		myApplyList.setDividerHeight(1); 
 
 		// ListView数据
-		myApplyListData = new ArrayList<ContentValues>();
+		myApplyListData = new ArrayList<MessageBean>();
 		// 使用自定义的Adapter
 		myApplyListAdapter = new MessageListAdapter(MessageListActivity.this,
 				myApplyListData);
@@ -101,15 +115,21 @@ public class MessageListActivity extends AbActivity {
 		listViews.add(myApplyListLayout);
 
 		/**
-		 * 初始化我的请求列表
+		 * 初始评论通知列表
 		 */
 		View myCommentListLayout = mInflater.inflate(R.layout.pull_list, null);
 		myCommentListView = (AbPullToRefreshView) myCommentListLayout
 				.findViewById(R.id.mPullRefreshView);
+		
+		myCommentListView.setPullRefreshEnable(false);
+		myCommentListView.setLoadMoreEnable(false);
+		
 		myCommentList = (ListView) myCommentListLayout
 				.findViewById(R.id.mListView);
+		myCommentList.setDivider(new ColorDrawable(Color.GRAY));  
+		myCommentList.setDividerHeight(1); 
 		// ListView数据
-		myCommentListData = new ArrayList<ContentValues>();
+		myCommentListData = new ArrayList<MessageBean>();
 		// 使用自定义的Adapter
 		myCommentListAdapter = new MessageListAdapter(MessageListActivity.this,
 				myCommentListData);
@@ -130,10 +150,16 @@ public class MessageListActivity extends AbActivity {
 		View myNotifyListLayout = mInflater.inflate(R.layout.pull_list, null);
 		myNotifyListView = (AbPullToRefreshView) myNotifyListLayout
 				.findViewById(R.id.mPullRefreshView);
+		
+		myNotifyListView.setPullRefreshEnable(false);
+		myNotifyListView.setLoadMoreEnable(false);
+		
 		myNotifyList = (ListView) myNotifyListLayout
 				.findViewById(R.id.mListView);
+		myNotifyList.setDivider(new ColorDrawable(Color.GRAY));  
+		myNotifyList.setDividerHeight(1); 
 		// ListView数据
-		myNotifyListData = new ArrayList<ContentValues>();
+		myNotifyListData = new ArrayList<MessageBean>();
 		// 使用自定义的Adapter
 		myNotifyListAdapter = new MessageListAdapter(MessageListActivity.this,
 				myNotifyListData);
@@ -155,52 +181,45 @@ public class MessageListActivity extends AbActivity {
 		mPager.setCurrentItem(0);
 		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 		
-		/**
-		 * 从本地数据库读取
-		 */
-		MessageBeanDao MessageBeanDao = new MessageBeanDao(MessageListActivity.this);
-		MessageBeanDao.startReadableDatabase();
-		List<MessageBean> messages = MessageBeanDao.queryList();
-		for(int i = 0; i < messages.size(); i ++){
-			
-			MessageBean mb = messages.get(i);
-			if("discussNews".equalsIgnoreCase(mb.getMessageType())){
-				
-				// 填充消息列表
-				ContentValues v2 = new ContentValues();
-				v2.put("id", mb.getMessageId());
-				v2.put("messageType", 1);
-				v2.put("message", mb.getMessageContent());
-				v2.put("avater","http://img0.bdstatic.com/img/image/shouye/mxpyy1211.jpg");
-				v2.put("messageTime", "10.28 14:35");
-				myCommentListData.add(v2);
-				
-			}else if("friendNews".equalsIgnoreCase(mb.getMessageType())){
-				
-				ContentValues v1 = new ContentValues();
-				v1.put("id", mb.getMessageId());
-				v1.put("messageType", 0);
-				v1.put("message", mb.getMessageContent());
-				v1.put("avater",
-						"http://t11.baidu.com/it/u=1610160448,1299213022&fm=56");
-				v1.put("messageTime", "10.28 14:30");
-				myApplyListData.add(v1);
-				
-			}else if("activityNews".equalsIgnoreCase(mb.getMessageType())){
-				
-				ContentValues v3 = new ContentValues();
-				v3.put("id", mb.getMessageId());
-				v3.put("messageType", 2);
-				v3.put("message", mb.getMessageContent());
-				v3.put("messageTime", "10.28 14:35");
-				myNotifyListData.add(v3);
-				
-			}
-			
+		showMessages();
+		
+	}
+	
+	
+	private void showMessages(){
+		
+		messageBeanDao = new MessageBeanDao(MessageListActivity.this);
+		messageBeanDao.startReadableDatabase();
+		
+		List<MessageBean>messages = new ArrayList<MessageBean>();
+		messages = messageBeanDao.queryList();
+		if(messages.size() > 0){		
+			myApplyListData.clear();
+			myCommentListData.clear();
+			myNotifyListData.clear();
 		}
+		for(MessageBean m : messages){
+			
+			if(m.getMessageType().equals("0")){
+				
+				myApplyListData.add(m);
+				
+			}else if("1".equals(m.getMessageType())){
+				
+				myCommentListData.add(m);
+				
+			}else if("2".equals(m.getMessageType())){
+				
+				myNotifyListData.add(m);
+			}		
+		}
+		
+		messageBeanDao.closeDatabase();
+		
 		myApplyListAdapter.notifyDataSetChanged();
 		myCommentListAdapter.notifyDataSetChanged();
-		myNotifyListAdapter.notifyDataSetChanged();
+		myNotifyListAdapter.notifyDataSetChanged();	
+		
 	}
 
 	public void onClick(View v) {

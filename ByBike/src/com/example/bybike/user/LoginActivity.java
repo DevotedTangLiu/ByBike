@@ -174,6 +174,8 @@ public class LoginActivity extends AbActivity {
 				JSONObject dataObject = responseObj.getJSONObject("data");
 				nickname = dataObject.getString("name");
 				account = dataObject.getString("loginName");
+				String carbonCount = dataObject.getString("carbonCount");
+				String totalDistance = dataObject.getString("totalDistance");
 				String headPic;
 				try {
 					headPic = dataObject.getString("headUrl");
@@ -227,6 +229,9 @@ public class LoginActivity extends AbActivity {
 				SharedPreferencesUtil.saveSharedPreferences_b(this,
 						Constant.ISLOGINED, true);
 				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERID, userId);
+				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.carbonCount, carbonCount);
+				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.totalDistance, totalDistance);
+				SharedPreferencesUtil.saveSharedPreferences_b(this, Constant.hasLogined, true);
 
 				Intent intent = getIntent();
 				setResult(RESULT_OK, intent);

@@ -110,9 +110,7 @@ public class SearchActivity extends AbActivity {
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.getMarkerListUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(
-				SearchActivity.this, Constant.SESSION);
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(SearchActivity.this, Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("pageNo", "1");
 		p.put("pageSize", "100");
@@ -149,7 +147,7 @@ public class SearchActivity extends AbActivity {
 				}
 			};
 
-		});
+		}, jsession);
 
 	}
 

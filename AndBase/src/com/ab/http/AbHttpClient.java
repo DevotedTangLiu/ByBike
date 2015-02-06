@@ -99,6 +99,7 @@ public class AbHttpClient {
     private static final String HTTP_POST = "POST";
     private static final String USER_AGENT = "User-Agent";
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
+    private static final String COOKIE = "Cookie";
     
     /** CookieStore. */
     private CookieStore mCookieStore;  
@@ -208,6 +209,27 @@ public class AbHttpClient {
     	});      
 	}
 	
+	/**
+     * 描述：带参数和jsessionid的post请求.
+     *
+     * @param url the url
+     * @param params the params
+     * @param responseListener the response listener
+     */
+    public void post(final String url,final AbRequestParams params,
+            final AbHttpResponseListener responseListener, final String jsessionId) {
+        responseListener.setHandler(new ResponderHandler(responseListener));
+        mExecutorService.execute(new Runnable() { 
+            public void run() {
+                try {
+                    doPost(url,params,responseListener, jsessionId);
+                } catch (Exception e) { 
+                    e.printStackTrace();
+                }
+            }                 
+        });      
+    }
+	
 	
 	/**
 	 * 描述：执行get请求.
@@ -249,13 +271,13 @@ public class AbHttpClient {
 	}
 	
 	/**
-	 * 描述：执行post请求.
+	 * 描述：执行带jsessionId的post请求.
 	 *
 	 * @param url the url
 	 * @param params the params
 	 * @param responseListener the response listener
 	 */
-	private void doPost(String url,AbRequestParams params,AbHttpResponseListener responseListener){
+	private void doPost(String url,AbRequestParams params,AbHttpResponseListener responseListener, String jsessionId){
 		  try {
 			  responseListener.sendStartMessage();
 			  
@@ -269,6 +291,8 @@ public class AbHttpClient {
 		      httpPost.addHeader(USER_AGENT, userAgent);
 			  //压缩
 		      httpPost.addHeader(ACCEPT_ENCODING, "gzip");
+		      //JsessionId
+		      httpPost.addHeader(COOKIE, "JSESSIONID=" + jsessionId);
 		      //是否包含文件
 		      boolean isContainFile = false;
 		      if(params != null){
@@ -300,6 +324,72 @@ public class AbHttpClient {
 			responseListener.sendFinishMessage();
 		}
 	}
+	
+	
+	/**
+     * 描述：执行post请求.
+     *
+     * @param url the url
+     * @param params the params
+     * @param responseListener the response listener
+     */
+    private void doPost(String url,AbRequestParams params,AbHttpResponseListener responseListener){
+          try {
+              responseListener.sendStartMessage();
+              
+              if(!AbAppUtil.isNetworkAvailable(mContext)){
+                    responseListener.sendFailureMessage(AbHttpStatus.CONNECT_FAILURE_CODE,AbAppConfig.CONNECT_EXCEPTION, new AbAppException(AbAppConfig.CONNECT_EXCEPTION));
+                    return;
+              }
+              
+              String jsession = "";
+              if(url.contains(";jsessionid=")){
+            	  
+            	  String realUrl = url.substring(0, url.indexOf(";jsessionid="));
+            	  jsession = url.substring(url.indexOf("jsessionid="));
+            	  url = realUrl;  	  
+         
+              }
+              //HttpPost连接对象  
+              HttpPost httpPost = new HttpPost(url);  
+              httpPost.addHeader(USER_AGENT, userAgent);
+              //压缩
+              httpPost.addHeader(ACCEPT_ENCODING, "gzip");
+              if(!"".equals(jsession)){
+            	  httpPost.addHeader(COOKIE, jsession);
+              }
+           
+              //是否包含文件
+              boolean isContainFile = false;
+              if(params != null){
+                  //使用NameValuePair来保存要传递的Post参数设置字符集 
+                  HttpEntity httpentity = params.getEntity(responseListener);
+                  //请求httpRequest  
+                  httpPost.setEntity(httpentity); 
+                  if(params.getFileParams().size()>0){
+                      isContainFile = true;
+                  }
+              }
+              String  response = null;
+              //取得默认的HttpClient
+              DefaultHttpClient httpClient = getHttpClient();  
+              if(isContainFile){
+                  AbLogUtil.i(mContext, "request："+url+",包含文件域!");
+              }else{
+              }
+              //取得HttpResponse
+              response = httpClient.execute(httpPost,new RedirectionResponseHandler(url,responseListener),mHttpContext);  
+              AbLogUtil.i(mContext, "request："+url+",result："+response);
+              
+        } catch (Exception e) {
+            e.printStackTrace();
+            AbLogUtil.i(mContext, "request："+url+",error："+e.getMessage());
+            //发送失败消息
+            responseListener.sendFailureMessage(AbHttpStatus.UNTREATED_CODE,e.getMessage(),new AbAppException(e));
+        }finally{
+            responseListener.sendFinishMessage();
+        }
+    }
 	
 	
 	/**

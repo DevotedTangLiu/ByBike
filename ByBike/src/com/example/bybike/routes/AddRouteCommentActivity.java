@@ -41,6 +41,9 @@ public class AddRouteCommentActivity extends AbActivity {
 	private AbHttpUtil mAbHttpUtil = null;
 	private String routeId = "";
 	private String commentsString = "";
+	private String commentId = "";
+	private String receiverId = "";
+	private String receiverName = "";
 
 	ListView discussList;
 	List<ContentValues> discussValueList = null;
@@ -65,6 +68,14 @@ public class AddRouteCommentActivity extends AbActivity {
 		
 		routeId = getIntent().getStringExtra("id");
 		commentsString = getIntent().getStringExtra("comments");
+		
+		receiverId = getIntent().getStringExtra("receiverId");
+		receiverName = getIntent().getStringExtra("receiverName");
+		commentId = getIntent().getStringExtra("commentId");
+		
+		if(receiverName != null && !"".equals(receiverName)){
+			comment.setHint("回复" + receiverName + ":");
+		}
 
 		discussList = (ListView) findViewById(R.id.discussList);
 		discussValueList = new ArrayList<ContentValues>();
@@ -89,6 +100,8 @@ public class AddRouteCommentActivity extends AbActivity {
 					v1.put("avater", "");
 				}
 				v1.put("discussTime", jo.getString("discussTime"));
+				v1.put("receiverId", jo.getString("receiverId"));
+				v1.put("receiverName", jo.getString("receiverName"));	
 				discussValueList.add(v1);
 			}
 			discussAdapter.notifyDataSetChanged();
@@ -158,6 +171,12 @@ public class AddRouteCommentActivity extends AbActivity {
 		AbRequestParams p = new AbRequestParams();
 		p.put("ridingBookId", routeId);
 		p.put("content", content);
+		if(null != commentId && !"".endsWith(commentId)){
+			p.put("discussId", commentId);
+		}
+		if(null != receiverId && !"".endsWith(receiverId)){
+			p.put("receiverId", receiverId);
+		}
 		// 绑定参数
 		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -208,6 +227,8 @@ public class AddRouteCommentActivity extends AbActivity {
 				v1.put("discussContent", comment.getText().toString().trim());
 				v1.put("avater",SharedPreferencesUtil.getSharedPreferences_s(AddRouteCommentActivity.this, Constant.USERAVATARURL));
 				v1.put("discussTime", (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()).toString());
+				v1.put("receiverId", receiverId);
+				v1.put("receiverName", receiverName);	
 				discussValueList.add(v1);
 				
 				discussAdapter.notifyDataSetChanged();
@@ -219,6 +240,8 @@ public class AddRouteCommentActivity extends AbActivity {
 				jo.put("content", v1.get("discussContent"));
 				jo.put("senderHeadUrl", v1.get("avater"));
 				jo.put("discussTime", v1.get("discussTime"));
+				jo.put("receiverId", receiverId);
+				jo.put("receiverName", receiverName);
 				dataArray.put(jo);
 				
 				comment.setText("");

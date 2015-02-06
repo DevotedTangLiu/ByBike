@@ -27,6 +27,7 @@ import com.ab.util.AbDialogUtil;
 import com.ab.util.AbToastUtil;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
+import com.example.bybike.marker.AddCommentActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
@@ -38,6 +39,9 @@ public class AddActivityCommentActivity extends AbActivity {
 	private AbHttpUtil mAbHttpUtil = null;
 	private String activityId = "";
 	private String commentsString = "";
+	private String commentId = "";
+	private String receiverId = "";
+	private String receiverName = "";
 
 	ListView discussList;
 	List<ContentValues> discussValueList = null;
@@ -62,6 +66,14 @@ public class AddActivityCommentActivity extends AbActivity {
 		
 		activityId = getIntent().getStringExtra("id");
 		commentsString = getIntent().getStringExtra("comments");
+		
+		receiverId = getIntent().getStringExtra("receiverId");
+		receiverName = getIntent().getStringExtra("receiverName");
+		commentId = getIntent().getStringExtra("commentId");
+		
+		if(receiverName != null && !"".equals(receiverName)){
+			comment.setHint("回复" + receiverName + ":");
+		}
 
 		discussList = (ListView) findViewById(R.id.discussList);
 		discussValueList = new ArrayList<ContentValues>();
@@ -85,6 +97,8 @@ public class AddActivityCommentActivity extends AbActivity {
 				}else{
 					v1.put("avater", "");
 				}
+				v1.put("receiverId", jo.getString("receiverId"));
+				v1.put("receiverName", jo.getString("receiverName"));	
 				v1.put("discussTime", jo.getString("discussTime"));
 				discussValueList.add(v1);
 			}
@@ -155,6 +169,12 @@ public class AddActivityCommentActivity extends AbActivity {
 		AbRequestParams p = new AbRequestParams();
 		p.put("activityId", activityId);
 		p.put("content", content);
+		if(null != commentId && !"".endsWith(commentId)){
+			p.put("discussId", commentId);
+		}
+		if(null != receiverId && !"".endsWith(receiverId)){
+			p.put("receiverId", receiverId);
+		}
 		// 绑定参数
 		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -205,6 +225,9 @@ public class AddActivityCommentActivity extends AbActivity {
 				v1.put("discussContent", comment.getText().toString().trim());
 				v1.put("avater",SharedPreferencesUtil.getSharedPreferences_s(AddActivityCommentActivity.this, Constant.USERAVATARURL));
 				v1.put("discussTime", (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()).toString());
+				v1.put("receiverId", receiverId);
+				v1.put("receiverName", receiverName);	
+				
 				discussValueList.add(v1);
 				
 				discussAdapter.notifyDataSetChanged();
@@ -216,6 +239,8 @@ public class AddActivityCommentActivity extends AbActivity {
 				jo.put("content", v1.get("discussContent"));
 				jo.put("senderHeadUrl", v1.get("avater"));
 				jo.put("discussTime", v1.get("discussTime"));
+				jo.put("receiverId", receiverId);
+				jo.put("receiverName", receiverName);
 				dataArray.put(jo);
 				
 				comment.setText("");
@@ -241,7 +266,7 @@ public class AddActivityCommentActivity extends AbActivity {
 					}
 	            });				
 			}else{
-				
+				AbToastUtil.showToast(AddActivityCommentActivity.this, "评论失败，请稍后重试...");
 			}
 			
 		} catch (JSONException e) {

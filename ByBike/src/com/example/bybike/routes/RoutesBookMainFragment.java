@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.ab.fragment.AbDialogFragment.AbDialogOnLoadListener;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
@@ -61,12 +60,24 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
     private String orderType = "createDateDesc";
     private String kilometersStart = "0";
     private String kilometersEnd = "10";
+    private String areaId = "";
 
     LinearLayout distanceArea;
     RelativeLayout a010km;
     RelativeLayout a1020km;
     RelativeLayout a2030km;
     RelativeLayout a30km;
+    
+    LinearLayout areaOfGZ;
+    RelativeLayout panyuqu;
+    RelativeLayout tianhequ;
+    RelativeLayout huangpuqu;
+    RelativeLayout yuexiuqu;
+    RelativeLayout haizhuqu;
+    RelativeLayout liwanqu;
+    RelativeLayout baiyunqu;
+    RelativeLayout qitaqu;
+    
 
     private int pageNo = 1;
     private int pageSize = 10;
@@ -99,11 +110,28 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
         a1020km = (RelativeLayout) header.findViewById(R.id.a1020km);
         a2030km = (RelativeLayout) header.findViewById(R.id.a2030km);
         a30km = (RelativeLayout) header.findViewById(R.id.a30km);
-        // a010km.setSelected(true);
         a010km.setOnClickListener(clickListener);
         a1020km.setOnClickListener(clickListener);
         a2030km.setOnClickListener(clickListener);
         a30km.setOnClickListener(clickListener);
+        
+        areaOfGZ = (LinearLayout) header.findViewById(R.id.areaOfGZ);
+        panyuqu = (RelativeLayout) header.findViewById(R.id.panyuqu);
+        tianhequ = (RelativeLayout) header.findViewById(R.id.tianhequ);
+        huangpuqu = (RelativeLayout) header.findViewById(R.id.huangpuqu);
+        yuexiuqu = (RelativeLayout) header.findViewById(R.id.yuexiuqu);
+        haizhuqu = (RelativeLayout) header.findViewById(R.id.haizhuqu);
+        liwanqu = (RelativeLayout) header.findViewById(R.id.liwanqu);
+        baiyunqu = (RelativeLayout) header.findViewById(R.id.baiyunqu);
+        qitaqu = (RelativeLayout) header.findViewById(R.id.qitaqu);
+        panyuqu.setOnClickListener(clickListener);
+        tianhequ.setOnClickListener(clickListener);
+        huangpuqu.setOnClickListener(clickListener);
+        yuexiuqu.setOnClickListener(clickListener);
+        haizhuqu.setOnClickListener(clickListener);
+        liwanqu.setOnClickListener(clickListener);
+        baiyunqu.setOnClickListener(clickListener);
+        qitaqu.setOnClickListener(clickListener);
 
         orderByTime = (Button) header.findViewById(R.id.orderByTime);
         orderByDistance = (Button) header.findViewById(R.id.orderByDistance);
@@ -156,16 +184,19 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
         }
         
         String urlString = Constant.serverUrl + Constant.routeListUrl;
-        urlString += ";jsessionid=";
-        urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
+        String jsession = SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
+//        urlString += ";jsessionid=";
+//        urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
         AbRequestParams p = new AbRequestParams();
         p.put("pageNo", String.valueOf(pageNo));
         p.put("pageSize", String.valueOf(pageSize));
-        if (!"orderByDistance".equalsIgnoreCase(orderType)) {
+        if ("createDateDesc".equalsIgnoreCase(orderType) || "PopularDesc".equalsIgnoreCase(orderType)) {
             p.put("orderBy", orderType);
-        } else {
+        }else if("orderByDistance".equalsIgnoreCase(orderType)){
             p.put("kilometersStart", kilometersStart);
             p.put("kilometersEnd", kilometersEnd);
+        }else if("orderByArea".equalsIgnoreCase(orderType)){
+            p.put("districtId", areaId);
         }
         // 绑定参数
         mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
@@ -181,7 +212,7 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
             @Override
             public void onStart() {
                 if (!isRefreshing) {
-                	mActivity.showProgressDialog("正在查询，请稍后...");
+                    mActivity.mProgressDialog.show();
                 }
             }
 
@@ -193,10 +224,10 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
             // 完成后调用，失败，成功
             @Override
             public void onFinish() {
-//            	mActivity.removeProgressDialog();
+                mActivity.mProgressDialog.dismiss();
             };
 
-        });
+        }, jsession);
     }
 
     private void processResult(String resultString) {
@@ -207,6 +238,9 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
 
                 newList = new ArrayList<Map<String, Object>>();
                 JSONArray dataArray = resultObj.getJSONArray("data");
+                if(dataArray.length() <= 0){
+                    AbToastUtil.showToast(mActivity, "没有符合条件的记录...");
+                }
                 for (int i = 0; i < dataArray.length(); i++) {
                     JSONObject jo = dataArray.getJSONObject(i);
 
@@ -297,6 +331,7 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
                     v.setSelected(true);
                     isRefreshing = false;
                     distanceArea.setVisibility(View.VISIBLE);
+                    areaOfGZ.setVisibility(View.GONE);
                 }
                 break;
 
@@ -305,6 +340,7 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
                     changeBackground();
                     v.setSelected(true);
                     distanceArea.setVisibility(View.GONE);
+                    areaOfGZ.setVisibility(View.GONE);
                     orderType = "createDateDesc";
                     pageNo = 1;
                     isRefreshing = false;
@@ -312,12 +348,21 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
                 }
                 break;
             case R.id.orderByArea:
+                if(!"orderByArea".equalsIgnoreCase(orderType)){
+                    orderType = "orderByArea";
+                    isRefreshing = false;
+                    changeBackground();
+                    v.setSelected(true);
+                    areaOfGZ.setVisibility(View.VISIBLE);
+                    distanceArea.setVisibility(View.GONE);
+                }
                 break;
             case R.id.orderByHot:
                 if (!"PopularDesc".equalsIgnoreCase(orderType)) {
                     changeBackground();
                     v.setSelected(true);
                     distanceArea.setVisibility(View.GONE);
+                    areaOfGZ.setVisibility(View.GONE);
                     orderType = "PopularDesc";
                     pageNo = 1;
                     isRefreshing = false;
@@ -361,6 +406,70 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
                     queryRouteBookList();
                 }
                 break;
+            case R.id.panyuqu:
+                if (!v.isSelected()) {
+                    changeAreaBackground();
+                    v.setSelected(true);
+                    areaId = "a8bb1e1dfbaf4ba38a94b9807ac0196e";
+                    queryRouteBookList();
+                }
+                break;
+            case R.id.tianhequ:
+                if (!v.isSelected()) {
+                    changeAreaBackground();
+                    v.setSelected(true);
+                    areaId = "92844c0656b84d9f9be9528563fc9566";
+                    queryRouteBookList();
+                }
+                break;
+            case R.id.huangpuqu:
+                if (!v.isSelected()) {
+                    changeAreaBackground();
+                    v.setSelected(true);
+                    areaId = "21a11560ab6d419dac6bbe44fbb670f4";
+                    queryRouteBookList();
+                }
+                break;
+            case R.id.yuexiuqu:
+                if (!v.isSelected()) {
+                    changeAreaBackground();
+                    v.setSelected(true);
+                    areaId = "bff8f47a73e8497caaa61504e24e2e21";
+                    queryRouteBookList();
+                }
+                break;
+            case R.id.haizhuqu:
+                if (!v.isSelected()) {
+                    changeAreaBackground();
+                    v.setSelected(true);
+                    areaId = "f9806ade6b824aee8149eb014928a0ca";
+                    queryRouteBookList();
+                }
+                break;
+            case R.id.liwanqu:
+                if (!v.isSelected()) {
+                    changeAreaBackground();
+                    v.setSelected(true);
+                    areaId = "31924e4541ea49fcb8c1aec91a1e487e";
+                    queryRouteBookList();
+                }
+                break;
+            case R.id.baiyunqu:
+                if (!v.isSelected()) {
+                    changeAreaBackground();
+                    v.setSelected(true);
+                    areaId = "8f15487d80694bad8284b6a61c315417";
+                    queryRouteBookList();
+                }
+                break;
+            case R.id.qitaqu:
+                if (!v.isSelected()) {
+                    changeAreaBackground();
+                    v.setSelected(true);
+                    areaId = "7ad3be69b96e420b8d33c6b1ae660476";
+                    queryRouteBookList();
+                }
+                break;
             default:
                 break;
             }
@@ -382,6 +491,17 @@ public class RoutesBookMainFragment extends Fragment implements OnHeaderRefreshL
         a1020km.setSelected(false);
         a2030km.setSelected(false);
         a30km.setSelected(false);
+    }
+    
+    private void changeAreaBackground(){
+        panyuqu.setSelected(false);
+        tianhequ.setSelected(false);
+        huangpuqu.setSelected(false);
+        yuexiuqu.setSelected(false);
+        haizhuqu.setSelected(false);
+        liwanqu.setSelected(false);
+        baiyunqu.setSelected(false);
+        qitaqu.setSelected(false);
     }
 
     @Override

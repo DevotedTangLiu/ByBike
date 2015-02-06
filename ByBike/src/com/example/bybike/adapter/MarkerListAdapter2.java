@@ -2,8 +2,8 @@ package com.example.bybike.adapter;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,10 +15,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ab.fragment.AbAlertDialogFragment;
+import com.ab.util.AbDialogUtil;
 import com.example.bybike.R;
 import com.example.bybike.db.model.MarkerBean;
-import com.example.bybike.marker.MarkerDetailActivity;
-import com.example.bybike.marker.MarkerListActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -183,6 +183,44 @@ public class MarkerListAdapter2 extends BaseAdapter {
 		@Override
 		public void onClick(View source) {
 			
+		    if (!SharedPreferencesUtil.getSharedPreferences_b(mContext, Constant.ISLOGINED)) {
+
+		    	AbDialogUtil.showAlertDialog(mContext, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+		    			new AbAlertDialogFragment.AbDialogOnClickListener() {
+
+					@Override
+					public void onPositiveClick() {
+						// TODO Auto-generated method stub
+						  Intent i = new Intent(mContext, LoginActivity.class);
+	                        mContext.startActivity(i);
+	                        ((Activity) mContext).overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+	                        AbDialogUtil.removeDialog(mContext);
+					}
+					@Override
+					public void onNegativeClick() {
+						// TODO Auto-generated method stub
+						AbDialogUtil.removeDialog(mContext);
+					}
+                });
+		       
+                return;
+            }
+		    TextView likeCount = (TextView)source.findViewById(R.id.likeCount);
+            if (source.isSelected()) {
+                source.setSelected(false);
+                int count = Integer.valueOf(likeCount.getText().toString());
+                count--;
+                if (count < 0)
+                    count = 0;
+                likeCount.setText(String.valueOf(count));
+            } else {
+                source.setSelected(true);
+                int count = Integer.valueOf(likeCount.getText().toString());
+                count++;
+                likeCount.setText(String.valueOf(count));
+            }
+            MarkerBean mb = mData.get(position);
+//            mContext.onLikeClicked(mb.getMarkerId());
 		}
 	}
 
@@ -195,9 +233,44 @@ public class MarkerListAdapter2 extends BaseAdapter {
 		}
 
 		@Override
-		public void onClick(View v) {
-			Log.d(TAG, String.valueOf(position));
-			v.setSelected(true);
+		public void onClick(View source) {
+		    if (!SharedPreferencesUtil.getSharedPreferences_b(mContext, Constant.ISLOGINED)) {
+
+		    	AbDialogUtil.showAlertDialog(mContext, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
+		    			new AbAlertDialogFragment.AbDialogOnClickListener() {
+
+					@Override
+					public void onPositiveClick() {
+						// TODO Auto-generated method stub
+						  Intent i = new Intent(mContext, LoginActivity.class);
+	                        mContext.startActivity(i);
+	                        ((Activity) mContext).overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+	                        AbDialogUtil.removeDialog(mContext);
+					}
+					@Override
+					public void onNegativeClick() {
+						// TODO Auto-generated method stub
+						AbDialogUtil.removeDialog(mContext);
+					}
+                });
+                return;
+            }
+            TextView collectCount = (TextView)source.findViewById(R.id.collectCount);
+            if (source.isSelected()) {
+                source.setSelected(false);
+                int count = Integer.valueOf(collectCount.getText().toString());
+                count--;
+                if (count < 0)
+                    count = 0;
+                collectCount.setText(String.valueOf(count));
+            } else {
+                source.setSelected(true);
+                int count = Integer.valueOf(collectCount.getText().toString());
+                count++;
+                collectCount.setText(String.valueOf(count));
+            }
+            MarkerBean mb = mData.get(position);
+//            mContext.collectButtonClicked(mb.getMarkerId());
 		}
 	}
 

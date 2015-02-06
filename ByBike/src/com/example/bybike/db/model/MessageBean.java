@@ -5,7 +5,7 @@ import com.ab.db.orm.annotation.Id;
 import com.ab.db.orm.annotation.Table;
 
 @Table(name = "message_info")
-public class MessageBean{
+public class MessageBean {
 
 	// ID @Id主键,int类型,数据库建表时此字段会设为自增长
 	@Id
@@ -20,28 +20,12 @@ public class MessageBean{
 		this.messageId = messageId;
 	}
 
-	public String getMessageTitle() {
-		return messageTitle;
-	}
-
-	public void setMessageTitle(String messageTitle) {
-		this.messageTitle = messageTitle;
-	}
-
 	public String getMessageContent() {
 		return messageContent;
 	}
 
 	public void setMessageContent(String messageContent) {
 		this.messageContent = messageContent;
-	}
-
-	public String getMessageSender() {
-		return messageSender;
-	}
-
-	public void setMessageSender(String messageSender) {
-		this.messageSender = messageSender;
 	}
 
 	public String getMessageType() {
@@ -52,14 +36,6 @@ public class MessageBean{
 		this.messageType = messageType;
 	}
 
-	public String getMessageTime() {
-		return messageTime;
-	}
-
-	public void setMessageTime(String messageTime) {
-		this.messageTime = messageTime;
-	}
-
 	public int get_id() {
 		return _id;
 	}
@@ -68,22 +44,93 @@ public class MessageBean{
 		this._id = _id;
 	}
 
+	public String getSenderId() {
+		return senderId;
+	}
+
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
+	}
+
+	public String getSenderName() {
+		return senderName;
+	}
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+
+	public String getSenderHeadUrl() {
+		return senderHeadUrl;
+	}
+
+	public void setSenderHeadUrl(String senderHeadUrl) {
+		this.senderHeadUrl = senderHeadUrl;
+	}
+
+	public String getActivityTitle() {
+		return activityTitle;
+	}
+
+	public void setActivityTitle(String activityTitle) {
+		this.activityTitle = activityTitle;
+	}
+
+	public String getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
+	}
+
+	public String getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(String sendTime) {
+		this.sendTime = sendTime;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
 	@Column(name = "message_id")
 	private String messageId;
-
-	@Column(name = "message_title")
-	private String messageTitle;
 
 	@Column(name = "message_content")
 	private String messageContent;
 
-	@Column(name = "message_sender")
-	private String messageSender;
-
 	@Column(name = "message_type")
 	private String messageType;
 
-	@Column(name = "message_time")
-	private String messageTime;
+	// 评论
+	@Column(name = "sender_id")
+	private String senderId;
+
+	@Column(name = "sender_name")
+	private String senderName;
+
+	@Column(name = "sender_head_url")
+	private String senderHeadUrl;
+
+	// 活动通知
+	@Column(name = "activity_title")
+	private String activityTitle;
+
+	@Column(name = "activity_id")
+	private String activityId;
+
+	@Column(name = "send_time")
+	private String sendTime;
+
+	// 好友请求
+	@Column(name = "remarks")
+	private String remarks;
 
 }

@@ -77,6 +77,8 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
             holder.discussContent = (TextView) convertView.findViewById(R.id.discussContent);
             holder.discussTime = (TextView) convertView.findViewById(R.id.discussTime);
             holder.avater = (CircleImageView) convertView.findViewById(R.id.imageView);
+            holder.huifu = (TextView)convertView.findViewById(R.id.huifu);
+            holder.receivedName = (TextView)convertView.findViewById(R.id.receiverName);
             
             click = new OnImageClickListener();
             holder.avater.setOnClickListener(click);
@@ -93,6 +95,14 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
         holder.userName.setText(v.getAsString("userName"));
         holder.discussContent.setText(v.getAsString("discussContent"));
         holder.discussTime.setText(v.getAsString("discussTime"));
+        if("".equals(v.getAsString("receiverName"))){
+        	holder.huifu.setVisibility(View.INVISIBLE);
+        	holder.receivedName.setVisibility(View.INVISIBLE);
+        }else{
+        	holder.huifu.setVisibility(View.VISIBLE);
+        	holder.receivedName.setText(v.getAsString("receiverName"));
+        	holder.receivedName.setVisibility(View.VISIBLE);
+        }
         if(v.getAsString("avater").equals("")){
         	holder.avater.setBackgroundResource(R.drawable.user_icon_pic);
         }else if(v.getAsString("avater").startsWith("http")){
@@ -107,6 +117,8 @@ public class ExerciseDiscussListAdapter extends BaseAdapter {
         TextView userName;
         TextView discussContent;
         TextView discussTime;
+        TextView huifu;
+        TextView receivedName;
         com.example.bybike.util.CircleImageView avater;
     }
     

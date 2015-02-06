@@ -27,8 +27,6 @@ package com.ab.global;
  * @date：2013-10-16 下午1:33:39
  */
 public class AbConstant {
-
-	public static final int DIALOGPROGRESS = 0;
 	
    
 }

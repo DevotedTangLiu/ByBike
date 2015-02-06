@@ -60,7 +60,7 @@ public class MarkerListActivity extends AbActivity {
 
 				Intent i = new Intent();
 				i.setClass(MarkerListActivity.this, MarkerDetailActivity.class);
-				i.putExtra("id", myMarkerListData.get(position - 1)
+				i.putExtra("id", myMarkerListData.get(position)
 						.getMarkerId());
 				startActivity(i);
 				overridePendingTransition(R.anim.fragment_in,

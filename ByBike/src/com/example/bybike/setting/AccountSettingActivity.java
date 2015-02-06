@@ -323,9 +323,7 @@ public class AccountSettingActivity extends AbActivity {
 				return;
 			}
 			String urlString = Constant.serverUrl + Constant.updatePasswordUrl;
-			urlString += ";jsessionid=";
-			urlString += SharedPreferencesUtil.getSharedPreferences_s(
-					AccountSettingActivity.this, Constant.SESSION);
+			String jsession = SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION);
 			AbRequestParams p = new AbRequestParams();
 			p.put("newPassword", newPsd);
 			p.put("oldPassword", oldPsd);
@@ -364,7 +362,7 @@ public class AccountSettingActivity extends AbActivity {
 					}
 				};
 
-			});
+			}, jsession);
 
 		}
 
@@ -378,9 +376,7 @@ public class AccountSettingActivity extends AbActivity {
 			changed = true;
 			counts++;
 			String urlString = Constant.serverUrl + Constant.updateUserInfoUrl;
-			urlString += ";jsessionid=";
-			urlString += SharedPreferencesUtil.getSharedPreferences_s(
-					AccountSettingActivity.this, Constant.SESSION);
+			String jsession = SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION);
 			AbRequestParams p = new AbRequestParams();
 			p.put("name", newNickName, "multipart/form-data");
 			// 绑定参数
@@ -419,7 +415,7 @@ public class AccountSettingActivity extends AbActivity {
 					}
 				};
 
-			});
+			}, jsession);
 
 		}
 		/**
@@ -439,9 +435,7 @@ public class AccountSettingActivity extends AbActivity {
 
 			String urlString = Constant.serverUrl
 					+ Constant.updateUserHeadPicUrl;
-			urlString += ";jsessionid=";
-			urlString += SharedPreferencesUtil.getSharedPreferences_s(
-					AccountSettingActivity.this, Constant.SESSION);
+			String jsession = SharedPreferencesUtil.getSharedPreferences_s(AccountSettingActivity.this, Constant.SESSION);
 			AbRequestParams p = new AbRequestParams();
 			p.put("headImg", headPicFile, "multipart/form-data");
 			// 绑定参数
@@ -480,7 +474,7 @@ public class AccountSettingActivity extends AbActivity {
 					}
 				};
 
-			});
+			}, jsession);
 
 		}
 		if (!changed) {

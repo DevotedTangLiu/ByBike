@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:text="返老还童 - 老城区环游"
+            android:text=""
             android:textColor="#4A4A4A"
             android:textSize="14sp" />
 
@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="约 32km 长寿路-陈家祠"
+                android:text=""
                 android:textColor="#979797"
                 android:textSize="10sp" />
         </LinearLayout>
@@ -100,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="9dp"
-                android:text="2014.10.28 14:00-18:00"
+                android:text=""
                 android:textColor="#9B9B9B"
                 android:textSize="9sp" />
         </LinearLayout>
@@ -187,11 +187,13 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/joinStatus"
         android:layout_width="50dp"
         android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="9dp"
         android:layout_marginTop="35dp"
-        android:background="@drawable/participated_icon" />
+        android:background="@drawable/participated_icon" 
+        android:visibility="invisible"/>
 
 </RelativeLayout>

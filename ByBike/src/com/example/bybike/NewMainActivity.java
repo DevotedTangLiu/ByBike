@@ -1,5 +1,6 @@
 package com.example.bybike;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.ab.task.AbTaskListener;
 import com.ab.task.AbTaskQueue;
 import com.ab.util.AbToastUtil;
 import com.baidu.mapapi.model.LatLng;
+import com.example.bybike.exercise.ExerciseDetailActivity3;
 import com.example.bybike.exercise.ExerciseListFragment;
 import com.example.bybike.marker.AddMarkerActivity;
 import com.example.bybike.message.MessageListActivity;
@@ -33,382 +35,384 @@ import com.example.bybike.util.SharedPreferencesUtil;
 
 public class NewMainActivity extends AbActivity {
 
-	// private SlidingMenu menu;
-	public int currentItem = 0;
-	public FragmentManager fragmentManager;
-	public Fragment fragment;
+    // private SlidingMenu menu;
+    public int currentItem = 0;
+    public FragmentManager fragmentManager;
+    public Fragment fragment;
 
-	public String tag = "";
-	public String currentTag = "";// 用来保存上面的tag状态
+    public String tag = "";
+    public String currentTag = "";// 用来保存上面的tag状态
 
-	private AbTaskQueue mAbTaskQueue = null;
-	private boolean exit = false;
-	AbTaskItem item1 = null;
-	RelativeLayout clickRideButtonPage = null;
-	RelativeLayout titleBar;
-	public LatLng currentLatLng;
-	/**
-	 * 标题
-	 */
-	private TextView titleText;
-	private ImageView titleIcon;
-	private ImageView b;
+    private AbTaskQueue mAbTaskQueue = null;
+    private boolean exit = false;
+    AbTaskItem item1 = null;
+    RelativeLayout clickRideButtonPage = null;
+    RelativeLayout titleBar;
+    public LatLng currentLatLng;
+    /**
+     * 标题
+     */
+    private TextView titleText;
+    private ImageView titleIcon;
+    private ImageView b;
 
-	private final int GO_TO_LOGIN_ACTIVITY = 10001;
-	private final int GO_TO_SETTING_MAIN_ACTIVITY = 10005;
-	
-	Button ifHasNewMessage;
+    private final int GO_TO_LOGIN_ACTIVITY = 10001;
+    private final int GO_TO_SETTING_MAIN_ACTIVITY = 10005;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setAbContentView(R.layout.sliding_menu_content);
-		getTitleBar().setVisibility(View.GONE);
+    Button ifHasNewMessage;
+    public ProgressDialog mProgressDialog;
 
-		animationController = new AnimationController();
-		clickRideButtonPage = (RelativeLayout) findViewById(R.id.cover);
-		titleText = (TextView) findViewById(R.id.titleText);
-		titleIcon = (ImageView) findViewById(R.id.titleIcon);
-		titleBar = (RelativeLayout) findViewById(R.id.titleBar);
-		b = (ImageView) findViewById(R.id.rideButton);
-		ifHasNewMessage = (Button)findViewById(R.id.ifHasNewMessage);
-		
-		// 主视图的Fragment添加
-		fragmentManager = getSupportFragmentManager();
-		initSteps();
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setAbContentView(R.layout.sliding_menu_content);
+        getTitleBar().setVisibility(View.GONE);
+        
+        mProgressDialog = new ProgressDialog(NewMainActivity.this, 5);
+        // 设置点击屏幕Dialog不消失
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setMessage("正在查询，请稍后...");
 
-	private void initSteps() {
+        animationController = new AnimationController();
+        clickRideButtonPage = (RelativeLayout) findViewById(R.id.cover);
+        titleText = (TextView) findViewById(R.id.titleText);
+        titleIcon = (ImageView) findViewById(R.id.titleIcon);
+        titleBar = (RelativeLayout) findViewById(R.id.titleBar);
+        b = (ImageView) findViewById(R.id.rideButton);
+        ifHasNewMessage = (Button) findViewById(R.id.ifHasNewMessage);
 
-		// 初始化导航栏图标
-		changeBackground(1);
-		changeMainFragment(R.id.r1);
+        // 主视图的Fragment添加
+        fragmentManager = getSupportFragmentManager();
+        initSteps();
+    }
 
-		mAbTaskQueue = AbTaskQueue.getInstance();
-		/**
-		 * 任务1： 1. 当用户在MainActivity按下返回键时触发 2.
-		 * 该任务在两秒后将退出标志exit置为false,此时再次点击返回键不退出应用 3. 在任务update前，点击返回键，将退出应用
-		 **/
-		item1 = new AbTaskItem();
-		item1.setListener(new AbTaskListener() {
-			@Override
-			public void update() {
-				exit = false;
-			}
+    private void initSteps() {
 
-			@Override
-			public void get() {
-				try {
-					Thread.sleep(2000);
-				} catch (Exception e) {
-				}
-			};
-		});
-	}
+        // 初始化导航栏图标
+        changeBackground(1);
+        changeMainFragment(R.id.r1);
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		// getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+        mAbTaskQueue = AbTaskQueue.getInstance();
+        /**
+         * 任务1： 1. 当用户在MainActivity按下返回键时触发 2.
+         * 该任务在两秒后将退出标志exit置为false,此时再次点击返回键不退出应用 3. 在任务update前，点击返回键，将退出应用
+         **/
+        item1 = new AbTaskItem();
+        item1.setListener(new AbTaskListener() {
+            @Override
+            public void update() {
+                exit = false;
+            }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+            @Override
+            public void get() {
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                }
+            };
+        });
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        // getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
-	public void changeMainFragment(int toItem) {
-		// TODO Auto-generated method stub
-		// 先关闭骑行页面
-		b.setSelected(false);
-		clickRideButtonPage.setVisibility(View.GONE);
-		// 如果当前页面和点击的页面是同一个，则跳出
-		if (toItem == currentItem)
-			return;
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		Fragment currentFragment = fragmentManager
-				.findFragmentByTag(currentTag);
-		if (currentFragment != null) {
-			// 将当前的Frament隐藏到后台去
-			transaction.hide(currentFragment);
-		}
-		switch (toItem) {
-		case R.id.r5:
-			tag = UserMainPageFragment.class.getSimpleName();
-			// 显示我的页面
-			if (fragmentManager.findFragmentByTag(tag) != null) {
-				fragment = (UserMainPageFragment) fragmentManager
-						.findFragmentByTag(tag);
-			} else {
-				fragment = new UserMainPageFragment();
-			}
-			titleBar.setVisibility(View.GONE);
-			break;
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
-		case R.id.r1:
-			// 显示地图页面
-			tag = MainPageFragment.class.getSimpleName();
-			// 显示我的页面
-			if (fragmentManager.findFragmentByTag(tag) != null) {
-				fragment = (MainPageFragment) fragmentManager
-						.findFragmentByTag(tag);
-			} else {
-				fragment = new MainPageFragment();
-			}
-			titleBar.setVisibility(View.VISIBLE);
-			break;
-		case R.id.r2:
-			// 显示活动列表页面
-			tag = ExerciseListFragment.class.getSimpleName();
-			// 显示我的页面
-			if (fragmentManager.findFragmentByTag(tag) != null) {
-				fragment = (ExerciseListFragment) fragmentManager
-						.findFragmentByTag(tag);
-			} else {
-				fragment = new ExerciseListFragment();
-			}
-			titleBar.setVisibility(View.VISIBLE);
-			break;
-		case R.id.r4:
-			// 显示路书页面
-			tag = RoutesBookMainFragment.class.getSimpleName();
-			// 显示我的页面
-			if (fragmentManager.findFragmentByTag(tag) != null) {
-				fragment = (RoutesBookMainFragment) fragmentManager
-						.findFragmentByTag(tag);
-			} else {
-				fragment = new RoutesBookMainFragment();
-			}
-			titleBar.setVisibility(View.VISIBLE);
-			break;
-		default:
-			break;
-		}
+    public void changeMainFragment(int toItem) {
+        // TODO Auto-generated method stub
+        // 先关闭骑行页面
+        b.setSelected(false);
+        clickRideButtonPage.setVisibility(View.GONE);
+        // 如果当前页面和点击的页面是同一个，则跳出
+        if (toItem == currentItem)
+            return;
 
-		currentTag = tag;
-		currentItem = toItem;
-		if (fragment.isAdded()) {
-			transaction.show(fragment);
-		} else {
-			transaction.add(R.id.content_frame, fragment, currentTag);
-		}
-		transaction.commitAllowingStateLoss();
-	}
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        Fragment currentFragment = fragmentManager.findFragmentByTag(currentTag);
+        if (currentFragment != null) {
+            // 将当前的Frament隐藏到后台去
+            transaction.hide(currentFragment);
+        }
+        switch (toItem) {
+        case R.id.r5:
+            tag = UserMainPageFragment.class.getSimpleName();
+            // 显示我的页面
+            if (fragmentManager.findFragmentByTag(tag) != null) {
+                fragment = (UserMainPageFragment) fragmentManager.findFragmentByTag(tag);
+            } else {
+                fragment = new UserMainPageFragment();
+            }
+            titleBar.setVisibility(View.GONE);
+            break;
 
-	/**
-	 * 监听按钮事件
-	 */
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
+        case R.id.r1:
+            // 显示地图页面
+            tag = MainPageFragment.class.getSimpleName();
+            // 显示我的页面
+            if (fragmentManager.findFragmentByTag(tag) != null) {
+                fragment = (MainPageFragment) fragmentManager.findFragmentByTag(tag);
+            } else {
+                fragment = new MainPageFragment();
+            }
+            titleBar.setVisibility(View.VISIBLE);
+            break;
+        case R.id.r2:
+            // 显示活动列表页面
+            tag = ExerciseListFragment.class.getSimpleName();
+            // 显示我的页面
+            if (fragmentManager.findFragmentByTag(tag) != null) {
+                fragment = (ExerciseListFragment) fragmentManager.findFragmentByTag(tag);
+            } else {
+                fragment = new ExerciseListFragment();
+            }
+            titleBar.setVisibility(View.VISIBLE);
+            break;
+        case R.id.r4:
+            // 显示路书页面
+            tag = RoutesBookMainFragment.class.getSimpleName();
+            // 显示我的页面
+            if (fragmentManager.findFragmentByTag(tag) != null) {
+                fragment = (RoutesBookMainFragment) fragmentManager.findFragmentByTag(tag);
+            } else {
+                fragment = new RoutesBookMainFragment();
+            }
+            titleBar.setVisibility(View.VISIBLE);
+            break;
+        default:
+            break;
+        }
 
-			if (!exit) {
-				exit = true;
-				AbToastUtil.showToast(NewMainActivity.this, "再按一次返回键退出应用");
-				mAbTaskQueue.execute(item1);
-			} else {
-				shutdown();
-			}
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+        currentTag = tag;
+        currentItem = toItem;
+        if (fragment.isAdded()) {
+            transaction.show(fragment);
+        } else {
+            transaction.add(R.id.content_frame, fragment, currentTag);
+        }
+        transaction.commitAllowingStateLoss();
+    }
 
-	/**
-	 * 关闭程序
-	 */
-	public void shutdown() {
+    /**
+     * 监听按钮事件
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-		android.os.Process.killProcess(android.os.Process.myPid());
-	}
+            if (!exit) {
+                exit = true;
+                AbToastUtil.showToast(NewMainActivity.this, "再按一次返回键退出应用");
+                mAbTaskQueue.execute(item1);
+            } else {
+                shutdown();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
-	/**
-	 * 接受xml页面调用点击方法 onclick(这里用一句话描述这个方法的作用)
-	 * 
-	 * @param view
-	 */
-	public void onclick(View view) {
+    /**
+     * 关闭程序
+     */
+    public void shutdown() {
 
-		switch (view.getId()) {
-		case R.id.r1:
-			changeBackground(1);
-			changeMainFragment(view.getId());
-			break;
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
 
-		case R.id.r2:
-			changeBackground(2);
-			changeMainFragment(view.getId());
-			break;
+    /**
+     * 接受xml页面调用点击方法 onclick(这里用一句话描述这个方法的作用)
+     * 
+     * @param view
+     */
+    public void onclick(View view) {
 
-		case R.id.r3:
-			showRiding();
-			break;
+        switch (view.getId()) {
+        case R.id.r1:
+            changeBackground(1);
+            changeMainFragment(view.getId());
+            break;
 
-		case R.id.r4:
-			changeBackground(4);
-			changeMainFragment(view.getId());
-			break;
-		case R.id.r5:
-			/**
-			 * 如果点击“我的”按钮，想进入“我的页面”,则需要先判断用户是否已经登录
-			 * 如果已登录，则直接进入，否则先进入登陆页面登陆后再进入我的页面
-			 */
+        case R.id.r2:
+            changeBackground(2);
+            changeMainFragment(view.getId());
+            break;
 
-			if (SharedPreferencesUtil.getSharedPreferences_b(this,
-					Constant.ISLOGINED)) {
-				changeBackground(5);
-				changeMainFragment(view.getId());
-			} else {
-				Intent i = new Intent();
-				i.setClass(NewMainActivity.this, LoginActivity.class);
-				startActivityForResult(i, GO_TO_LOGIN_ACTIVITY);
-			}
-			break;
-		case R.id.search:
-			Intent i = new Intent();
-			i.setClass(NewMainActivity.this, SearchActivity.class);
-			i.putExtra("currentPage", currentItem);
-			startActivity(i);
-			// overridePendingTransition(R.anim.fragment_in, 0);
-			break;
-		case R.id.cover:
-			showRiding();
-			break;
-		case R.id.goToAddMarker:
-			Intent goToAddMarkerIntent = new Intent();
-			goToAddMarkerIntent.setClass(NewMainActivity.this,
-					AddMarkerActivity.class);
-			startActivity(goToAddMarkerIntent);
-			break;
-		case R.id.goToRide:
-			Intent goToRidingIntent = new Intent();
-			goToRidingIntent.setClass(NewMainActivity.this,
-					RidingActivity.class);
-			goToRidingIntent.putExtra("latitude", currentLatLng.latitude);
-			goToRidingIntent.putExtra("longtitude", currentLatLng.longitude);
-			startActivity(goToRidingIntent);
-			overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-			break;
-		case R.id.goToMessage:
-			Intent goToMessageIntent = new Intent();
-			goToMessageIntent.setClass(NewMainActivity.this,
-					MessageListActivity.class);
-			startActivity(goToMessageIntent);
-			overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-			break;
-		default:
-			break;
-		}
+        case R.id.r3:
+            showRiding();
+            break;
 
-	}
+        case R.id.r4:
+            changeBackground(4);
+            changeMainFragment(view.getId());
+            break;
+        case R.id.r5:
+            /**
+             * 如果点击“我的”按钮，想进入“我的页面”,则需要先判断用户是否已经登录
+             * 如果已登录，则直接进入，否则先进入登陆页面登陆后再进入我的页面
+             */
 
-	int[] ids = new int[] { R.id.r1, R.id.r2, R.id.r3, R.id.r4, R.id.r5 };
-	int[] buttonIds = new int[] { R.id.mapButton, R.id.exerciseButton,
-			R.id.rideButton, R.id.routeButton, R.id.myButton };
-	int[] texts = new int[] { R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.t5 };
+            if (SharedPreferencesUtil.getSharedPreferences_b(this, Constant.ISLOGINED)) {
+                changeBackground(5);
+                changeMainFragment(view.getId());
+            } else {
+                Intent i = new Intent();
+                i.setClass(NewMainActivity.this, LoginActivity.class);
+                startActivityForResult(i, GO_TO_LOGIN_ACTIVITY);
+            }
+            break;
+        case R.id.search:
+            Intent i = new Intent();
+            i.setClass(NewMainActivity.this, SearchActivity.class);
+            i.putExtra("currentPage", currentItem);
+            startActivity(i);
+            // overridePendingTransition(R.anim.fragment_in, 0);
+            break;
+        case R.id.cover:
+            showRiding();
+            break;
+        case R.id.goToAddMarker:
+            Intent goToAddMarkerIntent = new Intent();
+            goToAddMarkerIntent.setClass(NewMainActivity.this, AddMarkerActivity.class);
+//            if (currentLatLng != null) {
+//                goToAddMarkerIntent.putExtra("latitude", currentLatLng.latitude);
+//                goToAddMarkerIntent.putExtra("longitude", currentLatLng.longitude);
+//            }
+            startActivity(goToAddMarkerIntent);
+            break;
+        case R.id.goToRide:
+            Intent goToRidingIntent = new Intent();
+            goToRidingIntent.setClass(NewMainActivity.this, RidingActivity.class);
+            if (currentLatLng != null) {
+                goToRidingIntent.putExtra("latitude", currentLatLng.latitude);
+                goToRidingIntent.putExtra("longtitude", currentLatLng.longitude);
+            }
+            startActivity(goToRidingIntent);
+            overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+            break;
+        case R.id.goToMessage:
+            Intent goToMessageIntent = new Intent();
+            goToMessageIntent.setClass(NewMainActivity.this, MessageListActivity.class);
+            startActivity(goToMessageIntent);
+            overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+            break;
+        default:
+            break;
+        }
 
-	/**
-	 * 点击骑行按钮，特殊处理 showRiding(这里用一句话描述这个方法的作用)
-	 */
-	private AnimationController animationController ;
-	private void showRiding() {
+    }
 
-		if (b.isSelected()) {
-			b.setSelected(false);
-			animationController.fadeOut(clickRideButtonPage, 300, 0);
-//			clickRideButtonPage.setVisibility(View.GONE);
-			
-		} else {
-			b.setSelected(true);
-//			clickRideButtonPage.setVisibility(View.VISIBLE);
-			animationController.fadeIn(clickRideButtonPage, 300, 0);
-		}
+    int[] ids = new int[] { R.id.r1, R.id.r2, R.id.r3, R.id.r4, R.id.r5 };
+    int[] buttonIds = new int[] { R.id.mapButton, R.id.exerciseButton, R.id.rideButton, R.id.routeButton, R.id.myButton };
+    int[] texts = new int[] { R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.t5 };
 
-	}
+    /**
+     * 点击骑行按钮，特殊处理 showRiding(这里用一句话描述这个方法的作用)
+     */
+    private AnimationController animationController;
 
-	/**
-	 * 修改导航栏图标和背景 changeBackground(这里用一句话描述这个方法的作用)
-	 * 
-	 * @param i
-	 */
-	private void changeBackground(int i) {
+    private void showRiding() {
 
-		for (int j = 1; j <= 5; j++) {
+        if (b.isSelected()) {
+            b.setSelected(false);
+            animationController.fadeOut(clickRideButtonPage, 300, 0);
+            // clickRideButtonPage.setVisibility(View.GONE);
 
-			RelativeLayout rl = (RelativeLayout) findViewById(ids[j - 1]);
-			ImageView b = (ImageView) findViewById(buttonIds[j - 1]);
-			TextView t = (TextView) findViewById(texts[j - 1]);
-			if (j == i) {
-				rl.setBackgroundResource(R.drawable.bottom_block_sec);
-				b.setSelected(true);
-				t.setTextColor(Color.rgb(100, 100, 100));
-			} else {
-				rl.setBackgroundDrawable(null);
-				b.setSelected(false);
-				t.setTextColor(Color.rgb(180, 180, 180));
-			}
-		}
+        } else {
+            b.setSelected(true);
+            // clickRideButtonPage.setVisibility(View.VISIBLE);
+            animationController.fadeIn(clickRideButtonPage, 300, 0);
+        }
 
-		if (i == 1) {
-			titleText.setVisibility(View.GONE);
-			titleIcon.setVisibility(View.VISIBLE);
-		} else if (i == 2) {
-			titleText.setVisibility(View.VISIBLE);
-			titleText.setText("活动");
-			titleIcon.setVisibility(View.INVISIBLE);
-		} else if (i == 3) {
-			titleText.setVisibility(View.VISIBLE);
-			titleText.setText("骑行");
-			titleIcon.setVisibility(View.INVISIBLE);
-		} else if (i == 4) {
-			titleText.setVisibility(View.VISIBLE);
-			titleText.setText("路书");
-			titleIcon.setVisibility(View.INVISIBLE);
-		} else {
-			return;
-		}
-	}
+    }
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /**
+     * 修改导航栏图标和背景 changeBackground(这里用一句话描述这个方法的作用)
+     * 
+     * @param i
+     */
+    private void changeBackground(int i) {
 
-		if (resultCode == RESULT_OK) {
+        for (int j = 1; j <= 5; j++) {
 
-			switch (requestCode) {
-			case GO_TO_SETTING_MAIN_ACTIVITY:
-				changeBackground(1);
-				changeMainFragment(R.id.r1);
-				break;
+            RelativeLayout rl = (RelativeLayout) findViewById(ids[j - 1]);
+            ImageView b = (ImageView) findViewById(buttonIds[j - 1]);
+            TextView t = (TextView) findViewById(texts[j - 1]);
+            if (j == i) {
+                rl.setBackgroundResource(R.drawable.bottom_block_sec);
+                b.setSelected(true);
+                t.setTextColor(Color.rgb(100, 100, 100));
+            } else {
+                rl.setBackgroundDrawable(null);
+                b.setSelected(false);
+                t.setTextColor(Color.rgb(180, 180, 180));
+            }
+        }
 
-			case GO_TO_LOGIN_ACTIVITY:
-				if (SharedPreferencesUtil.getSharedPreferences_b(
-						NewMainActivity.this, Constant.ISLOGINED)) {
-					changeBackground(5);
-					changeMainFragment(R.id.r5);
-				}
-				break;
-			default:
-				break;
-			}
+        if (i == 1) {
+            titleText.setVisibility(View.GONE);
+            titleIcon.setVisibility(View.VISIBLE);
+        } else if (i == 2) {
+            titleText.setVisibility(View.VISIBLE);
+            titleText.setText("活动");
+            titleIcon.setVisibility(View.INVISIBLE);
+        } else if (i == 3) {
+            titleText.setVisibility(View.VISIBLE);
+            titleText.setText("骑行");
+            titleIcon.setVisibility(View.INVISIBLE);
+        } else if (i == 4) {
+            titleText.setVisibility(View.VISIBLE);
+            titleText.setText("路书");
+            titleIcon.setVisibility(View.INVISIBLE);
+        } else {
+            return;
+        }
+    }
 
-		}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-	}
+        if (resultCode == RESULT_OK) {
+
+            switch (requestCode) {
+            case GO_TO_SETTING_MAIN_ACTIVITY:
+                changeBackground(1);
+                changeMainFragment(R.id.r1);
+                break;
+
+            case GO_TO_LOGIN_ACTIVITY:
+                if (SharedPreferencesUtil.getSharedPreferences_b(NewMainActivity.this, Constant.ISLOGINED)) {
+                    changeBackground(5);
+                    changeMainFragment(R.id.r5);
+                }
+                break;
+            default:
+                break;
+            }
+
+        }
+
+    }
 }

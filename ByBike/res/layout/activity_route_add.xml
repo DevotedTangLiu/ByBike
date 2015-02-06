@@ -18,7 +18,7 @@
             android:onClick="clickHandler"
             android:orientation="vertical" >
 
-            <Button
+            <ImageView
                 android:layout_width="17dp"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
@@ -435,7 +435,7 @@
                         android:layout_marginLeft="11dp"
                         android:layout_marginTop="23dp"
                         android:background="@null"
-                        android:hint="有什么新鲜事..."
+                        android:hint="有什么新鲜事...\n\n\n\n"
                         android:textColorHint="#D2D2D2"
                         android:textColor="#D2D2D2"
                         android:textSize="16sp" />

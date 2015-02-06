@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,7 +29,6 @@ import com.ab.util.AbDialogUtil;
 import com.ab.util.AbToastUtil;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
-import com.example.bybike.friends.AddFriendsActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
@@ -101,6 +102,27 @@ public class MarkerDetailActivity extends AbActivity {
 		markerId = getIntent().getStringExtra("id");
 
 		discussList = (ListView) findViewById(R.id.discussList);
+		discussList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				ContentValues cv = discussValueList.get(position);
+				
+				Intent i = new Intent(MarkerDetailActivity.this,
+						AddCommentActivity.class);
+				i.putExtra("id", markerId);
+				i.putExtra("comments", commentsString);
+				i.putExtra("name", markerNameString);
+				i.putExtra("receiverId", cv.getAsString("senderId"));
+				i.putExtra("receiverName", cv.getAsString("userName"));
+				i.putExtra("commentId", cv.getAsString("id"));
+				startActivityForResult(i, 0);
+				overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
+				
+			}
+		});
 		discussValueList = new ArrayList<ContentValues>();
 		discussAdapter = new ExerciseDiscussListAdapter(
 				MarkerDetailActivity.this, discussValueList);
@@ -319,6 +341,7 @@ public class MarkerDetailActivity extends AbActivity {
 
 					JSONObject jo = dataArray.getJSONObject(i);
 					ContentValues v1 = new ContentValues();
+					v1.put("id", jo.getString("id"));
 					v1.put("senderId", jo.getString("senderId"));
 					v1.put("userName", jo.getString("senderName"));
 					v1.put("discussContent", jo.getString("content"));
@@ -331,6 +354,8 @@ public class MarkerDetailActivity extends AbActivity {
 					}
 					v1.put("discussTime", jo.getString("discussTime")
 							.substring(0, 19));
+					v1.put("receiverId", jo.getString("receiverId"));
+					v1.put("receiverName", jo.getString("receiverName"));
 					discussValueList.add(v1);
 				}
 				discussAdapter.notifyDataSetChanged();
@@ -550,6 +575,9 @@ public class MarkerDetailActivity extends AbActivity {
 			i.putExtra("id", markerId);
 			i.putExtra("comments", commentsString);
 			i.putExtra("name", markerNameString);
+			i.putExtra("receiverId", "");
+			i.putExtra("receiverName", "");
+			i.putExtra("commentId", "");
 			startActivityForResult(i, 0);
 			overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
 			break;
@@ -588,6 +616,9 @@ public class MarkerDetailActivity extends AbActivity {
 							v1.put("avater", jo.getString("senderHeadUrl"));
 							v1.put("discussTime", jo.getString("discussTime")
 									.substring(0, 19));
+							v1.put("receiverId", jo.getString("receiverId"));
+							v1.put("receiverName", jo.getString("receiverName"));
+
 							discussValueList.add(v1);
 						}
 						discussAdapter.notifyDataSetChanged();

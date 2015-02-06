@@ -28,9 +28,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ZoomControls;
 
+import com.ab.fragment.AbAlertDialogFragment;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.task.AbTaskItem;
+import com.ab.task.AbTaskListener;
+import com.ab.task.AbTaskQueue;
 import com.ab.util.AbDialogUtil;
 import com.ab.util.AbToastUtil;
 import com.baidu.location.BDLocation;
@@ -56,6 +60,7 @@ import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.riding.MyOrientationListener;
 import com.example.bybike.riding.MyOrientationListener.OnOrientationListener;
+import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -96,8 +101,9 @@ public class MainPageFragment extends Fragment {
 	private float zoom_level = 17;
 
 	private boolean firstLocated = true;
-	private boolean showAllMarker = true;
-	private boolean showPublicMarker = true;
+	private boolean showMyMarkers = false;
+	private boolean showPublicMarker = false;
+	private boolean firstShowMyMarkers = true;
 	/**
 	 * 筛选按钮
 	 */
@@ -212,29 +218,30 @@ public class MainPageFragment extends Fragment {
 							.findViewById(R.id.publicItemBackground);
 					collectItemBackground = (ImageView) view
 							.findViewById(R.id.collectItemBackground);
-					
-					if(showAllMarker){
+
+					if (showMyMarkers) {
 						publicItemsButton1.setVisibility(View.INVISIBLE);
 						publicItemsButton2.setVisibility(View.VISIBLE);
 						publicItemBackground
 								.setBackgroundResource(R.drawable.slide_button_bak_sel);
-					}else{
+					} else {
 						publicItemsButton1.setVisibility(View.VISIBLE);
 						publicItemsButton2.setVisibility(View.INVISIBLE);
 						publicItemBackground
 								.setBackgroundResource(R.drawable.slide_button_bak_nor);
 					}
-					if(showPublicMarker){
-						
+					if (showPublicMarker) {
 						collectItemsButton1.setVisibility(View.INVISIBLE);
 						collectItemsButton2.setVisibility(View.VISIBLE);
-						collectItemBackground.setBackgroundResource(R.drawable.slide_button_bak_sel);
-					}else{
+						collectItemBackground
+								.setBackgroundResource(R.drawable.slide_button_bak_sel);
+					} else {
 						collectItemsButton1.setVisibility(View.VISIBLE);
 						collectItemsButton2.setVisibility(View.INVISIBLE);
-						collectItemBackground.setBackgroundResource(R.drawable.slide_button_bak_nor);
+						collectItemBackground
+								.setBackgroundResource(R.drawable.slide_button_bak_nor);
 					}
-					
+
 					chooseDialog.setContentView(view);
 					chooseDialog.show();
 				}
@@ -360,9 +367,181 @@ public class MainPageFragment extends Fragment {
 			}
 		});
 
-		queryMarkerList();
+		showMyMarkers();
+		// queryMarkerList();
 		// addMarkersToMap();
+		// showMarkerList();
 
+	}
+	
+	/**
+	 * 进入此页面，则调用方法，若用户已登录，则显示该用户的标记点
+	 * 若用户未登录，则不显示，当用户选择打开的时候提示用户登录
+	  * showMyMarkers(这里用一句话描述这个方法的作用)
+	 */
+	private void showMyMarkers(){
+	    
+	    if(SharedPreferencesUtil.getSharedPreferences_b(mActivity, Constant.ISLOGINED)
+                && myMarkerList != null && myMarkerList.size() > 0){
+	        
+	        for(Marker m : myMarkerList){
+	            m.setVisible(true);
+	        }
+	        showMyMarkers = true;
+	        
+	    }else if(SharedPreferencesUtil.getSharedPreferences_b(mActivity, Constant.ISLOGINED)
+	            && !"".equals(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION))){
+	       
+	        queryMarkerList();
+	        
+	    }else{
+	        
+	        if(firstShowMyMarkers){
+	            firstShowMyMarkers = false;
+	            showMyMarkers = false;
+	        }else{
+	            
+	            showMyMarkers = false;
+	            AbDialogUtil.showAlertDialog( mActivity, 0,"温馨提示","您还未登陆，或登陆状态过期，请重新登录再试",
+                        new AbAlertDialogFragment.AbDialogOnClickListener() {
+
+                            @Override
+                            public void onPositiveClick() {
+                                // TODO Auto-generated method stub
+                                Intent i = new Intent(mActivity,  LoginActivity.class);
+                                mActivity.startActivity(i);
+                                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+                                AbDialogUtil.removeDialog(mActivity);
+                            }
+
+                            @Override
+                            public void onNegativeClick() {
+                                // TODO Auto-generated method stub
+                                AbDialogUtil.removeDialog(mActivity);
+                            }
+                        });
+	        }
+	        
+	    }
+	    
+	}
+
+	private AbTaskQueue mAbTaskQueue = null;
+
+	/**
+	 * 显示已认证标记点
+	  * showMarkerList(这里用一句话描述这个方法的作用)
+	 */
+	private void showMarkerList() {
+
+		if (SharedPreferencesUtil.getSharedPreferences_b(mActivity,
+				Constant.markerDataLoaded) && publicMarkerList != null && publicMarkerList.size() > 0) {
+
+			for (Marker m : publicMarkerList) {
+				m.setVisible(true);
+			}
+
+		} else {
+
+			mActivity.mProgressDialog.show();
+			mAbTaskQueue = AbTaskQueue.getInstance();
+			final AbTaskItem item1 = new AbTaskItem();
+			item1.setListener(new AbTaskListener() {
+
+				@Override
+				public void update() {
+
+					if (SharedPreferencesUtil.getSharedPreferences_b(mActivity,
+							Constant.markerDataLoaded)) {
+						showPublicMarkers();
+					} else {
+						mAbTaskQueue.execute(item1);
+					}
+				}
+
+				@Override
+				public void get() {
+					try {
+						Thread.sleep(1000);
+					} catch (Exception e) {
+					}
+				};
+			});
+
+			mAbTaskQueue.execute(item1);
+		}
+
+	}
+	private void showPublicMarkers() {
+
+		mActivity.mProgressDialog.dismiss();
+		markerBeanDao = new MarkerBeanDao(mActivity);
+		markerBeanDao.startReadableDatabase();
+		List<MarkerBean> markers = markerBeanDao.queryList();
+		
+		publicMarkerList.clear();
+
+		// String currentUserId =
+		// SharedPreferencesUtil.getSharedPreferences_s(mActivity,
+		// Constant.USERID);
+		for (MarkerBean m : markers) {
+
+			if (!m.getOperatingType().equalsIgnoreCase("Public")) {
+				continue;
+			}
+			double lat = m.getLatitude();
+			double lng = m.getLongitude();
+			LatLng llA = new LatLng(lat, lng);
+
+			String markerType = m.getMarkerType();
+			OverlayOptions ooA = null;
+			if ("RantCar".equalsIgnoreCase(markerType)) {
+				ooA = new MarkerOptions().position(llA)
+						.icon(marker_icon_rentbike).zIndex(9).draggable(false);
+			} else if ("Repair".equalsIgnoreCase(markerType)) {
+				ooA = new MarkerOptions().position(llA)
+						.icon(marker_icon_repair).zIndex(9).draggable(false);
+			} else if ("FeatureSpot".equalsIgnoreCase(markerType)) {
+				ooA = new MarkerOptions().position(llA)
+						.icon(marker_icon_scenery).zIndex(9).draggable(false);
+			} else if ("Catering".equalsIgnoreCase(markerType)) {
+				ooA = new MarkerOptions().position(llA).icon(marker_icon_meals)
+						.zIndex(9).draggable(false);
+			} else if ("Washroom".equalsIgnoreCase(markerType)) {
+				ooA = new MarkerOptions().position(llA)
+						.icon(marker_icon_washroom).zIndex(9).draggable(false);
+			} else if ("Parking".equalsIgnoreCase(markerType)) {
+				ooA = new MarkerOptions().position(llA)
+						.icon(marker_icon_parking).zIndex(9).draggable(false);
+			} else if ("Other".equalsIgnoreCase(markerType)) {
+				ooA = new MarkerOptions().position(llA)
+						.icon(marker_icon_others).zIndex(9).draggable(false);
+			} else if("CarShop".equalsIgnoreCase(markerType)){
+				
+				ooA = new MarkerOptions().position(llA)
+						.icon(marker_icon_bikestore).zIndex(9).draggable(false);
+				
+			}else {
+				ooA = new MarkerOptions().position(llA)
+						.icon(marker_icon_others).zIndex(9).draggable(false);
+			}
+			Marker mMarkerA = (Marker) (mBaidumap.addOverlay(ooA));
+			// if(m.getCreaterId().equalsIgnoreCase(currentUserId)){
+			// mMarkerA.setVisible(true);
+			// }else{
+			// mMarkerA.setVisible(false);
+			// }
+			Bundle b = new Bundle();
+			b.putString("name", m.getMarkerName());
+			b.putString("id", m.getMarkerId());
+			b.putString("opertingType", m.getOperatingType());
+			b.putString("markerType", markerType);
+			mMarkerA.setExtraInfo(b);
+			mMarkerA.setTitle("true");
+			publicMarkerList.add(mMarkerA);
+		}
+		markerBeanDao.closeDatabase();
+		markers.clear();
 	}
 
 	/**
@@ -382,10 +561,7 @@ public class MainPageFragment extends Fragment {
 				publicItemsButton2.setVisibility(View.VISIBLE);
 				publicItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_sel);
-				for (Marker m : markerList) {
-					m.setVisible(true);
-				}
-				showAllMarker = true;
+				showMyMarkers();
 				break;
 
 			case R.id.publicItemsButton2:
@@ -393,23 +569,19 @@ public class MainPageFragment extends Fragment {
 				publicItemsButton1.setVisibility(View.VISIBLE);
 				publicItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_nor);
-				for (Marker m : markerList) {
+				for (Marker m : myMarkerList) {
 					m.setVisible(false);
 				}
-				showAllMarker = false;
+				showMyMarkers = false;
 				break;
 			case R.id.collectItemsButton1:
+			    //表示点击显示认证标记点
 				collectItemsButton1.setVisibility(View.INVISIBLE);
 				collectItemsButton2.setVisibility(View.VISIBLE);
 				collectItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_sel);
-				
-				for (Marker m : markerList) {
-					if ("public".equalsIgnoreCase(m.getExtraInfo().getString(
-							"opertingType"))) {
-						m.setVisible(true);
-					}
-				}
+
+				showMarkerList();
 				showPublicMarker = true;
 				break;
 			case R.id.collectItemsButton2:
@@ -417,17 +589,18 @@ public class MainPageFragment extends Fragment {
 				collectItemsButton1.setVisibility(View.VISIBLE);
 				collectItemBackground
 						.setBackgroundResource(R.drawable.slide_button_bak_nor);
-				for (Marker m : markerList) {
-					if ("public".equalsIgnoreCase(m.getExtraInfo().getString(
-							"opertingType"))) {
+				for (Marker m : publicMarkerList) {
 						m.setVisible(false);
-					}
 				}
 				showPublicMarker = false;
 				break;
 			default:
 				break;
 			}
+			
+            if(chooseDialog != null && chooseDialog.isShowing()){
+                chooseDialog.dismiss();
+            }
 
 		}
 
@@ -442,12 +615,11 @@ public class MainPageFragment extends Fragment {
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.getMarkerListUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(mActivity,
-				Constant.SESSION);
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("pageNo", "1");
-		p.put("pageSize", "30");
+		p.put("pageSize", "100");
+		p.put("creatorId", SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERID));
 		// 绑定参数
 		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
@@ -474,7 +646,7 @@ public class MainPageFragment extends Fragment {
 			public void onFinish() {
 			};
 
-		});
+		}, jsession);
 
 	}
 
@@ -499,7 +671,8 @@ public class MainPageFragment extends Fragment {
 			.fromResource(R.drawable.marker_icon_scenery);
 	BitmapDescriptor marker_icon_washroom = BitmapDescriptorFactory
 			.fromResource(R.drawable.marker_icon_washroom);
-	List<Marker> markerList = new ArrayList<Marker>();
+	List<Marker> publicMarkerList = new ArrayList<Marker>();
+	List<Marker> myMarkerList = new ArrayList<Marker>();
 
 	// List<MarkerBean>markerList = new ArrayList<MarkerBean>();
 	private void processMarkerListResult(String resultString) {
@@ -508,12 +681,12 @@ public class MainPageFragment extends Fragment {
 			JSONObject resultObject = new JSONObject(resultString);
 			String code = resultObject.getString("code");
 			if ("0".equals(code)) {
-				markerList.clear();
+				myMarkerList.clear();
 				JSONArray dataArray = resultObject.getJSONArray("data");
 				// (1)获取数据库
-				markerBeanDao = new MarkerBeanDao(mActivity);
-				markerBeanDao.startWritableDatabase(false);
-				markerBeanDao.deleteAll();
+//				markerBeanDao = new MarkerBeanDao(mActivity);
+//				markerBeanDao.startWritableDatabase(false);
+//				markerBeanDao.deleteAll();
 				for (int i = 0; i < dataArray.length(); i++) {
 
 					JSONObject jo = dataArray.getJSONObject(i);
@@ -573,20 +746,21 @@ public class MainPageFragment extends Fragment {
 					mMarkerA.setExtraInfo(b);
 					mMarkerA.setTitle("true");
 
-					markerList.add(mMarkerA);
+					myMarkerList.add(mMarkerA);
 
-					MarkerBean mb = new MarkerBean();
-					mb.setMarkerId(jo.getString("Id"));
-					mb.setLatitude(jo.getDouble("lat"));
-					mb.setLongitude(jo.getDouble("lng"));
-					mb.setMarkerName(jo.getString("name"));
-					mb.setMarkerType(jo.getString("markerType"));
-					mb.setOperatingType(jo.getString("operatingType"));
-
-					markerBeanDao.insert(mb);
+//					MarkerBean mb = new MarkerBean();
+//					mb.setMarkerId(jo.getString("Id"));
+//					mb.setLatitude(jo.getDouble("lat"));
+//					mb.setLongitude(jo.getDouble("lng"));
+//					mb.setMarkerName(jo.getString("name"));
+//					mb.setMarkerType(jo.getString("markerType"));
+//					mb.setOperatingType(jo.getString("operatingType"));
+//
+//					markerBeanDao.insert(mb);
 
 				}
-				markerBeanDao.closeDatabase();
+				showMyMarkers = true;
+//				markerBeanDao.closeDatabase();
 			}
 		} catch (Exception e) {
 
@@ -740,7 +914,7 @@ public class MainPageFragment extends Fragment {
 
 	private void resetMarkerListIcon() {
 
-		for (Marker m : markerList) {
+		for (Marker m : myMarkerList) {
 			String showingIcon = m.getTitle();
 			if ("false".endsWith(showingIcon)) {
 				String markerType = m.getExtraInfo().getString("markerType");
@@ -767,6 +941,34 @@ public class MainPageFragment extends Fragment {
 				m.setTitle("true");
 			}
 		}
+		
+		for (Marker m : publicMarkerList) {
+            String showingIcon = m.getTitle();
+            if ("false".endsWith(showingIcon)) {
+                String markerType = m.getExtraInfo().getString("markerType");
+                if ("RantCar".equalsIgnoreCase(markerType)) {
+                    m.setIcon(marker_icon_rentbike);
+                } else if ("Repair".equalsIgnoreCase(markerType)) {
+                    m.setIcon(marker_icon_repair);
+                } else if ("FeatureSpot".equalsIgnoreCase(markerType)) {
+                    m.setIcon(marker_icon_scenery);
+                } else if ("Catering".equalsIgnoreCase(markerType)) {
+                    m.setIcon(marker_icon_meals);
+                } else if ("Washroom".equalsIgnoreCase(markerType)) {
+                    m.setIcon(marker_icon_washroom);
+                } else if ("Parking".equalsIgnoreCase(markerType)) {
+                    m.setIcon(marker_icon_parking);
+                } else if ("Other".equalsIgnoreCase(markerType)) {
+                    m.setIcon(marker_icon_others);
+                } else if ("CarShop".equalsIgnoreCase(markerType)) {
+                    m.setIcon(marker_icon_bikestore);
+                } else {
+                    m.setIcon(marker_icon_others);
+                }
+                m.setAnchor(0.5f, 1.0f);
+                m.setTitle("true");
+            }
+        }
 
 	}
 

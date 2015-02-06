@@ -110,10 +110,11 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/totalDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="103"
+                        android:text="0"
                         android:textColor="#4A4A4A"
                         android:textSize="16sp" />
 
@@ -147,10 +148,11 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/totalCarbon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="0.98"
+                        android:text="0.00"
                         android:textColor="#4A4A4A"
                         android:textSize="16sp" />
 

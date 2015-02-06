@@ -128,6 +128,18 @@ public class AbHttpUtil {
 	}
 	
 	/**
+     * 描述：带参数和jsessionid的post请求.
+     *
+     * @param url the url
+     * @param params the params
+     * @param responseListener the response listener
+     */
+    public void post(String url, AbRequestParams params,
+            AbHttpResponseListener responseListener, String jsessionId) {
+        mClient.post(url, params, responseListener, jsessionId);
+    }
+	
+	/**
 	 * 描述：文件下载的post.
 	 *
 	 * @param url the url

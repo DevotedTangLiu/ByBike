@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.example.bybike.R;
+import com.example.bybike.message.MessageListActivity;
 import com.example.bybike.setting.SettingMainActivity;
 
 /**
@@ -60,7 +61,7 @@ public class PostMessage {
         notification.flags = Notification.FLAG_AUTO_CANCEL;
 
         // 通知时发出的声音
-        notification.defaults = Notification.DEFAULT_SOUND;
+        notification.defaults = Notification.DEFAULT_VIBRATE;
 
         // 设置通知在状态栏显示的图标
         notification.icon = R.drawable.ic_launcher;
@@ -71,10 +72,8 @@ public class PostMessage {
        
         RemoteViews contentView = new RemoteViews(context.getPackageName(),
                 R.layout.system_notice_layout);
-        contentView.setTextViewText(R.id.title,
-                String.valueOf(System.currentTimeMillis()));
-        contentView.setTextViewText(R.id.content,
-                "从前有座山，山上有座庙，庙里有个老和尚，老和尚经常和小和尚说...");
+        contentView.setTextViewText(R.id.title, title);
+        contentView.setTextViewText(R.id.content, content);
         notification.contentView = contentView;
         
         notification.contentIntent = pendingIntent;
@@ -86,7 +85,7 @@ public class PostMessage {
     private Intent getDetailsIntent(Context cnt, String content) {
         
         Intent intent = new Intent();
-        intent.setClass(context, SettingMainActivity.class);
+        intent.setClass(context, MessageListActivity.class);
 
         return intent;
     }

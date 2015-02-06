@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ZoomControls;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.ab.activity.AbActivity;
 import com.ab.fragment.AbAlertDialogFragment;
@@ -59,6 +61,7 @@ import com.baidu.mapapi.model.LatLngBounds;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseDiscussListAdapter;
 import com.example.bybike.db.model.MarkerBean;
+import com.example.bybike.exercise.AddActivityCommentActivity;
 import com.example.bybike.exercise.ExerciseDetailActivity3;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.riding.RidingActivity;
@@ -192,6 +195,29 @@ public class RouteDetailActivity extends AbActivity {
 
 		// 评论列表
 		discussList = (ListView) findViewById(R.id.discussList);
+		discussList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				ContentValues cv = discussValueList.get(position);
+				
+				Intent i = new Intent(RouteDetailActivity.this,
+						AddRouteCommentActivity.class);
+				i.putExtra("id", routeId);			
+				i.putExtra("comments", commentsString);
+				i.putExtra("name", routeNameString);
+				i.putExtra("receiverId", cv.getAsString("senderId"));
+				i.putExtra("receiverName", cv.getAsString("userName"));
+				i.putExtra("commentId", cv.getAsString("id"));
+				startActivityForResult(i, 0);
+				overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
+				
+			}
+		});
+		
+		
 		discussValueList = new ArrayList<ContentValues>();
 		discussAdapter = new ExerciseDiscussListAdapter(
 				RouteDetailActivity.this, discussValueList);
@@ -749,6 +775,7 @@ public class RouteDetailActivity extends AbActivity {
 
 					JSONObject jo = dataArray.getJSONObject(i);
 					ContentValues v1 = new ContentValues();
+					v1.put("id", jo.getString("id"));
 					v1.put("senderId", jo.getString("senderId"));
 					v1.put("userName", jo.getString("senderName"));
 					v1.put("discussContent", jo.getString("content"));
@@ -760,6 +787,8 @@ public class RouteDetailActivity extends AbActivity {
 						v1.put("avater", "");
 					}
 					v1.put("discussTime", jo.getString("discussTime"));
+					v1.put("receiverId", jo.getString("receiverId"));
+					v1.put("receiverName", jo.getString("receiverName"));
 					discussValueList.add(v1);
 				}
 				discussAdapter.notifyDataSetChanged();
@@ -816,6 +845,9 @@ public class RouteDetailActivity extends AbActivity {
 			i.putExtra("id", routeId);
 			i.putExtra("comments", commentsString);
 			i.putExtra("name", routeNameString);
+			i.putExtra("receiverId", "");
+			i.putExtra("receiverName", "");
+			i.putExtra("commentId", "");
 			startActivityForResult(i, 0);
 			overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
 			break;
@@ -928,6 +960,9 @@ public class RouteDetailActivity extends AbActivity {
 							v1.put("avater", jo.getString("senderHeadUrl"));
 							v1.put("discussTime", jo.getString("discussTime")
 									.substring(0, 19));
+							v1.put("receiverId", jo.getString("receiverId"));
+							v1.put("receiverName", jo.getString("receiverName"));
+							
 							discussValueList.add(v1);
 						}
 						discussAdapter.notifyDataSetChanged();

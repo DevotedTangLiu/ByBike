@@ -104,7 +104,7 @@ public class ImageListAdapter extends BaseAdapter {
 			// 减少findView的次数
 			holder = new ViewHolder();
 			// 初始化布局中的元素
-			holder.exercisePic = ((ImageView) convertView.findViewById(mTo[0]));
+			holder.exercisePic = ((ImageView) convertView.findViewById(R.id.exercisePic));
 			holder.likeButton = (RelativeLayout) convertView
 					.findViewById(R.id.likeButton);
 			holder.collectButton = (RelativeLayout) convertView
@@ -125,6 +125,7 @@ public class ImageListAdapter extends BaseAdapter {
 					.findViewById(R.id.talkCount);
 			holder.collectCount = (TextView) convertView
 					.findViewById(R.id.collectCount);
+			holder.joinStatus = (ImageView)convertView.findViewById(R.id.joinStatus);
 
 			likeListener = new OnLikeButtonClick();
 			holder.likeButton.setOnClickListener(likeListener);
@@ -159,6 +160,14 @@ public class ImageListAdapter extends BaseAdapter {
 		holder.exerciseAddress.setText((String)obj.get("exerciseAddress"));
 		holder.exerciseTitle.setText((String)obj.get("exerciseTitle"));
 		holder.exerciseTime.setText((String)obj.get("exerciseTime"));
+		
+		holder.userCount.setText("已报名人数：" + (String)obj.get("relityActivityNumber"));
+		if("71".equals((String)obj.get("joinStatus")) || "72".equals((String)obj.get("joinStatus"))){
+		    holder.joinStatus.setVisibility(View.VISIBLE);
+		}else{
+		    holder.joinStatus.setVisibility(View.INVISIBLE);
+		}
+		
 		return convertView;
 	}
 
@@ -250,6 +259,8 @@ public class ImageListAdapter extends BaseAdapter {
 		TextView likeCount;
 		TextView talkCount;
 		TextView collectCount;
+		ImageView joinStatus;
+		
 	}
 
 }

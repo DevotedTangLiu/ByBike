@@ -539,7 +539,7 @@ public class AbDBDaoImpl<T> extends AbBasicDBDao implements AbDBDao<T> {
 					// id需指定
 					sql = setContentValues(entity, cv, TYPE_NOT_INCREMENT,METHOD_INSERT);
 				}
-				AbLogUtil.d(AbDBDaoImpl.class, "[insert]: insert into " + this.tableName + " " + sql);
+//				AbLogUtil.d(AbDBDaoImpl.class, "[insert]: insert into " + this.tableName + " " + sql);
 				rowId = db.insert(this.tableName, null, cv);
 				
 				//获取关联域的操作类型和关系类型
@@ -585,7 +585,7 @@ public class AbDBDaoImpl<T> extends AbBasicDBDao implements AbDBDao<T> {
 								relationsTableName = table.name();
 							}
 							
-							AbLogUtil.d(AbDBDaoImpl.class, "[insert]: insert into " + relationsTableName + " " + sql);
+//							AbLogUtil.d(AbDBDaoImpl.class, "[insert]: insert into " + relationsTableName + " " + sql);
 							db.insert(relationsTableName, null, relationsCv);
 						}
 						
@@ -610,7 +610,7 @@ public class AbDBDaoImpl<T> extends AbBasicDBDao implements AbDBDao<T> {
 									relationsTableName = table.name();
 								}
 								
-								AbLogUtil.d(AbDBDaoImpl.class, "[insert]: insert into " + relationsTableName + " " + sql);
+//								AbLogUtil.d(AbDBDaoImpl.class, "[insert]: insert into " + relationsTableName + " " + sql);
 								db.insert(relationsTableName, null, relationsCv);
 							}
 						}

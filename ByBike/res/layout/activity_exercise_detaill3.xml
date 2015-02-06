@@ -18,12 +18,12 @@
             android:onClick="clickHandler"
             android:orientation="vertical" >
 
-            <Button
+            <ImageView
                 android:layout_width="17dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="18dp"
-                android:background="@drawable/back_button" />
+                android:src="@drawable/back_button" />
         </RelativeLayout>
 
         <TextView
@@ -47,6 +47,7 @@
             android:onClick="clickHandler" >
 
             <TextView
+                android:id="@+id/applyText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="报名"

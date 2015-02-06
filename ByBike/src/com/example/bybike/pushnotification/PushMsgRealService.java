@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.ab.util.AbToastUtil;
 import com.example.bybike.db.dao.MessageBeanDao;
 import com.example.bybike.db.model.MessageBean;
 import com.example.bybike.db.model.PostMessage;
@@ -94,8 +95,8 @@ public class PushMsgRealService extends Service {
 		Log.i(tag, "Service is Destroyed");
 	}
 
-	
 	MessageBeanDao MessageBeanDao = null;
+
 	/**
 	 * 从服务器端获取消息
 	 * 
@@ -110,45 +111,122 @@ public class PushMsgRealService extends Service {
 				try {
 
 					String data = getPromotMessageFromServer();
-					// long id;
+
 					try {
 						JSONObject resultObj = new JSONObject(data);
 						String code = resultObj.getString("code");
 						if ("0".equals(code)) {
 
-							
-							JSONArray messageArray = resultObj
-									.getJSONArray("data");
-							MessageBeanDao = new MessageBeanDao(PushMsgRealService.this);
-							MessageBeanDao.startWritableDatabase(false);
-							for (int i = 0; i < messageArray.length(); i++) {
-								JSONObject message = messageArray.getJSONObject(i);
-								
-								
-								String title = message.getString("title");
-								String content = message.getString("content");
-								String id = message.getString("id");
+							PostMessage pm = new PostMessage(
+									PushMsgRealService.this);
 
-								PostMessage pm = new PostMessage(
-										PushMsgRealService.this);
+							JSONObject dataObj = resultObj
+									.getJSONObject("data");
+							JSONArray activityNewsArray = dataObj
+									.getJSONArray("activityNewsList");
+							JSONArray discussListArray = dataObj
+									.getJSONArray("discussList");
+							JSONArray friendApplyList = dataObj
+									.getJSONArray("friendApplyList");
+
+							MessageBeanDao = new MessageBeanDao(
+									PushMsgRealService.this);
+							MessageBeanDao.startWritableDatabase(true);
+							// 测试服务器时每次先删除数据，免得越来越多
+							MessageBeanDao.deleteAll();
+							/**
+							 * 评论列表
+							 */
+							for (int i = 0; i < discussListArray.length(); i++) {
+
+								JSONObject message = discussListArray
+										.getJSONObject(i);
+								String title = message.getString("senderName")
+										+ "评论了你";
+								String content = message.getString("content");
+
 								pm.sendMessage(messageNotificationID, title,
 										content);
-								
+
 								MessageBean mb = new MessageBean();
+								mb.setMessageType("1");
 								mb.setMessageId(message.getString("id"));
-								mb.setMessageContent(message.getString("content"));
-								mb.setMessageSender(message.getString("sender"));
-								mb.setMessageType(message.getString("function"));
-								mb.setMessageTime(message.getString("updateDate"));
-								
+								mb.setMessageContent(message
+										.getString("content"));
+								mb.setSendTime(message.getString("discussTime"));
+								mb.setSenderId(message.getString("senderId"));
+								mb.setSenderName(message
+										.getString("senderName"));
+								mb.setSenderHeadUrl(message
+										.getString("senderHeadUrl"));
+								MessageBeanDao.insert(mb);
+							}
+							/**
+							 * 好友请求
+							 */
+							for (int i = 0; i < friendApplyList.length(); i++) {
+								JSONObject message = friendApplyList
+										.getJSONObject(i);
+								// String title = message.getString("title");
+								// String content =
+								// message.getString("content");
+								// String id = message.getString("id");
+								// PostMessage pm = new PostMessage(
+								// PushMsgRealService.this);
+								// pm.sendMessage(messageNotificationID, title,
+								// content);
+
+								MessageBean mb = new MessageBean();
+								mb.setMessageType("0");
+								mb.setMessageId(message.getString("id"));
+								mb.setSenderId(message.getString("senderId"));
+								mb.setSenderName(message
+										.getString("senderName"));
+								mb.setSenderHeadUrl(message
+										.getString("senderHeadUrl"));
+								mb.setSendTime(message.getString("sendTime"));
+								mb.setRemarks(message.getString("remarks"));
+
+								MessageBeanDao.insert(mb);
+							}
+							/**
+							 * 活动通知
+							 */
+							for (int i = 0; i < activityNewsArray.length(); i++) {
+								JSONObject message = activityNewsArray
+										.getJSONObject(i);
+								String title = message.getString("title");
+								// String content =
+								// message.getString("content");
+								// String id = message.getString("id");
+								// PostMessage pm = new PostMessage(
+								// PushMsgRealService.this);
+								// pm.sendMessage(messageNotificationID, title,
+								// content);
+
+								MessageBean mb = new MessageBean();
+								mb.setMessageType("2");
+								mb.setMessageId(message.getString("id"));
+								mb.setActivityTitle(message.getString("title"));
+								mb.setActivityId(message
+										.getString("activityId"));
+								mb.setMessageContent(message
+										.getString("content"));
+								mb.setSendTime(message.getString("sendTime"));
+
 								MessageBeanDao.insert(mb);
 							}
 							MessageBeanDao.closeDatabase();
 
 						} else if ("3".equals(code)) {
 
+							// AbToastUtil.showToast(PushMsgRealService.this,
+							// "登陆已过期...");
 							SharedPreferencesUtil.saveSharedPreferences_s(
 									PushMsgRealService.this, Constant.SESSION,
+									"");
+							SharedPreferencesUtil.saveSharedPreferences_s(
+									PushMsgRealService.this, Constant.USERID,
 									"");
 							SharedPreferencesUtil.saveSharedPreferences_b(
 									PushMsgRealService.this,
@@ -188,13 +266,13 @@ public class PushMsgRealService extends Service {
 
 	public String getPromotMessageFromServer() {
 		// String url = requestURL + "?checkTime=" + System.currentTimeMillis();
-		String url = requestURL + ";jsessionid=";
-		url += SharedPreferencesUtil.getSharedPreferences_s(this,
+		String url = requestURL;
+		String jsessionId = SharedPreferencesUtil.getSharedPreferences_s(this,
 				Constant.SESSION);
-		return javaHttpGet(url);
+		return javaHttpGet(url, jsessionId);
 	}
 
-	private String javaHttpGet(String url) {
+	private String javaHttpGet(String url, String jsessionId) {
 		try {
 			URL pathUrl = new URL(url); // 创建一个URL对象
 			HttpURLConnection urlConnect = (HttpURLConnection) pathUrl
@@ -202,6 +280,7 @@ public class PushMsgRealService extends Service {
 			urlConnect.setRequestProperty("Accept-Encoding", "gzip");
 			urlConnect.setRequestProperty("User-Agent",
 					"%E5%8E%A6%E9%97%A8%E8%88%AA%E7%A9%BAandroid");
+			urlConnect.setRequestProperty("COOKIE", "JSESSIONID=" + jsessionId);
 			urlConnect.setConnectTimeout(30000); // 设置连接超时时间
 			urlConnect.connect();
 			InputStreamReader in = new InputStreamReader(
