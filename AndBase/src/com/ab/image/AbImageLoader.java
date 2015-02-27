@@ -18,6 +18,7 @@ package com.ab.image;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -186,6 +187,36 @@ public class AbImageLoader {
      * @param url the url
      */
     public void download(String url) { 
+    	
+    	if(AbStrUtil.isEmpty(url)){
+    		return;
+    	}
+    	
+        mImageLoader.get(url,new ImageListener() {
+        	
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+
+            @Override
+            public void onResponse(ImageContainer response, boolean isImmediate) {
+            	
+            	Bitmap bitmap = response.getBitmap();
+            	if(mOnImageListener!=null){
+            		mOnImageListener.onResponse(bitmap);
+            	}
+            	AbLogUtil.d(AbImageLoader.class, "获取到图片："+bitmap);
+            }
+        },maxWidth,maxHeight);
+    	
+    } 
+    
+    /**
+     * 下载这个图片.
+     *
+     * @param url the url
+     */
+    public void download(String url, Handler handler) { 
     	
     	if(AbStrUtil.isEmpty(url)){
     		return;

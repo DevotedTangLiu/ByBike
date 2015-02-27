@@ -35,7 +35,7 @@ public class ViewPicturesActivity extends AbActivity {
 
 		for (String url : pictureUrls) {
 
-			final View mPlayView = mInflater.inflate(R.layout.play_view_item,
+			final View mPlayView = mInflater.inflate(R.layout.play_view_item2,
 					null);
 			ImageView mPlayImage = (ImageView) mPlayView
 					.findViewById(R.id.mPlayImage);
@@ -48,7 +48,6 @@ public class ViewPicturesActivity extends AbActivity {
 
 	public void clickHandler(View v) {
 
-		System.out.println(v.getId());
 		switch (v.getId()) {
 		case R.id.mPlayImage:
 			ViewPicturesActivity.this.finish();

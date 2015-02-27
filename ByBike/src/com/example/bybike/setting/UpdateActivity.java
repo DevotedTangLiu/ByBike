@@ -11,32 +11,34 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Config;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.RelativeLayout.LayoutParams;
 
 import com.ab.activity.AbActivity;
+import com.ab.fragment.AbAlertDialogFragment;
 import com.ab.http.AbHttpUtil;
-import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
 import com.ab.util.AbDialogUtil;
-import com.ab.view.titlebar.AbTitleBar;
+import com.ab.util.AbToastUtil;
 import com.example.bybike.R;
+import com.example.bybike.user.LoginActivity;
+import com.example.bybike.util.Constant;
 
 public class UpdateActivity extends AbActivity {
 
     // http请求帮助类
     private AbHttpUtil mAbHttpUtil = null;
+    public ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +46,13 @@ public class UpdateActivity extends AbActivity {
         setAbContentView(R.layout.activity_update);
         getTitleBar().setVisibility(View.GONE);
 
+        mProgressDialog = new ProgressDialog(UpdateActivity.this, 5);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setMessage("正在查询，请稍后...");
+
         // 获取Http工具类
         mAbHttpUtil = AbHttpUtil.getInstance(this);
+        getUpdateInfo();
     }
 
     /**
@@ -53,12 +60,9 @@ public class UpdateActivity extends AbActivity {
      */
     private void getUpdateInfo() {
 
-        String versionCode = String.valueOf(getVerCode(this));
-        AbRequestParams p = new AbRequestParams();
-        p.put("versionCode", versionCode);
-        String urlString = "";
+        String urlString = Constant.serverUrl + Constant.getVersionUrl;
         // 绑定参数
-        mAbHttpUtil.get(urlString, p, new AbStringHttpResponseListener() {
+        mAbHttpUtil.get(urlString, new AbStringHttpResponseListener() {
 
             // 获取数据成功会调用这里
             @Override
@@ -69,17 +73,20 @@ public class UpdateActivity extends AbActivity {
             // 开始执行前
             @Override
             public void onStart() {
+                mProgressDialog.show();
             }
 
             // 失败，调用
             @Override
             public void onFailure(int statusCode, String content, Throwable error) {
+                mProgressDialog.dismiss();
+                AbToastUtil.showToast(UpdateActivity.this, "查询失败，请稍后再试...");
             }
 
             // 完成后调用，失败，成功
             @Override
             public void onFinish() {
-
+                mProgressDialog.dismiss();
             };
 
         });
@@ -92,6 +99,60 @@ public class UpdateActivity extends AbActivity {
      */
     protected void processResult(String content) {
         // TODO Auto-generated method stub
+        try {
+            JSONObject resultObj = new JSONObject(content);
+            String code = resultObj.getString("code");
+            if("0".equals(code)){
+                
+                JSONObject dataObj = resultObj.getJSONObject("data");
+                String versionCode = dataObj.getString("androidVersion");
+                int verCode = getVerCode(UpdateActivity.this);
+                if(verCode < Integer.valueOf(versionCode)){
+                    
+                    final String downLoadUrl = dataObj.getString("androidUrl");
+                    
+                    AbDialogUtil.showAlertDialog(UpdateActivity.this, 0, "温馨提示", "您当前使用的不是最新版本,点击确认下载最新版本",
+                            new AbAlertDialogFragment.AbDialogOnClickListener() {
+                        @Override
+                        public void onPositiveClick() {
+                            // TODO Auto-generated method stub
+                             downFile(downLoadUrl);                      
+                             AbDialogUtil.removeDialog(UpdateActivity.this);
+                             AbDialogUtil.showProgressDialog(UpdateActivity.this, 0, "正在下载更新，请稍后..");
+                        }
+                        @Override
+                        public void onNegativeClick() {
+                            // TODO Auto-generated method stub
+                            AbDialogUtil.removeDialog(UpdateActivity.this);
+                        }
+                    });
+                }else{
+                    
+                    AbDialogUtil.showAlertDialog(UpdateActivity.this, 0, "温馨提示", "您当前使用的已经是最新版本",
+                            new AbAlertDialogFragment.AbDialogOnClickListener() {
+                        @Override
+                        public void onPositiveClick() {
+                            // TODO Auto-generated method stub
+                             AbDialogUtil.removeDialog(UpdateActivity.this);
+                             UpdateActivity.this.finish();
+                        }
+                        @Override
+                        public void onNegativeClick() {
+                            // TODO Auto-generated method stub
+                            AbDialogUtil.removeDialog(UpdateActivity.this);
+                        }
+                    });
+                    
+                }
+                
+            }else{
+                AbToastUtil.showToast(UpdateActivity.this, "查询失败，请稍后重试...");
+            }
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
 
     }
 
@@ -176,11 +237,11 @@ public class UpdateActivity extends AbActivity {
         case R.id.goBack:
             this.finish();
             break;
-        case R.id.updateButton:
-            String downloadUrl = "http://gdown.baidu.com/data/wisegame/4b9f5ddd9d7b1cb5/piaoliupingzi_15.apk";
-            downFile(downloadUrl);
-            AbDialogUtil.showProgressDialog(UpdateActivity.this, 0, "正在下载更新，请稍后..");
-            break;
+//        case R.id.updateButton:
+//            String downloadUrl = "http://gdown.baidu.com/data/wisegame/4b9f5ddd9d7b1cb5/piaoliupingzi_15.apk";
+//            downFile(downloadUrl);
+//            AbDialogUtil.showProgressDialog(UpdateActivity.this, 0, "正在下载更新，请稍后..");
+//            break;
         default:
             break;
         }

@@ -163,9 +163,7 @@ public class AddActivityCommentActivity extends AbActivity {
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.addActivityCommentUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(AddActivityCommentActivity.this,
-				Constant.SESSION);
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(AddActivityCommentActivity.this,Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("activityId", activityId);
 		p.put("content", content);
@@ -205,7 +203,7 @@ public class AddActivityCommentActivity extends AbActivity {
 				AbDialogUtil.removeDialog(AddActivityCommentActivity.this);
 			};
 
-		});
+		}, jsession);
 		
 	}
 

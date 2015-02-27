@@ -16,7 +16,10 @@ import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
 import com.ab.util.AbDialogUtil;
+import com.ab.util.AbToastUtil;
 import com.example.bybike.R;
+import com.example.bybike.db.dao.MessageBeanDao;
+import com.example.bybike.message.MessageListActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
@@ -53,7 +56,7 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
             break;
         case R.id.aboutUs:
-            i.setClass(this, LoginActivity.class);
+            i.setClass(this, AboutUsActivity.class);
             startActivity(i);
             overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
             break;
@@ -61,9 +64,10 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             showLogoutDialog();
             break;
         case R.id.map:
-            i.setClass(this, OfflineMapActivity.class);
-            startActivity(i);
-            overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+        	AbToastUtil.showToast(SettingMainActivity.this, "正在建设中，敬请期待...");
+//            i.setClass(this, OfflineMapActivity.class);
+//            startActivity(i);
+//            overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
             break;
         case R.id.opinion:
             i.setClass(this, SendOpinionActivity.class);
@@ -114,9 +118,9 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             return;
         }
         String urlString = Constant.serverUrl + Constant.logoutUrl;
-        urlString += ";jsessionid=";
-        urlString += SharedPreferencesUtil.getSharedPreferences_s(SettingMainActivity.this, Constant.SESSION);
-        mAbHttpUtil.get(urlString, new AbStringHttpResponseListener() {
+        String jsession = SharedPreferencesUtil.getSharedPreferences_s(SettingMainActivity.this, Constant.SESSION);
+        AbRequestParams p = new AbRequestParams();
+        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
             // 获取数据成功会调用这里
             @Override
@@ -142,7 +146,7 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
                 AbDialogUtil.removeDialog(SettingMainActivity.this);
             };
 
-        });
+        }, jsession);
     }
 
     protected void processResult(String content) {
@@ -151,6 +155,11 @@ public class SettingMainActivity extends AbActivity implements OnClickListener {
             JSONObject responseObj = new JSONObject(content);
             String code = responseObj.getString("code");
             if ("0".equals(code)) {
+                
+                MessageBeanDao messageBeanDao = new MessageBeanDao(SettingMainActivity.this);
+                messageBeanDao.startReadableDatabase();
+                messageBeanDao.delete("message_type=? or message_type=? or message_type=?", new String[]{"0", "1", "2"});
+                messageBeanDao.closeDatabase();
                 SharedPreferencesUtil.saveSharedPreferences_s(SettingMainActivity.this, Constant.SESSION, "");
                 SharedPreferencesUtil.saveSharedPreferences_b(SettingMainActivity.this, Constant.ISLOGINED, false);
                 SharedPreferencesUtil.saveSharedPreferences_s(SettingMainActivity.this, Constant.USERID, "");

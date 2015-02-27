@@ -6,15 +6,19 @@
 package com.example.bybike;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,6 +36,8 @@ import com.ab.fragment.AbAlertDialogFragment;
 import com.ab.http.AbHttpUtil;
 import com.ab.http.AbRequestParams;
 import com.ab.http.AbStringHttpResponseListener;
+import com.ab.image.AbImageLoader;
+import com.ab.image.AbImageLoader.OnImageListener;
 import com.ab.task.AbTaskItem;
 import com.ab.task.AbTaskListener;
 import com.ab.task.AbTaskQueue;
@@ -61,6 +67,7 @@ import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.riding.MyOrientationListener;
 import com.example.bybike.riding.MyOrientationListener.OnOrientationListener;
 import com.example.bybike.user.LoginActivity;
+import com.example.bybike.util.CircleImageView;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -360,8 +367,8 @@ public class MainPageFragment extends Fragment {
 					// i.putExtra("detailInfo",
 					// marker.getExtraInfo().getString("detailInfo"));
 					i.putExtra("id", marker.getExtraInfo().getString("id"));
-					startActivity(i);
-					mActivity.overridePendingTransition(R.anim.fragment_in, 0);
+					mActivity.startActivityForResult(i, mActivity.GO_TO_MARKERDETAIL_ACTIVITY);
+					mActivity.overridePendingTransition(R.anim.fragment_in,R.anim.fragment_out);
 				}
 				return true;
 			}
@@ -432,10 +439,11 @@ public class MainPageFragment extends Fragment {
 	 * 显示已认证标记点
 	  * showMarkerList(这里用一句话描述这个方法的作用)
 	 */
+	private boolean hasLoadPublicMarkers = false;
 	private void showMarkerList() {
 
 		if (SharedPreferencesUtil.getSharedPreferences_b(mActivity,
-				Constant.markerDataLoaded) && publicMarkerList != null && publicMarkerList.size() > 0) {
+				Constant.markerDataLoaded) && hasLoadPublicMarkers && publicMarkerList != null && publicMarkerList.size() > 0) {
 
 			for (Marker m : publicMarkerList) {
 				m.setVisible(true);
@@ -479,6 +487,9 @@ public class MainPageFragment extends Fragment {
 		markerBeanDao.startReadableDatabase();
 		List<MarkerBean> markers = markerBeanDao.queryList();
 		
+		for(Marker m : publicMarkerList){
+		    m.remove();
+		}
 		publicMarkerList.clear();
 
 		// String currentUserId =
@@ -486,16 +497,29 @@ public class MainPageFragment extends Fragment {
 		// Constant.USERID);
 		for (MarkerBean m : markers) {
 
-			if (!m.getOperatingType().equalsIgnoreCase("Public")) {
-				continue;
-			}
+		    if(!"true".equalsIgnoreCase(m.getIsPublic())){
+		        continue;
+		    }
+//			if (!m.getOperatingType().equalsIgnoreCase("Public")) {
+//				continue;
+//			}
 			double lat = m.getLatitude();
 			double lng = m.getLongitude();
 			LatLng llA = new LatLng(lat, lng);
 
 			String markerType = m.getMarkerType();
 			OverlayOptions ooA = null;
-			if ("RantCar".equalsIgnoreCase(markerType)) {
+			if("true".equalsIgnoreCase(m.getDescription())){
+				
+				if(!"".equals(m.getImgurl1())){
+					MyOnImageListener listener = new MyOnImageListener(m.getMarkerId(), llA, m.getMarkerName(), markerType);
+					AbImageLoader mImageLoader = AbImageLoader.newInstance(mActivity);
+					mImageLoader.setOnImageListener(listener);
+					mImageLoader.download(Constant.serverUrl + m.getImgurl1());
+					continue;
+				}
+				
+			}else if ("RantCar".equalsIgnoreCase(markerType)) {
 				ooA = new MarkerOptions().position(llA)
 						.icon(marker_icon_rentbike).zIndex(9).draggable(false);
 			} else if ("Repair".equalsIgnoreCase(markerType)) {
@@ -526,15 +550,9 @@ public class MainPageFragment extends Fragment {
 						.icon(marker_icon_others).zIndex(9).draggable(false);
 			}
 			Marker mMarkerA = (Marker) (mBaidumap.addOverlay(ooA));
-			// if(m.getCreaterId().equalsIgnoreCase(currentUserId)){
-			// mMarkerA.setVisible(true);
-			// }else{
-			// mMarkerA.setVisible(false);
-			// }
 			Bundle b = new Bundle();
 			b.putString("name", m.getMarkerName());
 			b.putString("id", m.getMarkerId());
-			b.putString("opertingType", m.getOperatingType());
 			b.putString("markerType", markerType);
 			mMarkerA.setExtraInfo(b);
 			mMarkerA.setTitle("true");
@@ -542,6 +560,7 @@ public class MainPageFragment extends Fragment {
 		}
 		markerBeanDao.closeDatabase();
 		markers.clear();
+		hasLoadPublicMarkers = true;
 	}
 
 	/**
@@ -694,8 +713,6 @@ public class MainPageFragment extends Fragment {
 					double lat = jo.getDouble("lat");
 					double lng = jo.getDouble("lng");
 					LatLng llA = new LatLng(lat, lng);
-
-					String opertingType = jo.getString("operatingType");
 					String markerType = jo.getString("markerType");
 					OverlayOptions ooA = null;
 					if ("RantCar".equalsIgnoreCase(markerType)) {
@@ -740,7 +757,6 @@ public class MainPageFragment extends Fragment {
 					Bundle b = new Bundle();
 					b.putString("name", jo.getString("name"));
 					b.putString("id", jo.getString("Id"));
-					b.putString("opertingType", opertingType);
 					b.putString("markerType", markerType);
 					// b.putString("detailInfo", jo.toString());
 					mMarkerA.setExtraInfo(b);
@@ -834,6 +850,8 @@ public class MainPageFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		
+		specialMarkers.clear();
 		// 退出时销毁定位
 		mLocClient.stop();
 		// 关闭定位图层
@@ -918,7 +936,9 @@ public class MainPageFragment extends Fragment {
 			String showingIcon = m.getTitle();
 			if ("false".endsWith(showingIcon)) {
 				String markerType = m.getExtraInfo().getString("markerType");
-				if ("RantCar".equalsIgnoreCase(markerType)) {
+				if(specialMarkers.containsKey(m.getExtraInfo().getString("id"))){
+					m.setIcon(specialMarkers.get(m.getExtraInfo().getString("id")));
+				}else if ("RantCar".equalsIgnoreCase(markerType)) {
 					m.setIcon(marker_icon_rentbike);
 				} else if ("Repair".equalsIgnoreCase(markerType)) {
 					m.setIcon(marker_icon_repair);
@@ -946,7 +966,9 @@ public class MainPageFragment extends Fragment {
             String showingIcon = m.getTitle();
             if ("false".endsWith(showingIcon)) {
                 String markerType = m.getExtraInfo().getString("markerType");
-                if ("RantCar".equalsIgnoreCase(markerType)) {
+                if(specialMarkers.containsKey(m.getExtraInfo().getString("id"))){
+					m.setIcon(specialMarkers.get(m.getExtraInfo().getString("id")));
+				}else if ("RantCar".equalsIgnoreCase(markerType)) {
                     m.setIcon(marker_icon_rentbike);
                 } else if ("Repair".equalsIgnoreCase(markerType)) {
                     m.setIcon(marker_icon_repair);
@@ -970,6 +992,156 @@ public class MainPageFragment extends Fragment {
             }
         }
 
+	}
+
+    
+    /**
+      * showMarker(这里用一句话描述这个方法的作用)
+      * @param markerData
+      */
+    public void showMarker(String markerData) {
+        // TODO Auto-generated method stub
+        try {
+            JSONObject markerObj = new JSONObject(markerData);
+            String id = markerObj.getString("id");
+            boolean hasThatId = false;
+            for (Marker m : myMarkerList) {
+                if(!id.equals(m.getExtraInfo().getString("id"))){
+                    m.setVisible(false);
+                }else{
+                    hasThatId = true;
+                }
+            }          
+            for (Marker m : publicMarkerList) {
+                if(!id.equals(m.getExtraInfo().getString("id"))){
+                    m.setVisible(false);
+                }else{
+                    hasThatId = true;
+                }
+            }
+            showMyMarkers = false;
+            showPublicMarker = false;
+            
+            double lat = markerObj.getDouble("lat");
+            double lng = markerObj.getDouble("lng");
+            LatLng llA = new LatLng(lat, lng);
+            
+            if(!hasThatId){
+                
+                String markerType = markerObj.getString("markerType");
+                OverlayOptions ooA = null;
+                if ("RantCar".equalsIgnoreCase(markerType)) {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_rentbike).zIndex(9)
+                            .draggable(false);
+                } else if ("Repair".equalsIgnoreCase(markerType)) {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_repair).zIndex(9)
+                            .draggable(false);
+                } else if ("FeatureSpot".equalsIgnoreCase(markerType)) {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_scenery).zIndex(9)
+                            .draggable(false);
+                } else if ("Catering".equalsIgnoreCase(markerType)) {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_meals).zIndex(9)
+                            .draggable(false);
+                } else if ("Washroom".equalsIgnoreCase(markerType)) {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_washroom).zIndex(9)
+                            .draggable(false);
+                } else if ("Parking".equalsIgnoreCase(markerType)) {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_parking).zIndex(9)
+                            .draggable(false);
+                } else if ("Other".equalsIgnoreCase(markerType)) {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_others).zIndex(9)
+                            .draggable(false);
+                } else if ("CarShop".equalsIgnoreCase(markerType)) {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_bikestore).zIndex(9)
+                            .draggable(false);
+                } else {
+                    ooA = new MarkerOptions().position(llA)
+                            .icon(marker_icon_others).zIndex(9)
+                            .draggable(false);
+                }
+
+                Marker mMarkerA = (Marker) (mBaidumap.addOverlay(ooA));
+                Bundle b = new Bundle();
+                b.putString("name", markerObj.getString("name"));
+                b.putString("id", markerObj.getString("id"));
+                b.putString("markerType", markerType);
+                mMarkerA.setExtraInfo(b);
+                mMarkerA.setTitle("true");
+
+                if("true".equalsIgnoreCase(markerObj.getString("isPublic"))){
+                    publicMarkerList.add(mMarkerA);
+                }else{
+                    myMarkerList.add(mMarkerA);
+                }                          
+            }  
+            
+            
+            MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llA);
+            mBaidumap.animateMapStatus(u);
+            
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+    
+    
+    
+    View v = null;
+    CircleImageView markerImg;
+    AbImageLoader mImageLoader;
+    Map<String, BitmapDescriptor>specialMarkers = new HashMap<String, BitmapDescriptor>();
+	@SuppressWarnings("unused")
+	private class MyOnImageListener implements OnImageListener{
+
+        LatLng llA;
+        String id;
+        String name;
+        String markerType;
+    	
+    	public void setLatLng(LatLng lt){
+    		
+    		llA = lt;
+    	}
+    	
+		public MyOnImageListener(String tid, LatLng lla, String tname, String tMarkerType){
+			llA = lla;
+			id = tid;
+			name = tname;
+			markerType = tMarkerType;
+		}
+		
+		@Override
+		public void onResponse(Bitmap bitmap) {
+			// TODO Auto-generated method stub
+			v = LayoutInflater.from(mActivity).inflate(R.layout.infowindow_interest_marker, null);	
+			markerImg = (CircleImageView) v.findViewById(R.id.markerImg);
+			markerImg.setImageBitmap(bitmap);
+			BitmapDescriptor bd = BitmapDescriptorFactory.fromView(v);
+			//保存在map中
+			specialMarkers.put(id, bd);
+			//在地图上添加该点
+			OverlayOptions ooA = null;
+			ooA = new MarkerOptions().position(llA).icon(bd).zIndex(9).draggable(false);	
+			Marker mMarkerA = (Marker) (mBaidumap.addOverlay(ooA));
+			Bundle b = new Bundle();
+			b.putString("name", name);
+			b.putString("id", id);
+			b.putString("markerType", markerType);
+			mMarkerA.setExtraInfo(b);
+			mMarkerA.setTitle("true");
+			publicMarkerList.add(mMarkerA);		
+		}
+		
 	}
 
 }

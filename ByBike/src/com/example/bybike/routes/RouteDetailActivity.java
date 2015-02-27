@@ -119,6 +119,9 @@ public class RouteDetailActivity extends AbActivity {
 	TextView discussCount;
 	Button discussButton;
 
+	Button mapOrPic;
+	Button mapOrPicMap;
+
 	List<BitmapDescriptor> bitMapDescriptorList = new ArrayList<BitmapDescriptor>();
 	BitmapDescriptor marker_icon_bikestore = BitmapDescriptorFactory
 			.fromResource(R.drawable.marker_icon_bikestore);
@@ -202,22 +205,25 @@ public class RouteDetailActivity extends AbActivity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				ContentValues cv = discussValueList.get(position);
-				
+
 				Intent i = new Intent(RouteDetailActivity.this,
 						AddRouteCommentActivity.class);
-				i.putExtra("id", routeId);			
+				i.putExtra("id", routeId);
 				i.putExtra("comments", commentsString);
 				i.putExtra("name", routeNameString);
 				i.putExtra("receiverId", cv.getAsString("senderId"));
 				i.putExtra("receiverName", cv.getAsString("userName"));
 				i.putExtra("commentId", cv.getAsString("id"));
 				startActivityForResult(i, 0);
-				overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
-				
+				overridePendingTransition(R.anim.fragment_up,
+						R.anim.fragment_out);
+
 			}
 		});
-		
-		
+
+		mapOrPic = (Button) findViewById(R.id.mapOrPic);
+		mapOrPicMap = (Button) findViewById(R.id.mapOrPicMap);
+
 		discussValueList = new ArrayList<ContentValues>();
 		discussAdapter = new ExerciseDiscussListAdapter(
 				RouteDetailActivity.this, discussValueList);
@@ -294,7 +300,7 @@ public class RouteDetailActivity extends AbActivity {
 					likeCount.setText(String.valueOf(count));
 				}
 
-				// likeButtonClicked();
+				likeOrCollectButtonClicked(0);
 			}
 		});
 		/**
@@ -354,7 +360,8 @@ public class RouteDetailActivity extends AbActivity {
 					count++;
 					collectCount.setText(String.valueOf(count));
 				}
-				// collectButtonClicked();
+
+				likeOrCollectButtonClicked(1);
 			}
 		});
 
@@ -457,12 +464,107 @@ public class RouteDetailActivity extends AbActivity {
 	}
 
 	private void loadData() {
-		
+
 		queryDetail();
+		/**
+		 * 查询路线图
+		 */
+		queryRouteLine();
 		/**
 		 * 查询评论列表
 		 */
 		queryComments();
+	}
+
+	private void queryRouteLine() {
+
+		String urlString = Constant.serverUrl + Constant.routeLineUrl;
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,
+				Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		p.put("roadId", routeId);
+		p.put("pageSize", "1000");
+		p.put("pageNo", "1");
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
+
+				processRouteLineResult(content);
+			};
+
+			// 开始执行前
+			@Override
+			public void onStart() {
+				AbDialogUtil.showProgressDialog(RouteDetailActivity.this, 0,
+						"正在查询，请稍后...");
+			}
+
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+
+				AbDialogUtil.removeDialog(RouteDetailActivity.this);
+			}
+
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+
+				AbDialogUtil.removeDialog(RouteDetailActivity.this);
+
+			};
+
+		}, jsession);
+	}
+
+	private void processRouteLineResult(String resultString) {
+
+		try {
+			JSONObject resultObj = new JSONObject(resultString);
+			String code = resultObj.getString("code");
+			if ("0".equals(code)) {
+
+				// 在地图上显示路线图
+				try {
+					JSONArray pointsArray = resultObj.getJSONArray("data");
+					List<LatLng> points = new ArrayList<LatLng>();
+					for (int i = 0; i < pointsArray.length(); i++) {
+						JSONObject point = pointsArray.getJSONObject(i);
+						LatLng ll = new LatLng(point.getDouble("lat"),
+								point.getDouble("lng"));
+						points.add(ll);
+					}
+					if (points.size() >= 2) {
+						OverlayOptions ooPolyline = new PolylineOptions()
+								.width(10).color(0xAAFF0000).points(points);
+						mBaidumap.addOverlay(ooPolyline);
+
+						LatLngBounds bounds = new LatLngBounds.Builder()
+								.include(points.get(0))
+								.include(points.get(points.size() - 1)).build();
+						MapStatusUpdate u = MapStatusUpdateFactory
+								.newLatLngBounds(bounds);
+						mBaidumap.animateMapStatus(u, 500);
+					}
+
+					points.clear();
+
+				} catch (Exception e) {
+
+				}
+
+			} else {
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	private void queryDetail() {
@@ -472,8 +574,7 @@ public class RouteDetailActivity extends AbActivity {
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.routeDetailUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,
 				Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("id", routeId);
@@ -490,7 +591,8 @@ public class RouteDetailActivity extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-				 AbDialogUtil.showProgressDialog(RouteDetailActivity.this, 0,"正在查询，请稍后...");
+				AbDialogUtil.showProgressDialog(RouteDetailActivity.this, 0,
+						"正在查询，请稍后...");
 			}
 
 			// 失败，调用
@@ -498,22 +600,21 @@ public class RouteDetailActivity extends AbActivity {
 			public void onFailure(int statusCode, String content,
 					Throwable error) {
 
-				 AbDialogUtil.removeDialog(RouteDetailActivity.this);
+				AbDialogUtil.removeDialog(RouteDetailActivity.this);
 			}
 
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-				
+
 				AbDialogUtil.removeDialog(RouteDetailActivity.this);
 
 			};
 
-		});
+		}, jsession);
 	}
 
 	private void processResult(String resultString) {
-
 
 		try {
 			JSONObject resultObj = new JSONObject(resultString);
@@ -547,6 +648,18 @@ public class RouteDetailActivity extends AbActivity {
 				hour.setText(String.valueOf(hours));
 				minute.setText(String.valueOf(mins));
 				second.setText(String.valueOf(secs));
+
+				if ("true".equals(routeObj.getString("likeStatus"))) {
+					likeButton.setSelected(true);
+				} else {
+					likeButton.setSelected(false);
+				}
+
+				if ("true".equals(routeObj.getString("collectStatus"))) {
+					collectButton.setSelected(true);
+				} else {
+					collectButton.setSelected(false);
+				}
 
 				likeCount.setText(routeObj.getString("likeCount"));
 				collectCount.setText(routeObj.getString("collectCount"));
@@ -611,6 +724,9 @@ public class RouteDetailActivity extends AbActivity {
 
 				// 将用户添加的友好点表示在地图上
 				JSONArray markerBeanArray;
+				LinearLayout markerNamesArea = (LinearLayout) findViewById(R.id.markerNamesArea);
+				TextView markerNames = (TextView) findViewById(R.id.markerNames);
+				String markerNamesString = "";
 				try {
 					markerBeanArray = dataObj.getJSONArray("markers");
 					for (int index = 0; index < markerBeanArray.length(); index++) {
@@ -624,6 +740,11 @@ public class RouteDetailActivity extends AbActivity {
 						JSONObject markerTypeObj = jo
 								.getJSONObject("markerTypeRelation");
 						mb.setMarkerType(markerTypeObj.getString("markerType"));
+
+						markerNamesString += mb.getMarkerName();
+						if (index < markerBeanArray.length() - 1) {
+							markerNamesString += ",";
+						}
 
 						double lat = mb.getLatitude();
 						double lng = mb.getLongitude();
@@ -671,10 +792,16 @@ public class RouteDetailActivity extends AbActivity {
 						mMarkerA.setExtraInfo(b);
 						mMarkerA.setTitle("true");
 						markerList.add(mMarkerA);
+
 					}
 				} catch (JSONException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				}
+
+				if (!markerNamesString.equals("")) {
+					markerNamesArea.setVisibility(View.VISIBLE);
+					markerNames.setText(markerNamesString);
 				}
 
 			} else {
@@ -699,8 +826,7 @@ public class RouteDetailActivity extends AbActivity {
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.routeCommentUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,
 				Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("id", routeId);
@@ -734,30 +860,30 @@ public class RouteDetailActivity extends AbActivity {
 			@Override
 			public void onFinish() {
 				AbDialogUtil.removeDialog(RouteDetailActivity.this);
-				
+
 				mAbTaskQueue = AbTaskQueue.getInstance();
 				final AbTaskItem item1 = new AbTaskItem();
-		        item1.setListener(new AbTaskListener() {
+				item1.setListener(new AbTaskListener() {
 
-		            @Override
-		            public void update() {
-		            	AbDialogUtil.removeDialog(RouteDetailActivity.this);           
-		            }
+					@Override
+					public void update() {
+						AbDialogUtil.removeDialog(RouteDetailActivity.this);
+					}
 
-		            @Override
-		            public void get() {
-		                try {
-		                    Thread.sleep(1000);
-		                } catch (Exception e) {
-		                }
-		            };
-		        });
-		       
-		        mAbTaskQueue.execute(item1);
+					@Override
+					public void get() {
+						try {
+							Thread.sleep(1000);
+						} catch (Exception e) {
+						}
+					};
+				});
+
+				mAbTaskQueue.execute(item1);
 
 			};
 
-		});
+		}, jsession);
 
 	}
 
@@ -830,14 +956,17 @@ public class RouteDetailActivity extends AbActivity {
 			goBack();
 			break;
 
+		case R.id.mapOrPicMap:
+			mapOrPicMap.setVisibility(View.GONE);
+			mapOrPic.setVisibility(View.VISIBLE);
+			mMapView.setVisibility(View.VISIBLE);
+			mAbSlidingPlayView.setVisibility(View.GONE);
+			break;
 		case R.id.mapOrPic:
-			if (mMapView.getVisibility() == View.VISIBLE) {
-				mAbSlidingPlayView.setVisibility(View.VISIBLE);
-				mMapView.setVisibility(View.GONE);
-			} else {
-				mMapView.setVisibility(View.VISIBLE);
-				mAbSlidingPlayView.setVisibility(View.GONE);
-			}
+			mapOrPicMap.setVisibility(View.VISIBLE);
+			mapOrPic.setVisibility(View.GONE);
+			mMapView.setVisibility(View.GONE);
+			mAbSlidingPlayView.setVisibility(View.VISIBLE);
 			break;
 		case R.id.discussButton:
 			Intent i = new Intent(RouteDetailActivity.this,
@@ -850,6 +979,9 @@ public class RouteDetailActivity extends AbActivity {
 			i.putExtra("commentId", "");
 			startActivityForResult(i, 0);
 			overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
+			break;
+		case R.id.shareButton:
+			AbToastUtil.showToast(RouteDetailActivity.this, "正在努力建设中，敬请期待...");
 			break;
 		default:
 			break;
@@ -962,7 +1094,7 @@ public class RouteDetailActivity extends AbActivity {
 									.substring(0, 19));
 							v1.put("receiverId", jo.getString("receiverId"));
 							v1.put("receiverName", jo.getString("receiverName"));
-							
+
 							discussValueList.add(v1);
 						}
 						discussAdapter.notifyDataSetChanged();
@@ -981,5 +1113,48 @@ public class RouteDetailActivity extends AbActivity {
 
 		}
 
+	}
+
+	/**
+	 * 点赞和搜藏
+	 */
+	private void likeOrCollectButtonClicked(int i) {
+
+		String urlString = "";
+		if (0 == i) {
+			urlString = Constant.serverUrl + Constant.routeLikeClicked;
+		} else {
+			urlString = Constant.serverUrl + Constant.routeCollectClicked;
+		}
+
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,
+				Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		p.put("id", routeId);
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
+			};
+
+			// 开始执行前
+			@Override
+			public void onStart() {
+			}
+
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
+
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+			};
+
+		}, jsession);
 	}
 }

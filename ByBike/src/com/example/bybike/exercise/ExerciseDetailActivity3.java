@@ -104,6 +104,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 	Button discussButton;
 
 	Button shareButton;
+	Button mapOrPic;
+	Button mapOrPicMap;
 
 	private String activityData;
 	TextView applyText;
@@ -118,9 +120,9 @@ public class ExerciseDetailActivity3 extends AbActivity {
 		// 获取Http工具类
 		mAbHttpUtil = AbHttpUtil.getInstance(this);
 		mProgressDialog = new ProgressDialog(ExerciseDetailActivity3.this, 5);
-        // 设置点击屏幕Dialog不消失
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage("正在查询，请稍后...");
+		// 设置点击屏幕Dialog不消失
+		mProgressDialog.setCanceledOnTouchOutside(false);
+		mProgressDialog.setMessage("正在查询，请稍后...");
 
 		exerciseId = getIntent().getStringExtra("id");
 
@@ -133,23 +135,26 @@ public class ExerciseDetailActivity3 extends AbActivity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				ContentValues cv = discussValueList.get(position - 1);
-				
+
 				Intent i = new Intent(ExerciseDetailActivity3.this,
 						AddActivityCommentActivity.class);
-				i.putExtra("id", exerciseId);			
+				i.putExtra("id", exerciseId);
 				i.putExtra("comments", commentsString);
 				i.putExtra("name", activityNameString);
 				i.putExtra("receiverId", cv.getAsString("senderId"));
 				i.putExtra("receiverName", cv.getAsString("userName"));
 				i.putExtra("commentId", cv.getAsString("id"));
 				startActivityForResult(i, 0);
-				overridePendingTransition(R.anim.fragment_up, R.anim.fragment_out);
-				
+				overridePendingTransition(R.anim.fragment_up,
+						R.anim.fragment_out);
+
 			}
 		});
 		// 添加header
 		detailheader = mInflater.inflate(R.layout.header_exercise_detail, null);
 
+		mapOrPic = (Button) detailheader.findViewById(R.id.mapOrPic);
+		mapOrPicMap = (Button) detailheader.findViewById(R.id.mapOrPicMap);
 		exercisePicArea = (RelativeLayout) detailheader
 				.findViewById(R.id.exercisePicArea);
 		mAbSlidingPlayView = (AbSlidingPlayView) detailheader
@@ -190,7 +195,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 		// 获取地图控件引用
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		mBaidumap = mMapView.getMap();
-		applyText = (TextView)findViewById(R.id.applyText);
+		applyText = (TextView) findViewById(R.id.applyText);
 		initActivity();
 	}
 
@@ -209,23 +214,37 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				if (!SharedPreferencesUtil.getSharedPreferences_b(
 						ExerciseDetailActivity3.this, Constant.ISLOGINED)) {
 
-					AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
-			    			new AbAlertDialogFragment.AbDialogOnClickListener() {
+					AbDialogUtil
+							.showAlertDialog(
+									ExerciseDetailActivity3.this,
+									0,
+									"温馨提示",
+									"您还未登陆，或登陆状态过期，请重新登录再试",
+									new AbAlertDialogFragment.AbDialogOnClickListener() {
 
-						@Override
-						public void onPositiveClick() {
-							// TODO Auto-generated method stub
-							  Intent i = new Intent(ExerciseDetailActivity3.this, LoginActivity.class);
-							  ExerciseDetailActivity3.this.startActivity(i);
-							  ExerciseDetailActivity3.this.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-		                      AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
-						}
-						@Override
-						public void onNegativeClick() {
-							// TODO Auto-generated method stub
-							AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
-						}
-		            });
+										@Override
+										public void onPositiveClick() {
+											// TODO Auto-generated method stub
+											Intent i = new Intent(
+													ExerciseDetailActivity3.this,
+													LoginActivity.class);
+											ExerciseDetailActivity3.this
+													.startActivity(i);
+											ExerciseDetailActivity3.this
+													.overridePendingTransition(
+															R.anim.fragment_in,
+															R.anim.fragment_out);
+											AbDialogUtil
+													.removeDialog(ExerciseDetailActivity3.this);
+										}
+
+										@Override
+										public void onNegativeClick() {
+											// TODO Auto-generated method stub
+											AbDialogUtil
+													.removeDialog(ExerciseDetailActivity3.this);
+										}
+									});
 					return;
 				}
 				if (v.isSelected()) {
@@ -239,7 +258,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 					count++;
 					likeCount.setText(String.valueOf(count));
 				}
-				
+
 				likeButtonClicked();
 			}
 		});
@@ -253,26 +272,40 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				if (!SharedPreferencesUtil.getSharedPreferences_b(
 						ExerciseDetailActivity3.this, Constant.ISLOGINED)) {
 
-					AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0, "温馨提示", "您还未登陆，或登陆状态过期，请重新登录再试",
-			    			new AbAlertDialogFragment.AbDialogOnClickListener() {
+					AbDialogUtil
+							.showAlertDialog(
+									ExerciseDetailActivity3.this,
+									0,
+									"温馨提示",
+									"您还未登陆，或登陆状态过期，请重新登录再试",
+									new AbAlertDialogFragment.AbDialogOnClickListener() {
 
-						@Override
-						public void onPositiveClick() {
-							// TODO Auto-generated method stub
-							  Intent i = new Intent(ExerciseDetailActivity3.this, LoginActivity.class);
-							  ExerciseDetailActivity3.this.startActivity(i);
-							  ExerciseDetailActivity3.this.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-		                      AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
-						}
-						@Override
-						public void onNegativeClick() {
-							// TODO Auto-generated method stub
-							AbDialogUtil.removeDialog(ExerciseDetailActivity3.this);
-						}
-		            });
+										@Override
+										public void onPositiveClick() {
+											// TODO Auto-generated method stub
+											Intent i = new Intent(
+													ExerciseDetailActivity3.this,
+													LoginActivity.class);
+											ExerciseDetailActivity3.this
+													.startActivity(i);
+											ExerciseDetailActivity3.this
+													.overridePendingTransition(
+															R.anim.fragment_in,
+															R.anim.fragment_out);
+											AbDialogUtil
+													.removeDialog(ExerciseDetailActivity3.this);
+										}
+
+										@Override
+										public void onNegativeClick() {
+											// TODO Auto-generated method stub
+											AbDialogUtil
+													.removeDialog(ExerciseDetailActivity3.this);
+										}
+									});
 					return;
 				}
-				
+
 				if (v.isSelected()) {
 					v.setSelected(false);
 					int count = Integer.valueOf(collectCount.getText()
@@ -286,7 +319,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 					count++;
 					collectCount.setText(String.valueOf(count));
 				}
-				 collectButtonClicked();
+				collectButtonClicked();
 			}
 		});
 
@@ -384,13 +417,12 @@ public class ExerciseDetailActivity3 extends AbActivity {
 	private void queryComments() {
 
 		if (!NetUtil.isConnnected(this)) {
-			AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0, "温馨提示",
-					"网络不可用，请设置您的网络后重试", null);
+			AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0,
+					"温馨提示", "网络不可用，请设置您的网络后重试", null);
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.getCommentList;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,
 				Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("activityId", exerciseId);
@@ -409,7 +441,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-			    mProgressDialog.show();
+				mProgressDialog.show();
 			}
 
 			// 失败，调用
@@ -421,10 +453,10 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-			    mProgressDialog.dismiss();
+				mProgressDialog.dismiss();
 			};
 
-		});
+		}, jsession);
 
 	}
 
@@ -456,12 +488,13 @@ public class ExerciseDetailActivity3 extends AbActivity {
 					v1.put("discussTime", jo.getString("discussTime"));
 					v1.put("receiverId", jo.getString("receiverId"));
 					v1.put("receiverName", jo.getString("receiverName"));
-					discussValueList.add(v1);					
+					discussValueList.add(v1);
 				}
 				discussAdapter.notifyDataSetChanged();
 
 			} else {
-				AbToastUtil.showToast(ExerciseDetailActivity3.this, resultObj.getString("message"));
+				AbToastUtil.showToast(ExerciseDetailActivity3.this,
+						resultObj.getString("message"));
 			}
 
 		} catch (JSONException e) {
@@ -474,13 +507,12 @@ public class ExerciseDetailActivity3 extends AbActivity {
 
 	private void queryDetail() {
 		if (!NetUtil.isConnnected(this)) {
-			AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0, "温馨提示",
-					"网络不可用，请设置您的网络后重试", null);
+			AbDialogUtil.showAlertDialog(ExerciseDetailActivity3.this, 0,
+					"温馨提示", "网络不可用，请设置您的网络后重试", null);
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.exerciseDetailUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,
 				Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("id", exerciseId);
@@ -497,7 +529,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 开始执行前
 			@Override
 			public void onStart() {
-			    mProgressDialog.show();
+				mProgressDialog.show();
 			}
 
 			// 失败，调用
@@ -509,10 +541,10 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			// 完成后调用，失败，成功
 			@Override
 			public void onFinish() {
-			    mProgressDialog.dismiss();
+				mProgressDialog.dismiss();
 			};
 
-		});
+		}, jsession);
 	}
 
 	private void processResult(String resultString) {
@@ -548,11 +580,23 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				likeCount.setText(activityObj.getString("likeCount"));
 				discussCount.setText("评论 ("
 						+ activityObj.getString("commentCount") + ")");
-				
-				if("72".equals(activityObj.getString("joinStatus")) || "71".equals(activityObj.getString("joinStatus"))){
-				    applyText.setText("已报名");
-				}else{
-				    applyText.setText("报名");
+
+				if ("71".equals(activityObj.getString("joinStatus"))) {
+					applyText.setText("已报名");
+				} else {
+					applyText.setText("报名");
+				}
+
+				if ("true".equals(activityObj.getString("likeStatus"))) {
+					likeButton.setSelected(true);
+				} else {
+					likeButton.setSelected(false);
+				}
+
+				if ("true".equals(activityObj.getString("collectStatus"))) {
+					collectButton.setSelected(true);
+				} else {
+					collectButton.setSelected(false);
 				}
 
 				// 下载和显示图片
@@ -566,7 +610,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 					}
 
 				}
-				mAbImageDownloader = AbImageLoader.newInstance(ExerciseDetailActivity3.this);
+				mAbImageDownloader = AbImageLoader
+						.newInstance(ExerciseDetailActivity3.this);
 				mAbImageDownloader.setLoadingImage(R.drawable.image_loading);
 				mAbImageDownloader.setErrorImage(R.drawable.image_error);
 				mAbImageDownloader.setEmptyImage(R.drawable.image_empty);
@@ -577,7 +622,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 								R.layout.play_view_item, null);
 						ImageView mPlayImage = (ImageView) mPlayView
 								.findViewById(R.id.mPlayImage);
-//						mAbSlidingPlayView.setPageLineHorizontalGravity(Gravity.CENTER);
+						// mAbSlidingPlayView.setPageLineHorizontalGravity(Gravity.CENTER);
 						mAbSlidingPlayView.addView(mPlayView);
 
 						mAbImageDownloader.display(mPlayImage,
@@ -611,7 +656,8 @@ public class ExerciseDetailActivity3 extends AbActivity {
 				}
 
 			} else {
-				AbToastUtil.showToast(ExerciseDetailActivity3.this, "查询失败，请稍后重试");
+				AbToastUtil.showToast(ExerciseDetailActivity3.this,
+						"查询失败，请稍后重试");
 				ExerciseDetailActivity3.this.finish();
 			}
 
@@ -637,26 +683,28 @@ public class ExerciseDetailActivity3 extends AbActivity {
 			goBack();
 			break;
 
+		case R.id.mapOrPicMap:
+			mapOrPicMap.setVisibility(View.GONE);
+			mapOrPic.setVisibility(View.VISIBLE);
+			mMapView.setVisibility(View.VISIBLE);
+			mAbSlidingPlayView.setVisibility(View.GONE);
+			break;
 		case R.id.mapOrPic:
-			if (mMapView.getVisibility() == View.VISIBLE) {
-				mAbSlidingPlayView.setVisibility(View.VISIBLE);
-				mMapView.setVisibility(View.GONE);
-				source.setBackgroundResource(R.drawable.button_map_or_pic_2);
-			} else {
-				mMapView.setVisibility(View.VISIBLE);
-				mAbSlidingPlayView.setVisibility(View.GONE);
-				source.setBackgroundResource(R.drawable.button_map_or_pic);
-			}
+			mapOrPicMap.setVisibility(View.VISIBLE);
+			mapOrPic.setVisibility(View.GONE);
+			mMapView.setVisibility(View.GONE);
+			mAbSlidingPlayView.setVisibility(View.VISIBLE);
 			break;
 		case R.id.shareButton: // 点击分享按钮
 			showShare();
 			break;
 		case R.id.applyArea: // 点击报名事件
-		    if(applyText.getText().toString().equals("报名")){
-		        applyClick();
-		    }else{
-		        AbToastUtil.showToast(ExerciseDetailActivity3.this, "你已经报过名了...");
-		    }
+			if (applyText.getText().toString().equals("报名")) {
+				applyClick();
+			} else {
+				AbToastUtil.showToast(ExerciseDetailActivity3.this,
+						"你已经报过名了...");
+			}
 			break;
 		case R.id.discussButton:
 			Intent i = new Intent(ExerciseDetailActivity3.this,
@@ -725,24 +773,25 @@ public class ExerciseDetailActivity3 extends AbActivity {
 
 	private void showShare() {
 
-		ShareSDK.initSDK(this);
-		OnekeyShare oks = new OnekeyShare();
-		oks.setSilent(true); // 隐藏编辑页面
-		// 关闭sso授权
-		oks.disableSSOWhenAuthorize();
-		// 分享时Notification的图标和文字
-		oks.setNotification(R.drawable.ic_launcher,
-				getString(R.string.app_name));
-		// title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-		oks.setTitle(getString(R.string.share));
-		// text是分享文本，所有平台都需要这个字段
-		oks.setText(exerciseDetail.getText().toString());
-		// imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-		oks.setImagePath("");// 确保SDcard下面存在此张图片
-		// url仅在微信（包括好友和朋友圈）中使用
-		oks.setUrl("http://sharesdk.cn");
-		// 启动分享GUI
-		oks.show(this);
+		AbToastUtil.showToast(ExerciseDetailActivity3.this, "正在努力建设中，敬请期待...");
+//		ShareSDK.initSDK(this);
+//		OnekeyShare oks = new OnekeyShare();
+//		oks.setSilent(true); // 隐藏编辑页面
+//		// 关闭sso授权
+//		oks.disableSSOWhenAuthorize();
+//		// 分享时Notification的图标和文字
+//		oks.setNotification(R.drawable.ic_launcher,
+//				getString(R.string.app_name));
+//		// title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+//		oks.setTitle(getString(R.string.share));
+//		// text是分享文本，所有平台都需要这个字段
+//		oks.setText(exerciseDetail.getText().toString());
+//		// imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+//		oks.setImagePath("");// 确保SDcard下面存在此张图片
+//		// url仅在微信（包括好友和朋友圈）中使用
+//		oks.setUrl("http://sharesdk.cn");
+//		// 启动分享GUI
+//		oks.show(this);
 	}
 
 	@Override
@@ -770,7 +819,7 @@ public class ExerciseDetailActivity3 extends AbActivity {
 									.substring(0, 19));
 							v1.put("receiverId", jo.getString("receiverId"));
 							v1.put("receiverName", jo.getString("receiverName"));
-							
+
 							discussValueList.add(v1);
 						}
 						discussAdapter.notifyDataSetChanged();
@@ -788,81 +837,80 @@ public class ExerciseDetailActivity3 extends AbActivity {
 		}
 
 	}
-	
-	
-	 /**
-     * 点赞/取消点赞
-      * queryDetail(这里用一句话描述这个方法的作用)
-     */
-    private void likeButtonClicked() {
 
-        String urlString = Constant.serverUrl + Constant.exerciseLikeClicked;
-        urlString += ";jsessionid=";
-        urlString += SharedPreferencesUtil.getSharedPreferences_s(this, Constant.SESSION);
-        AbRequestParams p = new AbRequestParams();
-        p.put("id", exerciseId);
-        // 绑定参数
-        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+	/**
+	 * 点赞/取消点赞 queryDetail(这里用一句话描述这个方法的作用)
+	 */
+	private void likeButtonClicked() {
 
-            // 获取数据成功会调用这里
-            @Override
-            public void onSuccess(int statusCode, String content) {
+		String urlString = Constant.serverUrl + Constant.exerciseLikeClicked;
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,
+				Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		p.put("id", exerciseId);
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
-            };
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
 
-            // 开始执行前
-            @Override
-            public void onStart() {
-            }
+			};
 
-            // 失败，调用
-            @Override
-            public void onFailure(int statusCode, String content, Throwable error) {
-            }
+			// 开始执行前
+			@Override
+			public void onStart() {
+			}
 
-            // 完成后调用，失败，成功
-            @Override
-            public void onFinish() {
-            };
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
 
-        });
-    }
-    
-    /**
-     * 收藏/取消收藏
-      * queryDetail(这里用一句话描述这个方法的作用)
-     */
-    private void collectButtonClicked() {
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+			};
 
-        String urlString = Constant.serverUrl + Constant.exerciseCollectClicked;
-        urlString += ";jsessionid=";
-        urlString += SharedPreferencesUtil.getSharedPreferences_s(this, Constant.SESSION);
-        AbRequestParams p = new AbRequestParams();
-        p.put("id", exerciseId);
-        // 绑定参数
-        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+		}, jsession);
+	}
 
-            // 获取数据成功会调用这里
-            @Override
-            public void onSuccess(int statusCode, String content) {
+	/**
+	 * 收藏/取消收藏 queryDetail(这里用一句话描述这个方法的作用)
+	 */
+	private void collectButtonClicked() {
 
-            };
+		String urlString = Constant.serverUrl + Constant.exerciseCollectClicked;
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,
+				Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		p.put("id", exerciseId);
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
 
-            // 开始执行前
-            @Override
-            public void onStart() {
-            }
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
 
-            // 失败，调用
-            @Override
-            public void onFailure(int statusCode, String content, Throwable error) {
-            }
+			};
 
-            // 完成后调用，失败，成功
-            @Override
-            public void onFinish() {
-            };
+			// 开始执行前
+			@Override
+			public void onStart() {
+			}
 
-        });
-    }
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
+
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+			};
+
+		}, jsession);
+	}
 }

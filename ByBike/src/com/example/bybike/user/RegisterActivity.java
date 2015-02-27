@@ -114,6 +114,10 @@ public class RegisterActivity extends AbActivity {
             AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示",  "昵称不能为空，请重新输入", null);
             return;
         }
+        if (nicknameString.length() > 10) {
+            AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示",  "昵称长度不能超过10，请重新输入", null);
+            return;
+        }
         if (passwordString.length() < 6) {
             AbDialogUtil.showAlertDialog(RegisterActivity.this, 0, "温馨提示", "密码长度不能小于6，请重新输入", null);
             return;

@@ -49,7 +49,11 @@ public class Constant {
 	
 	public static final String totalDistance = "totalDistance";
 	
+	public static final String FRIENDSCOUNT = "friendsCount";
+	
 	public static final String hasLogined = "hasLogined";
+	
+	public static final String CHECKTIME = "checkTime";
 	/**
 	 * 服务器地址
 	 */
@@ -137,6 +141,23 @@ public class Constant {
 	 */
 	public static final String routeDetailUrl = "/bybike_ser/mc/ridingBook/form";
 	/**
+	 * 获取路线图
+	 */
+    public static final String routeLineUrl = "/bybike_ser/m/ridingBook/getPointList";
+    /**
+     * 保存路线图
+     */
+    public static final String saveRouteLineUrl = "/bybike_ser/m/ridingBook/savePoints";
+	
+	/**
+	 * 路书点赞、取消点赞
+	 */
+	public static final String routeLikeClicked = "/bybike_ser/m/ridingBook/updateLikeStatus";
+	/**
+	 * 路书收藏、取消收藏
+	 */
+	public static final String routeCollectClicked = "/bybike_ser/m/ridingBook/updateCollectStatus";
+	/**
 	 * 添加路书
 	 */
 	public static final String addRouteBookUrl = "/bybike_ser/m/ridingBook/save";
@@ -183,9 +204,17 @@ public class Constant {
 	 */
 	public static final String findUserUrl = "/bybike_ser/m/findUser";
 	/**
+	 * 获取好友列表
+	 */
+	public static final String getFriendsListUrl = "/bybike_ser/m/getFriends";
+	/**
 	 * 获取私人消息
 	 */
 	public static final String getPrivateMessage = "/bybike_ser/m/news/getPrivateNews";
+	/**
+	 * 获取公共消息
+	 */
+	public static final String getPublicMessage = "/bybike_ser/mc/propellingList";
 	/**
 	 * 获取用户信息
 	 */
@@ -200,5 +229,13 @@ public class Constant {
 	public static final String deleteFriendUrl = "/bybike_ser/m/removeFrinend";
 	
 	public static final String markerDataLoaded = "markerDataLoaded";
+	/**
+	 * 获取最新版本
+	 */
+    public static final String getVersionUrl = "/bybike_ser/mc/getVersion";
+    /**
+     * 更新路程和减碳量
+     */
+	public static final String saveDistanceUrl = "/bybike_ser/m/addDistance";
 	
 }

@@ -256,5 +256,25 @@ public class MarkerBean{
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@Column(name = "is_public")
+    private String isPublic;
+
+    /*
+     * getter method
+     * @return the isPublic
+     */
+    public String getIsPublic() {
+        return isPublic;
+    }
+
+    /**
+     * setter method
+     * @param isPublic the isPublic to set
+     */
+    public void setIsPublic(String isPublic) {
+        this.isPublic = isPublic;
+    }
+	
 
 }

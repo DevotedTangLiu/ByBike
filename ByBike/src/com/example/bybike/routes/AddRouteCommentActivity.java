@@ -165,9 +165,7 @@ public class AddRouteCommentActivity extends AbActivity {
 			return;
 		}
 		String urlString = Constant.serverUrl + Constant.addRouteCommentUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(AddRouteCommentActivity.this,
-				Constant.SESSION);
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(AddRouteCommentActivity.this, Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("ridingBookId", routeId);
 		p.put("content", content);
@@ -207,7 +205,7 @@ public class AddRouteCommentActivity extends AbActivity {
 				AbDialogUtil.removeDialog(AddRouteCommentActivity.this);
 			};
 
-		});
+		}, jsession);
 		
 	}
 

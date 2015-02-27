@@ -94,6 +94,7 @@ public class MessageListAdapter extends BaseAdapter {
 		int type = Integer.valueOf(mb.getMessageType());
 		switch (type) {
 		case 0:
+			holder.imageView.setVisibility(View.VISIBLE);
 			mAbImageDownloader.display(holder.imageView, Constant.serverUrl + mb.getSenderHeadUrl());
 			holder.notifyIcon.setVisibility(View.INVISIBLE);	
 			holder.messageContent.setText(mb.getSenderName() + " 邀请您添加为好友");
@@ -101,6 +102,7 @@ public class MessageListAdapter extends BaseAdapter {
 			break;
 
 		case 1:
+			holder.imageView.setVisibility(View.VISIBLE);
 			mAbImageDownloader.display(holder.imageView, Constant.serverUrl + mb.getSenderHeadUrl());
 			holder.notifyIcon.setVisibility(View.INVISIBLE);
 			holder.messageContent.setText(mb.getSenderName() + " 回复了你");
@@ -112,6 +114,12 @@ public class MessageListAdapter extends BaseAdapter {
 			holder.messageContent.setText(mb.getMessageContent());
 			holder.messageTime.setText(mb.getSendTime());
 			break;
+		case 3:
+            holder.imageView.setVisibility(View.INVISIBLE);
+            holder.notifyIcon.setVisibility(View.VISIBLE);
+            holder.messageContent.setText(mb.getMessageContent());
+            holder.messageTime.setText(mb.getSendTime());
+            break;
 		default:
 			break;
 		}

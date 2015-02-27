@@ -118,8 +118,46 @@ public class MessageBean {
 
 	@Column(name = "sender_head_url")
 	private String senderHeadUrl;
+	
+	@Column(name="comment_type")
+	private String commentType;
+	
+	@Column(name="function_id")
+    private String functionId;
 
-	// 活动通知
+	/*
+     * getter method
+     * @return the functionId
+     */
+    public String getFunctionId() {
+        return functionId;
+    }
+
+    /**
+     * setter method
+     * @param functionId the functionId to set
+     */
+    public void setFunctionId(String functionId) {
+        this.functionId = functionId;
+    }
+
+    /*
+     * getter method
+     * @return the commentType
+     */
+    public String getCommentType() {
+        return commentType;
+    }
+
+    /**
+     * setter method
+     * @param commentType the commentType to set
+     */
+    public void setCommentType(String commentType) {
+        this.commentType = commentType;
+    }
+
+    // 活动通知
 	@Column(name = "activity_title")
 	private String activityTitle;
 

@@ -6,6 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -19,20 +25,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ab.activity.AbActivity;
+import com.ab.http.AbHttpUtil;
+import com.ab.http.AbRequestParams;
+import com.ab.http.AbStringHttpResponseListener;
 import com.ab.image.AbImageLoader;
+import com.ab.util.AbToastUtil;
 import com.example.bybike.R;
 import com.example.bybike.db.model.UserBean;
 import com.example.bybike.friends.HanziToPinyin.Token;
 import com.example.bybike.friends.MyLetterListView.OnTouchingLetterChangedListener;
+import com.example.bybike.user.UserPageActivity;
+import com.example.bybike.util.Constant;
+import com.example.bybike.util.NetUtil;
+import com.example.bybike.util.SharedPreferencesUtil;
 
 public class FriendsActivity extends AbActivity {
-	
+
 	private BaseAdapter adapter;
 
 	private ListView listview;
@@ -55,11 +71,23 @@ public class FriendsActivity extends AbActivity {
 
 	private EditText searchText;
 
+	// http请求帮助类
+	private AbHttpUtil mAbHttpUtil = null;
+	ProgressDialog mProgressDialog;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getTitleBar().setVisibility(View.GONE);
 		setContentView(R.layout.friends);
+
+		// 获取Http工具类
+		mAbHttpUtil = AbHttpUtil.getInstance(FriendsActivity.this);
+
+		mProgressDialog = new ProgressDialog(FriendsActivity.this, 5);
+		// 设置点击屏幕Dialog不消失
+		mProgressDialog.setCanceledOnTouchOutside(false);
+		mProgressDialog.setMessage("正在查询，请稍后...");
 
 		// 比较器
 		pinyinComparator = new PinyinComparator();
@@ -68,6 +96,19 @@ public class FriendsActivity extends AbActivity {
 				.getSystemService(Context.WINDOW_SERVICE);
 		// asyncQuery = new MyAsyncQueryHandler(getContentResolver());
 		listview = (ListView) findViewById(R.id.list_view);
+		listview.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent();
+				i.setClass(FriendsActivity.this, UserPageActivity.class);
+				i.putExtra("id", abOrgpersonList.get(position).getUserId());
+				startActivity(i);
+				overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out); 	
+			}
+		});
 		letterListView = (MyLetterListView) findViewById(R.id.my_list_view);
 		letterListView
 				.setOnTouchingLetterChangedListener(new LetterListViewListener());
@@ -79,81 +120,114 @@ public class FriendsActivity extends AbActivity {
 
 		searchText = (EditText) findViewById(R.id.searchContent);
 		searchText.addTextChangedListener(new MyTextWatcher());
+
+		queryFriendList();
+	}
+
+	/**
+	 * 搜索标记点
+	 */
+	private void queryFriendList() {
+
+		if (!NetUtil.isConnnected(this)) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this, 5);
+			builder.setMessage("网络不可用，请设置您的网络后重试");
+			builder.setTitle("温馨提示");
+			builder.create();
+			AlertDialog mAlertDialog = builder.create();
+			mAlertDialog.setCancelable(true);
+			mAlertDialog.setCanceledOnTouchOutside(true);
+			mAlertDialog.show();
+			return;
+		}
+
+		String urlString = Constant.serverUrl + Constant.getFriendsListUrl;
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(
+				FriendsActivity.this, Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
+
+				processResult(content);
+			};
+
+			// 开始执行前
+			@Override
+			public void onStart() {
+
+				mProgressDialog.show();
+			}
+
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
+
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+				if (mProgressDialog != null) {
+					mProgressDialog.dismiss();
+				}
+			};
+
+		}, jsession);
+
+	}
+
+	protected void processResult(String content) {
+		// TODO Auto-generated method stub
+
+		try {
+			JSONObject resultObj = new JSONObject(content);
+			String code = resultObj.getString("code");
+			if ("0".equals(code)) {
+				JSONArray listArray = resultObj.getJSONArray("data");
+				SharedPreferencesUtil.saveSharedPreferences_s(FriendsActivity.this, Constant.FRIENDSCOUNT, String.valueOf(listArray.length()));
+				if (listArray.length() <= 0) {
+					AbToastUtil.showToast(FriendsActivity.this, "您还没有添加好友...");
+					return;
+				}
+				abOrgpersonList.clear();
+				for (int i = 0; i < listArray.length(); i++) {
+
+					UserBean ub = new UserBean();
+					JSONObject jo = listArray.getJSONObject(i);
+					ub.setUserNickName(jo.getString("name"));
+					ub.setUserId(jo.getString("id"));
+					ub.setPicUrl(jo.getString("headUrl"));
+					ub.setPinyinname(getFirstPinYin(ub.getUserNickName()));
+					abOrgpersonList.add(ub);
+				}
+				
+				Collections.sort(abOrgpersonList, pinyinComparator);
+				setAdapter(abOrgpersonList); 
+
+			} else {
+				AbToastUtil.showToast(FriendsActivity.this,
+						resultObj.getString("message"));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	private void setAdapter(List<UserBean> list) {
+		adapter = new ListAdapter(this, list);
+		listview.setAdapter(adapter);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		showFriends();
-	}
-
-	private void showFriends() {
-
-		List<UserBean> list = new ArrayList<UserBean>();
-
-		list.clear();
-		UserBean a = new UserBean();
-		a.setUserNickName("Don Dong");
-		a.setPicUrl("http://a.hiphotos.baidu.com/image/h%3D360/sign=6a73a026ba12c8fcabf3f0cbcc0292b4/8326cffc1e178a82a1f9ada6f503738da877e8eb.jpg");
-		a.setPinyinname(getFirstPinYin("Don Dong"));
-		list.add(a);
-
-		UserBean b = new UserBean();
-		b.setUserNickName("FrancoLam");
-		b.setPicUrl("http://e.hiphotos.baidu.com/image/h%3D360/sign=8ae1030fb5003af352bada66052ac619/b58f8c5494eef01f861bfbc3e3fe9925bc317dad.jpg");
-		b.setPinyinname(getFirstPinYin("FrancoLam"));
-		list.add(b);
-
-		UserBean c = new UserBean();
-		c.setUserNickName("Franco Lam");
-		c.setPicUrl("http://e.hiphotos.baidu.com/image/h%3D360/sign=42df56e2b01c8701c9b6b4e0177e9e6e/0d338744ebf81a4c3da304cfd42a6059252da627.jpg");
-		c.setPinyinname(getFirstPinYin("Franco Lam"));
-		list.add(c);
-
-		UserBean d = new UserBean();
-		d.setUserNickName("Gergary_2034");
-		d.setPicUrl("http://c.hiphotos.baidu.com/image/h%3D360/sign=c48c21098494a4c21523e12d3ef41bac/a8773912b31bb051ea1d732e357adab44aede0ff.jpg");
-		d.setPinyinname(getFirstPinYin("Gergary_2034"));
-		list.add(d);
-
-		UserBean e = new UserBean();
-		e.setUserNickName("唐流");
-		e.setPicUrl("http://c.hiphotos.baidu.com/image/h%3D360/sign=c48c21098494a4c21523e12d3ef41bac/a8773912b31bb051ea1d732e357adab44aede0ff.jpg");
-		e.setPinyinname(getFirstPinYin("唐流"));
-		list.add(e);
-
-		UserBean f = new UserBean();
-		f.setUserNickName("一声百年何足道");
-		f.setPicUrl("http://c.hiphotos.baidu.com/image/h%3D360/sign=c48c21098494a4c21523e12d3ef41bac/a8773912b31bb051ea1d732e357adab44aede0ff.jpg");
-		f.setPinyinname(getFirstPinYin("一生百年何足道"));
-		list.add(f);
-
-		UserBean g = new UserBean();
-		g.setUserNickName("~people changed");
-		g.setPicUrl("http://c.hiphotos.baidu.com/image/h%3D360/sign=c48c21098494a4c21523e12d3ef41bac/a8773912b31bb051ea1d732e357adab44aede0ff.jpg");
-		g.setPinyinname(getFirstPinYin("~people changed"));
-
-		list.add(g);
-
-		UserBean h = new UserBean();
-
-		h.setPicUrl("http://c.hiphotos.baidu.com/image/h%3D360/sign=c48c21098494a4c21523e12d3ef41bac/a8773912b31bb051ea1d732e357adab44aede0ff.jpg");
-		h.setUserNickName("测试");
-		h.setPinyinname(getFirstPinYin("测试"));
-		list.add(h);
-
-		if (list.size() > 0) {
-			abOrgpersonList = list;
-			Collections.sort(list, pinyinComparator);
-			setAdapter(list);
-		}
-
-	}
-
-	private void setAdapter(List<UserBean> list) {
-		adapter = new ListAdapter(this, list);
-		listview.setAdapter(adapter);
-
 	}
 
 	private class ListAdapter extends BaseAdapter {
@@ -163,8 +237,6 @@ public class FriendsActivity extends AbActivity {
 		private List<UserBean> list;
 		// 图片下载器
 		private AbImageLoader mAbImageLoader = null;
-		// 用户列表
-		private List<UserBean> userList;
 
 		public ListAdapter(Context context, List<UserBean> list) {
 			this.inflater = LayoutInflater.from(context);
@@ -236,7 +308,9 @@ public class FriendsActivity extends AbActivity {
 				holder.alpha.setVisibility(View.GONE);
 			}
 			// 图片的下载
-			mAbImageLoader.display(holder.avater, cv.getPicUrl());
+			if (!cv.getPicUrl().equals("")) {
+				mAbImageLoader.display(holder.avater, Constant.serverUrl + cv.getPicUrl());
+			}
 
 			return convertView;
 		}
@@ -419,7 +493,8 @@ public class FriendsActivity extends AbActivity {
 			closeKeyboard();
 			break;
 		case R.id.addFriends:
-			Intent i = new Intent(FriendsActivity.this, AddFriendsActivity.class);
+			Intent i = new Intent(FriendsActivity.this,
+					AddFriendsActivity.class);
 			startActivity(i);
 			overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 			break;

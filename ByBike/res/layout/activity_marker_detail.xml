@@ -53,7 +53,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="284dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="11dp"
         android:layout_marginRight="11dp"
         android:layout_marginTop="11dp"
@@ -79,22 +79,22 @@
                 android:layout_marginLeft="17dp"
                 android:layout_marginTop="25dp"
                 android:scaleType="centerCrop" />
-            
+
             <RelativeLayout
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:background="@drawable/marker_pic_count"
                 android:layout_marginLeft="97dp"
-                android:layout_marginTop="20dp">
-                
+                android:layout_marginTop="20dp"
+                android:background="@drawable/marker_pic_count" >
+
                 <TextView
                     android:id="@+id/markerPicCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:text="0"
                     android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:text="0"/>
+                    android:textSize="10sp" />
             </RelativeLayout>
 
             <ImageView
@@ -120,14 +120,14 @@
                 android:layout_marginTop="19dp"
                 android:textColor="#4A4A4A"
                 android:textSize="18sp" />
-            
+
             <ImageView
                 android:id="@+id/publicIcon"
-                android:layout_height="10dp"
                 android:layout_width="31dp"
+                android:layout_height="10dp"
                 android:layout_marginLeft="5dp"
-                 android:layout_marginTop="25dp"
-                android:background="@drawable/marker_public_icon"/>
+                android:layout_marginTop="25dp"
+                android:background="@drawable/marker_public_icon" />
         </LinearLayout>
 
         <TextView
@@ -151,7 +151,7 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <TextView
@@ -161,19 +161,29 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="17dp"
                 android:layout_marginRight="17dp"
-                android:maxLines="2"
                 android:textColor="#9B9B9B"
                 android:textSize="10sp" />
         </LinearLayout>
+        
+        <com.example.bybike.marker.WordWrapView 
+            android:id="@+id/view_wordwrap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_centerHorizontal="true">
+            
+        </com.example.bybike.marker.WordWrapView>
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:orientation="vertical" >
 
                 <LinearLayout

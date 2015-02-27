@@ -402,6 +402,10 @@ public class AddMarkerActivity extends AbActivity implements OnGetGeoCoderResult
             AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示", "友好点名称不能为空，请重新输入", null);
             return;
         }
+        if (markerNameString.length() > 10) {
+            AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示", "友好点名称长度不能超过10，请重新输入", null);
+            return;
+        }
         address = addressText.getText().toString().trim();
         if ("".equals(address)) {
             AbDialogUtil.showAlertDialog(AddMarkerActivity.this, 0, "温馨提示", "地址不能为空，请重新输入", null);
@@ -944,7 +948,13 @@ public class AddMarkerActivity extends AbActivity implements OnGetGeoCoderResult
             // if(D)Log.d(TAG, "将要进行裁剪的图片的路径是 = " +
             // mCurrentPhotoFile.getPath());
             String currentFilePath2 = mCurrentPhotoFile.getPath();
+            
+            /**
+             * 部分手机拍照后会旋转显示
+             */
+            int degree = BitmapUtil.readPictureDegree(currentFilePath2);
             Bitmap currentBitMap = BitmapUtil.compressPhotoFileToBitmap(currentFilePath2, 640, 480);
+            currentBitMap = BitmapUtil.rotaingImageView(degree, currentBitMap);
             ImageView image = (ImageView) findViewById(photosIds[currentPhotoId - 1]);
             image.setImageBitmap(currentBitMap);
 
@@ -976,6 +986,10 @@ public class AddMarkerActivity extends AbActivity implements OnGetGeoCoderResult
                     MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(currentPt);
                     mBaidumap.animateMapStatus(u);
                 }
+                if(addressText.getText().toString().trim().equals("")){
+                	addressText.setText(b.getString("address"));
+                }
+                
             }
             break;
         default:
@@ -1066,7 +1080,9 @@ public class AddMarkerActivity extends AbActivity implements OnGetGeoCoderResult
     public void onDestroy() {
         super.onDestroy();
         // 退出时销毁定位
-        mLocClient.stop();
+        if(mLocClient != null){
+            mLocClient.stop();
+        }     
         // 关闭定位图层
         mBaidumap.setMyLocationEnabled(false);
         mMapView.onDestroy();

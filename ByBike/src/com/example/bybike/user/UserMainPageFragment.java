@@ -83,7 +83,7 @@ public class UserMainPageFragment extends Fragment {
 	private Button chooseMarker;
 
 	private List<Map<String, Object>> myExerciseListData = null;
-	private ExerciseListAdapter2 exerciseListAdapter = null;
+	private ExerciseListAdapter2 myExerciseListAdapter = null;
 	private AbPullToRefreshView myExerciseListView = null;
 	private ListView myExerciseList = null;
 
@@ -138,6 +138,10 @@ public class UserMainPageFragment extends Fragment {
 		friendsCount = (TextView) view.findViewById(R.id.friendsCount);
 		friendsCount.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);// 下划线
 		friendsCount.setOnClickListener(click);
+		
+		TextView friends = (TextView)view.findViewById(R.id.friends);
+		friends.setOnClickListener(click);
+		
 		// 设置用户名字
 		userName = (TextView) view.findViewById(R.id.userName);
 		totalDistance = (TextView) view.findViewById(R.id.totalDistance);
@@ -172,46 +176,29 @@ public class UserMainPageFragment extends Fragment {
 		 * 初始化我的活动列表
 		 */
 		View myExerciseListLayout = mInflater.inflate(R.layout.pull_list, null);
-//		myExerciseListView = (AbPullToRefreshView) myExerciseListLayout
-//				.findViewById(R.id.mPullRefreshView);
-//		myExerciseList = (ListView) myExerciseListLayout
-//				.findViewById(R.id.mListView);
+		myExerciseListView = (AbPullToRefreshView) myExerciseListLayout.findViewById(R.id.mPullRefreshView);
+		myExerciseList = (ListView) myExerciseListLayout.findViewById(R.id.mListView);
+		myExerciseList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+
+				Intent i = new Intent();
+				i.setClass(mActivity, ExerciseDetailActivity3.class);
+				i.putExtra("id", (String)myExerciseListData.get(position).get("id"));
+				startActivity(i);
+				mActivity.overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
+			}
+		});
 //		View header = mInflater.inflate(R.layout.listview_header, null);
 //		myExerciseList.addHeaderView(header);
-//
 //		// ListView数据
-//		myExerciseListData = new ArrayList<Map<String, Object>>();
-//		for (int i = 0; i < 10; i++) {
-//			Map<String, Object> map = new HashMap<String, Object>();
-//			map.put("exercisePic",
-//					"http://img5.imgtn.bdimg.com/it/u=1530701415,1979691644&fm=21&gp=0.jpg");
-//			myExerciseListData.add(map);
-//		}
+		myExerciseListData = new ArrayList<Map<String, Object>>();
 //		// 使用自定义的Adapter
-//		exerciseListAdapter = new ExerciseListAdapter2(mActivity, mActivity,
-//				myExerciseListData, R.layout.exercise_list_item2, new String[] {
-//						"exercisePic", "exerciseTitle", "exerciseAddress",
-//						"exerciseTime", "exerciseUserCount", "lickCount",
-//						"talkCount", "collectCount" }, new int[] {
-//						R.id.exercisePic, R.id.exerciseTitle,
-//						R.id.exerciseRouteAddress, R.id.exerciseTime,
-//						R.id.userCount, R.id.likeCount, R.id.talkCount,
-//						R.id.collectCount });
-//		myExerciseList.setAdapter(exerciseListAdapter);
-//		// item被点击事件
-//		// item被点击事件
-//		myExerciseList.setOnItemClickListener(new OnItemClickListener() {
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View view,
-//					int position, long id) {
-//
-//				Intent i = new Intent();
-//				i.setClass(mActivity, ExerciseDetailActivity3.class);
-//				startActivity(i);
-//				mActivity.overridePendingTransition(R.anim.fragment_in,
-//						R.anim.fragment_out);
-//			}
-//		});
+		myExerciseListAdapter = new ExerciseListAdapter2(mActivity, mActivity, 
+				myExerciseListData, R.layout.exercise_list_item2, new String[] {"exercisePic"}, new int[] {R.id.exercisePic});
+		myExerciseList.setAdapter(myExerciseListAdapter);
 		listViews.add(myExerciseListLayout);
 		
 		/**
@@ -227,16 +214,16 @@ public class UserMainPageFragment extends Fragment {
 	                // TODO Auto-generated method stub
 	                Intent intent = new Intent();
 	                intent.setClass(mActivity, RouteDetailActivity.class);
-	                intent.putExtra("id", (String) myRouteBookListData.get(position - 1).get("id"));
+	                intent.putExtra("id", (String) myRouteBookListData.get(position).get("id"));
 	                mActivity.startActivity(intent);
 	                mActivity.overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 	            }
 
 	        });
-		View routeBookHeader = mInflater.inflate(R.layout.listview_header_routebooks, null);
-		myRouteBookList.addHeaderView(routeBookHeader);
+//		View routeBookHeader = mInflater.inflate(R.layout.listview_header_routebooks, null);
+//		myRouteBookList.addHeaderView(routeBookHeader);
 		myRouteBookListData = new ArrayList<Map<String, Object>>();
-		myRouteBookListAdapter = new RoutesBookListAdapter2(mActivity, myRouteBookListData);
+		myRouteBookListAdapter = new RoutesBookListAdapter2(mActivity, mActivity,  myRouteBookListData);
 		myRouteBookList.setAdapter(myRouteBookListAdapter);
 		listViews.add(myRouteBookListLayout);
 
@@ -246,10 +233,10 @@ public class UserMainPageFragment extends Fragment {
 		View myMarkerListLayout = mInflater.inflate(R.layout.pull_list, null);
 		myMarkerListView = (AbPullToRefreshView) myMarkerListLayout.findViewById(R.id.mPullRefreshView);
 		myMarkerList = (ListView) myMarkerListLayout.findViewById(R.id.mListView);
-		View markerHeader = mInflater.inflate(R.layout.listview_header_markers, null);
-		myMarkerList.addHeaderView(markerHeader);
+//		View markerHeader = mInflater.inflate(R.layout.listview_header_markers, null);
+//		myMarkerList.addHeaderView(markerHeader);
 		myMarkerListData = new ArrayList<MarkerBean>();
-		myMarkerListAdapter = new MarkerListAdapter2(mActivity, myMarkerListData);
+		myMarkerListAdapter = new MarkerListAdapter2(mActivity, mActivity, myMarkerListData);
 		myMarkerList.setAdapter(myMarkerListAdapter);
 		myMarkerList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -258,8 +245,8 @@ public class UserMainPageFragment extends Fragment {
 
 				Intent i = new Intent();
 				i.setClass(mActivity, MarkerDetailActivity.class);
-				i.putExtra("id", myMarkerListData.get(position - 1).getMarkerId());
-				mActivity.startActivity(i);
+				i.putExtra("id", myMarkerListData.get(position).getMarkerId());
+				mActivity.startActivityForResult(i, mActivity.GO_TO_MARKERDETAIL_ACTIVITY);
 				mActivity.overridePendingTransition(R.anim.fragment_in,R.anim.fragment_out);
 			}
 		});
@@ -272,6 +259,7 @@ public class UserMainPageFragment extends Fragment {
 		mPager.setCurrentItem(0);
 		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 		
+		searchExerciseList();
 		queryRouteBookList();
 		searchMarkerList();
 
@@ -331,6 +319,8 @@ public class UserMainPageFragment extends Fragment {
 //				String account = dataObject.getString("loginName");
 				String carbonCount = dataObject.getString("carbonCount");
 				String totalDistance = dataObject.getString("totalDistance");
+				String totalFriend = dataObject.getString("friendCount");
+				
 				String headPic;
 				try {
 					headPic = dataObject.getString("headUrl");
@@ -345,12 +335,14 @@ public class UserMainPageFragment extends Fragment {
 				}
 				this.totalDistance.setText(totalDistance);
 				totalCarbon.setText(carbonCount);
+				friendsCount.setText(totalFriend);
 				
 //				String userId = dataObject.getString("id");
 				SharedPreferencesUtil.saveSharedPreferences_s(mActivity,Constant.USERNICKNAME, nickname);
 				SharedPreferencesUtil.saveSharedPreferences_s(mActivity,Constant.USERAVATARURL, headPic);
 				SharedPreferencesUtil.saveSharedPreferences_s(mActivity, Constant.carbonCount, carbonCount);
 				SharedPreferencesUtil.saveSharedPreferences_s(mActivity, Constant.totalDistance, totalDistance);
+				SharedPreferencesUtil.saveSharedPreferences_s(mActivity, Constant.FRIENDSCOUNT, totalFriend);
 
 			} else {
 //				AbToastUtil.showToast(mActivity, "查询失败，请稍后重试");
@@ -411,6 +403,13 @@ public class UserMainPageFragment extends Fragment {
 				Intent friendsIntent = new Intent();
 				friendsIntent.setClass(mActivity, FriendsActivity.class);
 				mActivity.startActivity(friendsIntent);
+				mActivity.overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
+				break;
+			case R.id.friends:
+				Intent goFriendsIntent = new Intent();
+				goFriendsIntent.setClass(mActivity, FriendsActivity.class);
+				mActivity.startActivity(goFriendsIntent);
 				mActivity.overridePendingTransition(R.anim.fragment_in,
 						R.anim.fragment_out);
 				break;
@@ -520,6 +519,7 @@ public class UserMainPageFragment extends Fragment {
 				mActivity, Constant.USERNICKNAME));
 		totalDistance.setText(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.totalDistance));
 		totalCarbon.setText(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.carbonCount));
+		friendsCount.setText(SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.FRIENDSCOUNT));
 		String userHeadPicUrl = SharedPreferencesUtil.getSharedPreferences_s(
 				mActivity, Constant.USERAVATARURL);
 		if (userHeadPicUrl.length() > 0) {
@@ -620,12 +620,13 @@ public class UserMainPageFragment extends Fragment {
 					map.put("routeAddress", jo.getString("roadPlace"));
 					map.put("exerciseTime", jo.getString("roadStartTime"));
 					map.put("likeCount", jo.getString("likeCount"));
+					map.put("likeStatus", jo.getString("likeStatus"));
 					map.put("commentCount", jo.getString("commentCount"));
 					map.put("collectCount", jo.getString("collectCount"));
+					map.put("collectStatus", jo.getString("collectStatus"));
 					map.put("kilometers", jo.getString("totalDistance"));
 					map.put("roadContent", jo.getString("roadContent"));
-
-					// map.put("userId", userObj.getString("id"));
+					map.put("creatorId", jo.getString("roadCreatorId"));
 					map.put("userHeadPicUrl", jo.getString("roadCreatorImg"));
 					map.put("userName", jo.getString("roadCreatorName"));
 
@@ -730,11 +731,111 @@ public class UserMainPageFragment extends Fragment {
 					mb.setCommentCount(jo.getString("commentCount"));
 					mb.setMarkerName(jo.getString("name"));
 					mb.setMarkerType(jo.getString("markerType"));
+					
+					//复用表，保存likeStatus和collectStatus
+					mb.setImgurl1(jo.getString("likeStatus"));
+					mb.setImgurl2(jo.getString("collectStatus"));
 
 					myMarkerListData.add(mb);
 				}
 
 				myMarkerListAdapter.notifyDataSetChanged();
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	/**
+	 * 查询活动列表====================================================================================================
+	 */
+	private void searchExerciseList() {
+
+		String urlString = Constant.serverUrl + Constant.exerciseListUrl;
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		p.put("pageNo", "1");
+		p.put("pageSize", "10");
+		p.put("creatorId", SharedPreferencesUtil.getSharedPreferences_s(mActivity, Constant.USERID));
+
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
+
+				processExerciseListResult(content);
+			};
+
+			// 开始执行前
+			@Override
+			public void onStart() {
+
+//				mProgressDialog.show();
+			}
+
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
+
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+			};
+
+		}, jsession);
+
+	}
+
+	protected void processExerciseListResult(String content) {
+		// TODO Auto-generated method stub
+
+		try {
+			JSONObject resultObj = new JSONObject(content);
+			String code = resultObj.getString("code");
+			if ("0".equals(code)) {
+				JSONArray dataArray = resultObj.getJSONArray("data");
+				if(myExerciseListData != null){
+					myExerciseListData.clear();
+				}else{
+					myExerciseListData = new ArrayList<Map<String, Object>>();
+				}
+			
+                for (int i = 0; i < dataArray.length(); i++) {
+                    JSONObject jo = dataArray.getJSONObject(i);
+                    Map<String, Object> map = new HashMap<String, Object>();
+
+                    map.put("id", jo.getString("id"));
+                    map.put("exercisePic", "http://img3.imgtn.bdimg.com/it/u=3823186829,2727347960&fm=21&gp=0.jpg");
+                    String imgUrl = jo.getString("activityImgUrl");
+                    if (null != imgUrl && !"".equals(imgUrl.trim())) {
+                        map.put("exercisePic", Constant.serverUrl + imgUrl);
+                    }
+                    map.put("exerciseTitle", jo.getString("title"));
+                    map.put("exerciseAddress", jo.getString("wayLine"));
+                    map.put("exerciseTime", jo.getString("activityStartDate") + "-" + jo.getString("activityEndDate"));
+                    map.put("likeCount", jo.getString("likeCount"));
+                    map.put("talkCount", jo.getString("commentCount"));
+                    map.put("collectCount", jo.getString("collectCount"));
+                    map.put("relityActivityNumber", jo.getString("relityActivityNumber"));
+                    map.put("likeStatus", jo.getString("likeStatus"));
+                    map.put("collectStatus", jo.getString("collectStatus"));
+                    if ("".equals(jo.getString("relityActivityNumber"))) {
+                        map.put("relityActivityNumber", "0");
+                    }
+                    map.put("joinStatus", jo.getString("joinStatus"));
+                    
+                    myExerciseListData.add(map);
+                }
+
+                myExerciseListAdapter.notifyDataSetChanged();
 			}
 			
 		} catch (JSONException e) {

@@ -9,8 +9,9 @@
         android:id="@+id/imageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_centerVertical="true"
+        android:layout_marginBottom="14dp"
         android:layout_marginLeft="17dp"
+        android:layout_marginTop="14dp"
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
     
@@ -18,21 +19,25 @@
         android:id="@+id/notifyIcon"
         android:layout_width="45dp"
         android:layout_height="30dp"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="14dp"
         android:layout_marginLeft="23dp"
         android:contentDescription="@null"
         android:scaleType="fitXY" 
         android:src="@drawable/message_list_notify_button"></ImageView>
 
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/imageView"/>
+    
     <TextView
         android:id="@+id/messageContent"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="80dp"
         android:layout_marginRight="50dp"
-        android:maxLines="3"
-        android:layout_centerVertical="true"
-        android:text="ChaolotteYam 邀请您加为好友"
         android:textColor="#4A4A4A"
         android:textSize="15sp" />
 
@@ -42,8 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="13dp"
-        android:text="10.28 14:50"
+        android:layout_marginTop="8dp"
+        android:text=""
         android:textColor="#BBBBBB"
         android:textSize="12sp" />
 

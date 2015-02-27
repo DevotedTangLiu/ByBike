@@ -74,7 +74,8 @@
         android:layout_marginTop="32dp"
         android:layout_gravity="center_horizontal"
         android:onClick="onClick"
-        android:background="@drawable/update_button"/>
+        android:background="@drawable/update_button"
+        android:visibility="gone"/>
     
      <ImageView
         android:layout_width="90dp"

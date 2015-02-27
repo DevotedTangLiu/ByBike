@@ -58,7 +58,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="15dp"
                     android:singleLine="true"
-                    android:text="大不溜自行车租赁"
+                    android:text=""
                     android:textColor="#4A4A4A"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -70,7 +70,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:singleLine="true"
-                    android:text="广州市合群西路283号"
+                    android:text=""
                     android:textColor="#585858"
                     android:textSize="11sp"
                     android:textStyle="bold" />

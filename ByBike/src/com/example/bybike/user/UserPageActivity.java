@@ -38,7 +38,6 @@ import com.ab.image.AbImageLoader;
 import com.ab.util.AbDialogUtil;
 import com.ab.util.AbToastUtil;
 import com.ab.view.pullview.AbPullToRefreshView;
-import com.example.bybike.NewMainActivity;
 import com.example.bybike.R;
 import com.example.bybike.adapter.ExerciseListAdapter2;
 import com.example.bybike.adapter.MarkerListAdapter2;
@@ -46,11 +45,8 @@ import com.example.bybike.adapter.RoutesBookListAdapter2;
 import com.example.bybike.db.model.MarkerBean;
 import com.example.bybike.exercise.ExerciseDetailActivity3;
 import com.example.bybike.friends.FriendsActivity;
-import com.example.bybike.marker.AddCommentActivity;
 import com.example.bybike.marker.MarkerDetailActivity;
 import com.example.bybike.routes.RouteDetailActivity;
-import com.example.bybike.user.UserMainPageFragment.MyOnPageChangeListener;
-import com.example.bybike.user.UserMainPageFragment.MyPagerAdapter;
 import com.example.bybike.util.CircleImageView;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -75,7 +71,7 @@ public class UserPageActivity extends AbActivity {
     private Button chooseMarker;
 
     private List<Map<String, Object>> myExerciseListData = null;
-    private ExerciseListAdapter2 exerciseListAdapter = null;
+    private ExerciseListAdapter2 myExerciseListAdapter = null;
     private AbPullToRefreshView myExerciseListView = null;
     private ListView myExerciseList = null;
 
@@ -97,6 +93,8 @@ public class UserPageActivity extends AbActivity {
 	TextView totalCarbon;
 	
 	public ProgressDialog mProgressDialog;
+	
+	private boolean beApplyed = false;
 
     /**
      * 用户信息
@@ -104,7 +102,8 @@ public class UserPageActivity extends AbActivity {
     TextView userName;
     CircleImageView userHeadImageView;
     Button addFriend;
-    Button deleteFriend;
+    Button deleteFriend;   
+    Button agreeAddFriend;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +119,13 @@ public class UserPageActivity extends AbActivity {
         userId = getIntent().getStringExtra("id");
         if(userId == null || "".equals(userId)){
         	AbToastUtil.showToast(UserPageActivity.this, "用户id未传入...");
+        }
+        
+        String tmp = getIntent().getStringExtra("beApplyed");
+        if(tmp == null){
+        	beApplyed = false;
+        }else{
+        	beApplyed = true;
         }
 
         // 获取Http工具类
@@ -143,6 +149,7 @@ public class UserPageActivity extends AbActivity {
         
         addFriend = (Button)findViewById(R.id.addFriend);
         deleteFriend = (Button)findViewById(R.id.deleteFriend);
+        agreeAddFriend = (Button)findViewById(R.id.agreeAddFriend);
 
         initUserInfo();
         // 填充用户活动、路书、友好点数据
@@ -208,6 +215,7 @@ public class UserPageActivity extends AbActivity {
 				String nickname = dataObject.getString("name");
 				String carbonCount = dataObject.getString("carbonCount");
 				String totalDistance = dataObject.getString("totalDistance");
+				String totalFriend = dataObject.getString("friendCount");
 				String headPic;
 				try {
 					headPic = dataObject.getString("headUrl");
@@ -221,10 +229,17 @@ public class UserPageActivity extends AbActivity {
 				}
 				this.totalDistance.setText(totalDistance);
 				totalCarbon.setText(carbonCount);
+				friendsCount.setText(totalFriend);
 				
 				String isFriend = dataObject.getString("isFriend");
 				if("0".equals(isFriend)){
-					addFriend.setVisibility(View.VISIBLE);
+					if(beApplyed){
+						agreeAddFriend.setVisibility(View.VISIBLE);
+						addFriend.setVisibility(View.GONE);			
+					}else{
+						agreeAddFriend.setVisibility(View.GONE);
+						addFriend.setVisibility(View.VISIBLE);		
+					}			
 					deleteFriend.setVisibility(View.GONE);
 				}else{
 					addFriend.setVisibility(View.GONE);
@@ -248,50 +263,32 @@ public class UserPageActivity extends AbActivity {
     private void initViewPager() {
 
     	LayoutInflater mInflater = UserPageActivity.this.getLayoutInflater();
-		/**
+    	/**
 		 * 初始化我的活动列表
 		 */
 		View myExerciseListLayout = mInflater.inflate(R.layout.pull_list, null);
-//		myExerciseListView = (AbPullToRefreshView) myExerciseListLayout
-//				.findViewById(R.id.mPullRefreshView);
-//		myExerciseList = (ListView) myExerciseListLayout
-//				.findViewById(R.id.mListView);
+		myExerciseListView = (AbPullToRefreshView) myExerciseListLayout.findViewById(R.id.mPullRefreshView);
+		myExerciseList = (ListView) myExerciseListLayout.findViewById(R.id.mListView);
+		myExerciseList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+
+				Intent i = new Intent();
+				i.setClass(UserPageActivity.this, ExerciseDetailActivity3.class);
+				i.putExtra("id", (String)myExerciseListData.get(position).get("id"));
+				startActivity(i);
+				overridePendingTransition(R.anim.fragment_in,
+						R.anim.fragment_out);
+			}
+		});
 //		View header = mInflater.inflate(R.layout.listview_header, null);
 //		myExerciseList.addHeaderView(header);
-//
 //		// ListView数据
-//		myExerciseListData = new ArrayList<Map<String, Object>>();
-//		for (int i = 0; i < 10; i++) {
-//			Map<String, Object> map = new HashMap<String, Object>();
-//			map.put("exercisePic",
-//					"http://img5.imgtn.bdimg.com/it/u=1530701415,1979691644&fm=21&gp=0.jpg");
-//			myExerciseListData.add(map);
-//		}
+		myExerciseListData = new ArrayList<Map<String, Object>>();
 //		// 使用自定义的Adapter
-//		exerciseListAdapter = new ExerciseListAdapter2(mActivity, mActivity,
-//				myExerciseListData, R.layout.exercise_list_item2, new String[] {
-//						"exercisePic", "exerciseTitle", "exerciseAddress",
-//						"exerciseTime", "exerciseUserCount", "lickCount",
-//						"talkCount", "collectCount" }, new int[] {
-//						R.id.exercisePic, R.id.exerciseTitle,
-//						R.id.exerciseRouteAddress, R.id.exerciseTime,
-//						R.id.userCount, R.id.likeCount, R.id.talkCount,
-//						R.id.collectCount });
-//		myExerciseList.setAdapter(exerciseListAdapter);
-//		// item被点击事件
-//		// item被点击事件
-//		myExerciseList.setOnItemClickListener(new OnItemClickListener() {
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View view,
-//					int position, long id) {
-//
-//				Intent i = new Intent();
-//				i.setClass(mActivity, ExerciseDetailActivity3.class);
-//				startActivity(i);
-//				mActivity.overridePendingTransition(R.anim.fragment_in,
-//						R.anim.fragment_out);
-//			}
-//		});
+		myExerciseListAdapter = new ExerciseListAdapter2(this, UserPageActivity.this,myExerciseListData, R.layout.exercise_list_item2, new String[] {"exercisePic"}, new int[] {R.id.exercisePic});
+		myExerciseList.setAdapter(myExerciseListAdapter);
 		listViews.add(myExerciseListLayout);
 		
 		/**
@@ -307,16 +304,16 @@ public class UserPageActivity extends AbActivity {
 	                // TODO Auto-generated method stub
 	                Intent intent = new Intent();
 	                intent.setClass(UserPageActivity.this, RouteDetailActivity.class);
-	                intent.putExtra("id", (String) myRouteBookListData.get(position - 1).get("id"));
+	                intent.putExtra("id", (String) myRouteBookListData.get(position).get("id"));
 	                startActivity(intent);
 	                overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
 	            }
 
 	        });
-		View routeBookHeader = mInflater.inflate(R.layout.listview_header_routebooks, null);
-		myRouteBookList.addHeaderView(routeBookHeader);
+//		View routeBookHeader = mInflater.inflate(R.layout.listview_header_routebooks, null);
+//		myRouteBookList.addHeaderView(routeBookHeader);
 		myRouteBookListData = new ArrayList<Map<String, Object>>();
-		myRouteBookListAdapter = new RoutesBookListAdapter2(UserPageActivity.this, myRouteBookListData);
+		myRouteBookListAdapter = new RoutesBookListAdapter2(UserPageActivity.this, UserPageActivity.this, myRouteBookListData);
 		myRouteBookList.setAdapter(myRouteBookListAdapter);
 		listViews.add(myRouteBookListLayout);
 
@@ -326,10 +323,10 @@ public class UserPageActivity extends AbActivity {
 		View myMarkerListLayout = mInflater.inflate(R.layout.pull_list, null);
 		myMarkerListView = (AbPullToRefreshView) myMarkerListLayout.findViewById(R.id.mPullRefreshView);
 		myMarkerList = (ListView) myMarkerListLayout.findViewById(R.id.mListView);
-		View markerHeader = mInflater.inflate(R.layout.listview_header_markers, null);
-		myMarkerList.addHeaderView(markerHeader);
+//		View markerHeader = mInflater.inflate(R.layout.listview_header_markers, null);
+//		myMarkerList.addHeaderView(markerHeader);
 		myMarkerListData = new ArrayList<MarkerBean>();
-		myMarkerListAdapter = new MarkerListAdapter2(UserPageActivity.this, myMarkerListData);
+		myMarkerListAdapter = new MarkerListAdapter2(UserPageActivity.this, UserPageActivity.this, myMarkerListData);
 		myMarkerList.setAdapter(myMarkerListAdapter);
 		myMarkerList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -338,7 +335,7 @@ public class UserPageActivity extends AbActivity {
 
 				Intent i = new Intent();
 				i.setClass(UserPageActivity.this, MarkerDetailActivity.class);
-				i.putExtra("id", myMarkerListData.get(position - 1).getMarkerId());
+				i.putExtra("id", myMarkerListData.get(position).getMarkerId());
 				startActivity(i);
 				overridePendingTransition(R.anim.fragment_in,R.anim.fragment_out);
 			}
@@ -352,6 +349,7 @@ public class UserPageActivity extends AbActivity {
 		mPager.setCurrentItem(0);
 		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 		
+		searchExerciseList();
 		queryRouteBookList();
 		searchMarkerList();
 
@@ -448,12 +446,12 @@ public class UserPageActivity extends AbActivity {
         case R.id.goBack:
             UserPageActivity.this.finish();
             break;
-        case R.id.friendsCountArea:
-            Intent friendsIntent = new Intent();
-            friendsIntent.setClass(UserPageActivity.this, FriendsActivity.class);
-            startActivity(friendsIntent);
-            overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
-            break;
+//        case R.id.friendsCountArea:
+//            Intent friendsIntent = new Intent();
+//            friendsIntent.setClass(UserPageActivity.this, FriendsActivity.class);
+//            startActivity(friendsIntent);
+//            overridePendingTransition(R.anim.fragment_in, R.anim.fragment_out);
+//            break;
         case R.id.chooseExercise:
             mPager.setCurrentItem(0);
             chooseExercise.setSelected(true);
@@ -491,6 +489,25 @@ public class UserPageActivity extends AbActivity {
 				}
             });
         	break;
+        case R.id.agreeAddFriend:
+        	AbDialogUtil.showAlertDialog(UserPageActivity.this, 0, "温馨提示", "确认要添加此用户为好友吗？",
+	    			new AbAlertDialogFragment.AbDialogOnClickListener() {
+
+				@Override
+				public void onPositiveClick() {
+					// TODO Auto-generated method stub
+					
+					addFriendRequest();
+					AbDialogUtil.removeDialog(UserPageActivity.this);
+				}
+				@Override
+				public void onNegativeClick() {
+					// TODO Auto-generated method stub
+					AbDialogUtil.removeDialog(UserPageActivity.this);
+				}
+            });
+        	break;
+        	
         case R.id.deleteFriend:
         	AbDialogUtil.showAlertDialog(UserPageActivity.this, 0, "温馨提示", "确认要删除此好友吗？",
 	    			new AbAlertDialogFragment.AbDialogOnClickListener() {
@@ -562,9 +579,17 @@ public class UserPageActivity extends AbActivity {
 			JSONObject resultObj = new JSONObject(resultString);
 			String code = resultObj.getString("code");
 			if ("0".equals(code)) {
-				AbToastUtil.showToast(UserPageActivity.this, "请求已发送，等待对方确认...");
+				if(beApplyed){
+					AbToastUtil.showToast(UserPageActivity.this, "好友添加成功...");
+					addFriend.setVisibility(View.GONE);
+					agreeAddFriend.setVisibility(View.GONE);
+					deleteFriend.setVisibility(View.VISIBLE);
+				}else{
+					AbToastUtil.showToast(UserPageActivity.this, "请求已发送，等待对方确认...");
+				}
+				
 			} else {
-				AbToastUtil.showToast(UserPageActivity.this, "请求发送失败，请稍后再试...");
+				AbToastUtil.showToast(UserPageActivity.this, resultObj.getString("message"));
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -623,6 +648,7 @@ public class UserPageActivity extends AbActivity {
 				AbToastUtil.showToast(UserPageActivity.this, "删除成功...");
 				addFriend.setVisibility(View.VISIBLE);
 				deleteFriend.setVisibility(View.GONE);
+				agreeAddFriend.setVisibility(View.GONE);
 			} else {
 				AbToastUtil.showToast(UserPageActivity.this, "删除好友请求失败，请稍后再试...");
 			}
@@ -724,12 +750,13 @@ public class UserPageActivity extends AbActivity {
 					map.put("routeAddress", jo.getString("roadPlace"));
 					map.put("exerciseTime", jo.getString("roadStartTime"));
 					map.put("likeCount", jo.getString("likeCount"));
+					map.put("likeStatus", jo.getString("likeStatus"));
 					map.put("commentCount", jo.getString("commentCount"));
 					map.put("collectCount", jo.getString("collectCount"));
+					map.put("collectStatus", jo.getString("collectStatus"));
 					map.put("kilometers", jo.getString("totalDistance"));
 					map.put("roadContent", jo.getString("roadContent"));
-
-					// map.put("userId", userObj.getString("id"));
+					map.put("creatorId", jo.getString("roadCreatorId"));
 					map.put("userHeadPicUrl", jo.getString("roadCreatorImg"));
 					map.put("userName", jo.getString("roadCreatorName"));
 
@@ -832,6 +859,10 @@ public class UserPageActivity extends AbActivity {
 					mb.setCommentCount(jo.getString("commentCount"));
 					mb.setMarkerName(jo.getString("name"));
 					mb.setMarkerType(jo.getString("markerType"));
+					
+					//复用表，保存likeStatus和collectStatus
+					mb.setImgurl1(jo.getString("likeStatus"));
+					mb.setImgurl2(jo.getString("collectStatus"));
 
 					myMarkerListData.add(mb);
 				}
@@ -845,5 +876,166 @@ public class UserPageActivity extends AbActivity {
 		}
 
 	}
+	
+	
+	/**
+	 * 查询活动列表====================================================================================================
+	 */
+	private void searchExerciseList() {
+
+		String urlString = Constant.serverUrl + Constant.exerciseListUrl;
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(UserPageActivity.this, Constant.SESSION);
+		AbRequestParams p = new AbRequestParams();
+		p.put("pageNo", "1");
+		p.put("pageSize", "10");
+		p.put("creatorId", userId);
+
+		// 绑定参数
+		mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+			// 获取数据成功会调用这里
+			@Override
+			public void onSuccess(int statusCode, String content) {
+
+				processExerciseListResult(content);
+			};
+
+			// 开始执行前
+			@Override
+			public void onStart() {
+
+//				mProgressDialog.show();
+			}
+
+			// 失败，调用
+			@Override
+			public void onFailure(int statusCode, String content,
+					Throwable error) {
+			}
+
+			// 完成后调用，失败，成功
+			@Override
+			public void onFinish() {
+			};
+
+		}, jsession);
+
+	}
+
+	protected void processExerciseListResult(String content) {
+		// TODO Auto-generated method stub
+
+		try {
+			JSONObject resultObj = new JSONObject(content);
+			String code = resultObj.getString("code");
+			if ("0".equals(code)) {
+				JSONArray dataArray = resultObj.getJSONArray("data");
+				if(myExerciseListData != null){
+					myExerciseListData.clear();
+				}else{
+					myExerciseListData = new ArrayList<Map<String, Object>>();
+				}
+			
+                for (int i = 0; i < dataArray.length(); i++) {
+                    JSONObject jo = dataArray.getJSONObject(i);
+                    Map<String, Object> map = new HashMap<String, Object>();
+
+                    map.put("id", jo.getString("id"));
+                    map.put("exercisePic", "http://img3.imgtn.bdimg.com/it/u=3823186829,2727347960&fm=21&gp=0.jpg");
+                    String imgUrl = jo.getString("activityImgUrl");
+                    if (null != imgUrl && !"".equals(imgUrl.trim())) {
+                        map.put("exercisePic", Constant.serverUrl + imgUrl);
+                    }
+                    map.put("exerciseTitle", jo.getString("title"));
+                    map.put("exerciseAddress", jo.getString("wayLine"));
+                    map.put("exerciseTime", jo.getString("activityStartDate") + "-" + jo.getString("activityEndDate"));
+                    map.put("likeCount", jo.getString("likeCount"));
+                    map.put("talkCount", jo.getString("commentCount"));
+                    map.put("collectCount", jo.getString("collectCount"));
+                    map.put("relityActivityNumber", jo.getString("relityActivityNumber"));
+                    map.put("likeStatus", jo.getString("likeStatus"));
+                    map.put("collectStatus", jo.getString("collectStatus"));
+                    if ("".equals(jo.getString("relityActivityNumber"))) {
+                        map.put("relityActivityNumber", "0");
+                    }
+                    map.put("joinStatus", jo.getString("joinStatus"));
+                    
+                    myExerciseListData.add(map);
+                }
+
+                myExerciseListAdapter.notifyDataSetChanged();
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	 /**
+     * 
+      * onListViewButtonClicked(这里用一句话描述这个方法的作用)
+      * @param fucntionType  0：markerList 1:exerciseList 2:routeBookList
+      * @param buttonType    0: likeButton                1:collectButton
+      * @param id
+     */
+    public void onListViewButtonClicked(int fucntionType, int buttonType, String id) {
+
+        String urlString = "";
+        switch (fucntionType) {
+        case 0:
+            if(0 == buttonType){
+                urlString = Constant.serverUrl + Constant.markerLikeClicked;
+            }else{
+                urlString = Constant.serverUrl + Constant.markerCollectClicked;
+            }        
+            break;
+
+        case 1:
+            if(0 == buttonType){
+                urlString = Constant.serverUrl + Constant.exerciseLikeClicked;
+            }else{
+                urlString = Constant.serverUrl + Constant.exerciseCollectClicked;
+            }
+            break;
+        case 2:
+        	if(0 == buttonType){
+        		urlString = Constant.serverUrl + Constant.routeLikeClicked;
+        	}else{
+        		urlString = Constant.serverUrl + Constant.routeCollectClicked;
+        	}
+            break;
+        default:
+            break;
+        }
+
+        String jsession = SharedPreferencesUtil.getSharedPreferences_s(this, Constant.SESSION);
+        AbRequestParams p = new AbRequestParams();
+        p.put("id", id);
+        // 绑定参数
+        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+            // 获取数据成功会调用这里
+            @Override
+            public void onSuccess(int statusCode, String content) {
+            };
+            // 开始执行前
+            @Override
+            public void onStart() {
+            }
+            // 失败，调用
+            @Override
+            public void onFailure(int statusCode, String content, Throwable error) {
+            }
+            // 完成后调用，失败，成功
+            @Override
+            public void onFinish() {
+            };
+
+        }, jsession);
+
+    }
 
 }

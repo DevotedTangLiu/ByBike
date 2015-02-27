@@ -205,10 +205,8 @@ public class AddFriendsActivity extends AbActivity {
 		try {
 			JSONObject resultObj = new JSONObject(content);
 			String code = resultObj.getString("code");
-			if ("1".equals(code)) {
-				JSONObject dataObj = resultObj.getJSONObject("data");
-				
-				JSONArray listArray = dataObj.getJSONArray("list");
+			if ("0".equals(code)) {
+				JSONArray listArray = resultObj.getJSONArray("data");
 				if(listArray.length() <= 0){
 					AbToastUtil.showToast(AddFriendsActivity.this, "没有搜到相关结果，请重新输入后再试");
 					return;

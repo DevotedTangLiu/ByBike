@@ -46,13 +46,13 @@ public class PostMessage {
      * @param flightDate
      * @param flightNumber
      */
-    public void sendMessage(int notificationID, String title, String content) {
+    public void sendMessage(int notificationID, String title, String content, int messageType) {
 
 
-        Intent intent = getDetailsIntent(context, content);
+        Intent intent = getDetailsIntent(context, content, messageType);
         // 主要设置点击通知的时显示内容的类
         // last_id需要指定，否则不能传参
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationID, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // 构造Notification对象
         notification = new Notification();
@@ -67,7 +67,7 @@ public class PostMessage {
         notification.icon = R.drawable.ic_launcher;
 
         // 状态栏弹出的提醒
-        notification.tickerText = title + System.currentTimeMillis();
+        notification.tickerText = title;
 
        
         RemoteViews contentView = new RemoteViews(context.getPackageName(),
@@ -82,11 +82,11 @@ public class PostMessage {
         notificationManager.notify(notificationID, notification);
     }
 
-    private Intent getDetailsIntent(Context cnt, String content) {
+    private Intent getDetailsIntent(Context cnt, String content, int messageType) {
         
         Intent intent = new Intent();
         intent.setClass(context, MessageListActivity.class);
-
+        intent.putExtra("messageType", messageType);
         return intent;
     }
 

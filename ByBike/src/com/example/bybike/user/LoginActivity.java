@@ -176,6 +176,7 @@ public class LoginActivity extends AbActivity {
 				account = dataObject.getString("loginName");
 				String carbonCount = dataObject.getString("carbonCount");
 				String totalDistance = dataObject.getString("totalDistance");
+				String friendCount = dataObject.getString("friendCount");
 				String headPic;
 				try {
 					headPic = dataObject.getString("headUrl");
@@ -184,37 +185,37 @@ public class LoginActivity extends AbActivity {
 				}
 				String userId = dataObject.getString("id");
 
-				userDao = new UserBeanDao(LoginActivity.this);
-				// (1)获取数据库
-				userDao.startWritableDatabase(false);
-				// (2)执行查询
-				String[] params = new String[1];
-				params[0] = account;
-				List<UserBean> users = userDao.queryList("user_email = ?",
-						params);
-				if (users != null && users.size() > 0) {
-					UserBean user = users.get(0);
-					user.setUserEmail(account);
-					user.setPassword(password);
-					user.setSession(sessionId);
-					user.setUserNickName(nickname);
-					user.setPicUrl(headPic);
-					user.setUserId(userId);
-					userDao.update(user);
-
-				} else {
-					UserBean user = new UserBean();
-					user.setSession(sessionId);
-					user.setUserEmail(account);
-					user.setPassword(password);
-					user.setUserNickName(nickname);
-					user.setPicUrl(headPic);
-					user.setUserId(userId);
-					userDao.insert(user);
-				}
-
-				// (3)关闭数据库
-				userDao.closeDatabase();
+//				userDao = new UserBeanDao(LoginActivity.this);
+//				// (1)获取数据库
+//				userDao.startWritableDatabase(false);
+//				// (2)执行查询
+//				String[] params = new String[1];
+//				params[0] = account;
+//				List<UserBean> users = userDao.queryList("user_email = ?",
+//						params);
+//				if (users != null && users.size() > 0) {
+//					UserBean user = users.get(0);
+//					user.setUserEmail(account);
+//					user.setPassword(password);
+//					user.setSession(sessionId);
+//					user.setUserNickName(nickname);
+//					user.setPicUrl(headPic);
+//					user.setUserId(userId);
+//					userDao.update(user);
+//
+//				} else {
+//					UserBean user = new UserBean();
+//					user.setSession(sessionId);
+//					user.setUserEmail(account);
+//					user.setPassword(password);
+//					user.setUserNickName(nickname);
+//					user.setPicUrl(headPic);
+//					user.setUserId(userId);
+//					userDao.insert(user);
+//				}
+//
+//				// (3)关闭数据库
+//				userDao.closeDatabase();
 
 				SharedPreferencesUtil.saveSharedPreferences_s(
 						LoginActivity.this, Constant.SESSION, sessionId);
@@ -231,6 +232,7 @@ public class LoginActivity extends AbActivity {
 				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.USERID, userId);
 				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.carbonCount, carbonCount);
 				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.totalDistance, totalDistance);
+				SharedPreferencesUtil.saveSharedPreferences_s(this, Constant.FRIENDSCOUNT, friendCount);
 				SharedPreferencesUtil.saveSharedPreferences_b(this, Constant.hasLogined, true);
 
 				Intent intent = getIntent();

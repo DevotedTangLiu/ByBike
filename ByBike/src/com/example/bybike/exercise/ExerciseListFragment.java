@@ -187,17 +187,6 @@ public class ExerciseListFragment extends Fragment implements OnHeaderRefreshLis
         mActivity = (NewMainActivity) activity;
     }
 
-    private OnTypeButtonClickListener click = new OnTypeButtonClickListener();
-
-    private class OnTypeButtonClickListener implements OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            // TODO Auto-generated method stub
-
-        }
-
-    }
 
     boolean refreshOrLoadMore = true;
 
@@ -220,7 +209,7 @@ public class ExerciseListFragment extends Fragment implements OnHeaderRefreshLis
         	 p.put("wayLengthStart", kilometersStart);
              p.put("wayLengthEnd", kilometersEnd);
         }else if("orderByArea".equalsIgnoreCase(orderType)){
-            p.put("districtId", areaId);
+            p.put("gatheringLocationDistrictId", areaId);
         }
         
         // 绑定参数
@@ -284,6 +273,8 @@ public class ExerciseListFragment extends Fragment implements OnHeaderRefreshLis
                     map.put("talkCount", jo.getString("commentCount"));
                     map.put("collectCount", jo.getString("collectCount"));
                     map.put("relityActivityNumber", jo.getString("relityActivityNumber"));
+                    map.put("likeStatus", jo.getString("likeStatus"));
+                    map.put("collectStatus", jo.getString("collectStatus"));
                     if ("".equals(jo.getString("relityActivityNumber"))) {
                         map.put("relityActivityNumber", "0");
                     }

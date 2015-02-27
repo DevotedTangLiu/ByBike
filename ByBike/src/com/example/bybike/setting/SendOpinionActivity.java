@@ -62,7 +62,6 @@ public class SendOpinionActivity extends AbActivity {
 
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		Intent i = new Intent();
 		switch (v.getId()) {
 		case R.id.goBack:
 			this.finish();
@@ -91,9 +90,7 @@ public class SendOpinionActivity extends AbActivity {
 		}
 
 		String urlString = Constant.serverUrl + Constant.suggestionUrl;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(
-				SendOpinionActivity.this, Constant.SESSION);
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(SendOpinionActivity.this, Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("content", opinionContent);
 		p.put("contact", contact);
@@ -127,7 +124,7 @@ public class SendOpinionActivity extends AbActivity {
 				AbDialogUtil.removeDialog(SendOpinionActivity.this);
 			};
 
-		});
+		}, jsession);
 
 	}
 

@@ -32,8 +32,6 @@ import com.example.bybike.util.SharedPreferencesUtil;
 public class WelcomeActivity extends AbActivity {
 
 	private AbTaskQueue mAbTaskQueue = null;
-	// http请求帮助类
-	private AbHttpUtil mAbHttpUtil = null;
 
 	ImageView welcome_background;
 
@@ -42,9 +40,6 @@ public class WelcomeActivity extends AbActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
 		mAbTaskQueue = AbTaskQueue.getInstance();
-
-		// 获取Http工具类
-		mAbHttpUtil = AbHttpUtil.getInstance(this);
 
 		MarkerListThread thread = new MarkerListThread();
 		thread.start();
@@ -135,12 +130,23 @@ public class WelcomeActivity extends AbActivity {
 
 						MarkerBean mb = new MarkerBean();
 						mb.setMarkerId(jo.getString("Id"));
-						mb.setLatitude(jo.getDouble("lat"));
-						mb.setLongitude(jo.getDouble("lng"));
+						try{
+							mb.setLatitude(jo.getDouble("lat"));
+							mb.setLongitude(jo.getDouble("lng"));
+						}catch(Exception e){
+							e.printStackTrace();
+							System.out.println(mb.getMarkerId());
+							System.out.println(jo.getString("name"));
+						}					
 						mb.setMarkerName(jo.getString("name"));
 						mb.setMarkerType(jo.getString("markerType"));
 						mb.setOperatingType(jo.getString("operatingType"));
 						mb.setCreaterId(jo.getString("creatorId"));
+						mb.setIsPublic(jo.getString("isPublic"));
+						
+						//复用，将是否特殊标记点存入description，将特殊标记图片存入imgurl1
+						mb.setDescription(jo.getString("particular"));
+						mb.setImgurl1(jo.getString("particularImgUrl"));
 
 						markerBeanDao.insert(mb);
 
@@ -163,10 +169,8 @@ public class WelcomeActivity extends AbActivity {
 	String requestURL = Constant.serverUrl + Constant.getMarkerListUrl;
 
 	public String getPromotMessageFromServer() {
-		// String url = requestURL + "?checkTime=" + System.currentTimeMillis();
-		String url = requestURL + ";jsessionid=";
-		url += SharedPreferencesUtil.getSharedPreferences_s(this,
-				Constant.SESSION);
+		
+		String url = requestURL;
 		url += "?pageNo=1&pageSize=1000";
 		return javaHttpGet(url);
 	}

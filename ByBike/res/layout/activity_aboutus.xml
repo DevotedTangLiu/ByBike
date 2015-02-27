@@ -1,0 +1,72 @@
+<!-- <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!-- android:layout_width="match_parent" -->
+<!-- android:layout_height="match_parent" -->
+<!-- android:background="#F3F3F4" > -->
+
+
+<!-- <LinearLayout -->
+<!-- android:layout_width="fill_parent" -->
+<!-- android:layout_height="wrap_content" -->
+<!-- android:orientation="vertical"> -->
+
+
+<!-- <ImageView -->
+<!-- android:layout_width="fill_parent" -->
+<!-- android:layout_height="350dp" -->
+<!-- android:scaleType="centerCrop" -->
+<!-- android:src="@drawable/about_us_background" /> -->
+
+
+<!-- <TextView -->
+<!-- android:layout_height="wrap_content" -->
+<!-- android:layout_width="fill_parent" -->
+<!-- android:layout_margin="5dp" -->
+<!-- android:textSize="14sp" -->
+<!-- android:text="@string/about_us"/> -->
+<!-- </LinearLayout> -->
+
+
+<!-- </ScrollView> -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F3F4"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/titleBar"
+        android:layout_width="fill_parent"
+        android:layout_height="51dp"
+        android:background="@drawable/title_bar" >
+
+        <RelativeLayout
+            android:id="@+id/goBack"
+            android:layout_width="80dp"
+            android:layout_height="fill_parent"
+            android:onClick="onClick"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:background="@drawable/back_button" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="关于我们"
+            android:textColor="@color/text_color"
+            android:textStyle="bold" >
+        </TextView>
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/aboutUs"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+</LinearLayout>

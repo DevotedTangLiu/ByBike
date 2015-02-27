@@ -415,6 +415,7 @@
                     <!-- 头像 -->
 
                     <com.example.bybike.util.CircleImageView
+                        android:id="@+id/headPic"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="16dp"

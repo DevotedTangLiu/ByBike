@@ -57,17 +57,17 @@
             android:scaleType="centerCrop"
             android:src="@drawable/user" />
 
-        <!-- <ImageView -->
-        <!-- android:id="@+id/fragment_my_image_user" -->
-        <!-- android:layout_width="90dp" -->
-        <!-- android:layout_height="90dp" -->
-        <!-- android:layout_centerHorizontal="true" -->
-        <!-- android:layout_marginTop="45dp" -->
-        <!-- android:contentDescription="@null" -->
-        <!-- android:scaleType="centerCrop" -->
-        <!-- android:src="@drawable/user" /> -->
-        <!-- myxmlns:border_color="@color/f2f2f2" -->
-        <!-- myxmlns:border_width="@dimen/circle_width" -->
+<!--         <ImageView -->
+<!--         android:id="@+id/fragment_my_image_user" -->
+<!--         android:layout_width="90dp" -->
+<!--         android:layout_height="90dp" -->
+<!--         android:layout_centerHorizontal="true" -->
+<!--         android:layout_marginTop="45dp" -->
+<!--         android:contentDescription="@null" -->
+<!--         android:scaleType="centerCrop" -->
+<!--         android:src="@drawable/user" /> -->
+<!--         myxmlns:border_color="@color/f2f2f2" -->
+<!--         myxmlns:border_width="@dimen/circle_width"/> -->
 
         <TextView
             android:id="@+id/userName"
@@ -89,15 +89,27 @@
             android:layout_marginTop="11dp"
             android:background="@drawable/add_friend_button"
             android:onClick="onClick"
-            android:visibility="gone" />
+            android:visibility="gone"/>"
+        
+        <Button
+            android:id="@+id/agreeAddFriend"
+            android:layout_width="66dp"
+            android:layout_height="28dp"
+            android:layout_below="@id/userName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:text="同意"
+            android:textSize="12sp"
+            android:onClick="onClick" 
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/userInfo"
             android:layout_width="fill_parent"
             android:layout_height="20dp"
-            android:layout_below="@id/addFriend"
+            android:layout_below="@id/userName"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="45dp"
             android:orientation="horizontal" >
 
             <RelativeLayout

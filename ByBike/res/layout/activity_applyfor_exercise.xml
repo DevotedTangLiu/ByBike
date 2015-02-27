@@ -225,6 +225,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="27dp"
+                android:layout_marginRight="27dp"
                 android:text="注：姓名和身份证号将用于购买保险,请务必填写。"
                 android:textColor="#9B9B9B"
                 android:textSize="12sp" />

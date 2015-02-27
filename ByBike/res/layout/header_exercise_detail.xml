@@ -33,6 +33,16 @@
             android:layout_marginTop="13dp"
             android:background="@drawable/button_map_or_pic"
             android:onClick="clickHandler" />
+        <Button
+            android:id="@+id/mapOrPicMap"
+            android:layout_width="45dp"
+            android:layout_height="27dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/button_map_or_pic_2"
+            android:onClick="clickHandler"
+            android:visibility="gone" />
         <LinearLayout
             android:id="@+id/coverView"
             android:layout_width="fill_parent"
@@ -407,7 +417,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="17dp"
-            android:text="评论 (2)"
+            android:text="评论 (0)"
             android:textColor="#9B9B9B"
             android:textSize="18sp" />
 

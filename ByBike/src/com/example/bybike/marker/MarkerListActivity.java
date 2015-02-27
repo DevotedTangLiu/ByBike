@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +36,8 @@ public class MarkerListActivity extends AbActivity {
 	
 	private AbPullToRefreshView mAbPullToRefreshView = null;
 	private ListView mListView = null;
+	
+	private final int GO_TO_MARKERDETAIL = 1001;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class MarkerListActivity extends AbActivity {
 				i.setClass(MarkerListActivity.this, MarkerDetailActivity.class);
 				i.putExtra("id", myMarkerListData.get(position)
 						.getMarkerId());
-				startActivity(i);
+				startActivityForResult(i, GO_TO_MARKERDETAIL);
 				overridePendingTransition(R.anim.fragment_in,
 						R.anim.fragment_out);
 			}
@@ -81,6 +84,10 @@ public class MarkerListActivity extends AbActivity {
 				mb.setCommentCount(jo.getString("commentCount"));
 				mb.setMarkerName(jo.getString("name"));
 				mb.setMarkerType(jo.getString("markerType"));
+				
+				//复用表，保存likeStatus和collectStatus
+				mb.setImgurl1(jo.getString("likeStatus"));
+				mb.setImgurl2(jo.getString("collectStatus"));
 
 				myMarkerListData.add(mb);
 			}
@@ -110,9 +117,7 @@ public class MarkerListActivity extends AbActivity {
 	public void onLikeClicked(String id) {
 		// TODO Auto-generated method stub
 		String urlString = Constant.serverUrl + Constant.markerLikeClicked;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
-				Constant.SESSION);
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this, Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("id", id);
 		// 绑定参数
@@ -140,7 +145,7 @@ public class MarkerListActivity extends AbActivity {
 			public void onFinish() {
 			};
 
-		});
+		}, jsession);
 
 	}
 
@@ -150,9 +155,7 @@ public class MarkerListActivity extends AbActivity {
 	public void collectButtonClicked(String id) {
 
 		String urlString = Constant.serverUrl + Constant.markerCollectClicked;
-		urlString += ";jsessionid=";
-		urlString += SharedPreferencesUtil.getSharedPreferences_s(this,
-				Constant.SESSION);
+		String jsession = SharedPreferencesUtil.getSharedPreferences_s(this,Constant.SESSION);
 		AbRequestParams p = new AbRequestParams();
 		p.put("id", id);
 		// 绑定参数
@@ -180,7 +183,29 @@ public class MarkerListActivity extends AbActivity {
 			public void onFinish() {
 			};
 
-		});
+		}, jsession);
+	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+
+            switch (requestCode) {
+            case GO_TO_MARKERDETAIL:           
+                String markerData = data.getStringExtra("markerData");
+                Intent intent = getIntent();
+                intent.putExtra("markerData", markerData);
+                setResult(RESULT_OK, intent);
+                MarkerListActivity.this.finish();
+                break;
+
+            default:
+                break;
+            }
+
+        }
+        
 	}
 
 }

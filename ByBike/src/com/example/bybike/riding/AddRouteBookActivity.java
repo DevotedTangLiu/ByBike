@@ -29,6 +29,10 @@ import android.widget.ZoomControls;
 
 import com.ab.activity.AbActivity;
 import com.ab.fragment.AbAlertDialogFragment;
+import com.ab.http.AbHttpUtil;
+import com.ab.http.AbRequestParams;
+import com.ab.http.AbStringHttpResponseListener;
+import com.ab.image.AbImageLoader;
 import com.ab.util.AbDialogUtil;
 import com.ab.util.AbFileUtil;
 import com.ab.util.AbStrUtil;
@@ -47,8 +51,11 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.example.bybike.R;
 import com.example.bybike.db.model.MarkerBean;
+import com.example.bybike.setting.AccountSettingActivity;
+import com.example.bybike.setting.SettingMainActivity;
 import com.example.bybike.user.LoginActivity;
 import com.example.bybike.util.BitmapUtil;
+import com.example.bybike.util.CircleImageView;
 import com.example.bybike.util.Constant;
 import com.example.bybike.util.NetUtil;
 import com.example.bybike.util.SharedPreferencesUtil;
@@ -60,6 +67,8 @@ import com.lidroid.xutils.http.client.HttpRequest;
 
 public class AddRouteBookActivity extends AbActivity {
 
+	// 图片下载器
+	private AbImageLoader mAbImageLoader = null;
     // 基础地图相关
     MapView mMapView = null;
     BaiduMap mBaidumap = null;
@@ -113,12 +122,22 @@ public class AddRouteBookActivity extends AbActivity {
     
     LinearLayout markerNamesArea;
     TextView markerNames;
+    
+ // http请求帮助类
+    private AbHttpUtil mAbHttpUtil = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setAbContentView(R.layout.activity_route_add);
         getTitleBar().setVisibility(View.GONE);
+        
+        // 获取Http工具类
+        mAbHttpUtil = AbHttpUtil.getInstance(this);
+        mAbImageLoader = AbImageLoader.newInstance(this);
+        
+        CircleImageView headPic = (CircleImageView)findViewById(R.id.headPic);
+        mAbImageLoader.display(headPic, Constant.serverUrl + SharedPreferencesUtil.getSharedPreferences_s(AddRouteBookActivity.this, Constant.USERAVATARURL));
 
         bitMapDescriptorList.clear();
         bitMapDescriptorList.add(marker_icon_bikestore);
@@ -451,7 +470,6 @@ public class AddRouteBookActivity extends AbActivity {
         params.addBodyParameter("totalDistance", distance.getText().toString());
         params.addBodyParameter("totalTime", String.valueOf(timeUsedInt));
         params.addBodyParameter("roadPoints", routePoints);
-        System.out.println("rodaPoints: " + routePoints);
         if (roadMarkers.length() > 0) {
             params.addBodyParameter("roadMarkers", roadMarkers.substring(0, roadMarkers.length() - 1));
         }
@@ -462,7 +480,6 @@ public class AddRouteBookActivity extends AbActivity {
 
             }
         }
-        
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST, urlString, params, new RequestCallBack<String>() {
 
@@ -480,7 +497,7 @@ public class AddRouteBookActivity extends AbActivity {
 
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
-                AbDialogUtil.removeDialog(AddRouteBookActivity.this);
+//                AbDialogUtil.removeDialog(AddRouteBookActivity.this);
                 processResult(responseInfo.result);
             }
 
@@ -495,11 +512,71 @@ public class AddRouteBookActivity extends AbActivity {
     }
 
     /**
+     * 处理保存非路线点的结果
+     */
+    public void processResult(String content){
+
+        try {
+            JSONObject resultObj = new JSONObject(content);
+            String code = resultObj.getString("code");
+            if ("0".equals(code)) {
+              
+                JSONObject dataObj = resultObj.getJSONObject("data");
+                String id = dataObj.getString("id");
+                saveRouteLineRequest(id);
+            }
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            AbDialogUtil.removeDialog(AddRouteBookActivity.this);
+            AbDialogUtil.showAlertDialog(AddRouteBookActivity.this, 0, "温馨提示", "保存失败,请稍后重试", null);
+        }
+
+    }
+    
+    private void saveRouteLineRequest(String id){
+        
+        String urlString = Constant.serverUrl + Constant.saveRouteLineUrl;
+        String jsession = SharedPreferencesUtil.getSharedPreferences_s(AddRouteBookActivity.this, Constant.SESSION);
+        AbRequestParams p = new AbRequestParams();
+        p.put("roadId", id);
+        p.put("updateStatus", "false");
+        p.put("points", routePoints);
+        mAbHttpUtil.post(urlString, p, new AbStringHttpResponseListener() {
+
+            // 获取数据成功会调用这里
+            @Override
+            public void onSuccess(int statusCode, String content) {
+
+                processRouteLineResult(content);
+            };
+
+            // 开始执行前
+            @Override
+            public void onStart() {
+            }
+
+            // 失败，调用
+            @Override
+            public void onFailure(int statusCode, String content, Throwable error) {
+                AbDialogUtil.removeDialog(AddRouteBookActivity.this);
+                AbToastUtil.showToast(AddRouteBookActivity.this, "保存失败，请稍后重试...");
+            }
+
+            // 完成后调用，失败，成功
+            @Override
+            public void onFinish() {
+                AbDialogUtil.removeDialog(AddRouteBookActivity.this);
+            };
+
+        }, jsession);
+    }
+    /**
      * processResult(这里用一句话描述这个方法的作用)
      * 
      * @param content
      */
-    protected void processResult(String content) {
+    protected void processRouteLineResult(String content) {
         // TODO Auto-generated method stub
         try {
             JSONObject resultObj = new JSONObject(content);
@@ -513,6 +590,8 @@ public class AddRouteBookActivity extends AbActivity {
                                 // TODO Auto-generated method stub
 
                                 AbDialogUtil.removeDialog(AddRouteBookActivity.this);
+                                Intent intent = getIntent();
+                                setResult(RESULT_OK, intent);
                                 AddRouteBookActivity.this.finish();
                             }
 
@@ -633,8 +712,13 @@ public class AddRouteBookActivity extends AbActivity {
         case CAMERA_WITH_DATA:
             // if(D)Log.d(TAG, "将要进行裁剪的图片的路径是 = " +
             // mCurrentPhotoFile.getPath());
-            String currentFilePath2 = mCurrentPhotoFile.getPath();
+            String currentFilePath2 = mCurrentPhotoFile.getPath();          
+            /**
+             * 部分手机拍照后会旋转显示
+             */
+            int degree = BitmapUtil.readPictureDegree(currentFilePath2);
             Bitmap currentBitMap = BitmapUtil.compressPhotoFileToBitmap(currentFilePath2, 640, 480);
+            currentBitMap = BitmapUtil.rotaingImageView(degree, currentBitMap);
             ImageView image = (ImageView) findViewById(photosIds[currentPhotoId - 1]);
             image.setImageBitmap(currentBitMap);
 
